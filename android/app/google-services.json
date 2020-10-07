@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "872574258487",
+    "firebase_url": "https://swaptact-988da.firebaseio.com",
+    "project_id": "swaptact-988da",
+    "storage_bucket": "swaptact-988da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872574258487:android:a0bad35bce113468731eb2",
+        "android_client_info": {
+          "package_name": "com.gitterhive.swaptact"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872574258487-dmdk5jl8k5cpkpjobn1v0mfjceq308ge.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gitterhive.swaptact",
+            "certificate_hash": "2cce4aec7181ebfadb7eb603793ab28983e77cc4"
+          }
+        },
+        {
+          "client_id": "872574258487-4eqf16btoq6iv46csjjsdrieipfjoflb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gitterhive.swaptact",
+            "certificate_hash": "25582c7735a84a1edfdb45f55a5bc7d8140913b1"
+          }
+        },
+        {
+          "client_id": "872574258487-up5jh5okj6ihemof5o31phmkl43g39t3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gitterhive.swaptact",
+            "certificate_hash": "bfa3f0ebc4753b35c00dbdd52ba489a01f76165c"
+          }
+        },
+        {
+          "client_id": "872574258487-lpv76cvjqkcg6btsa5h4dd0lm3buculj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrJDvoxmmBlh--6tRFq9uEw-8IvqN5ARg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "872574258487-lpv76cvjqkcg6btsa5h4dd0lm3buculj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "872574258487-j7jr87v5miekhc93i3qtq0o80flr0fo9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gitterhive.swaptact"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

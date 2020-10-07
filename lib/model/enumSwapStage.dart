@@ -1,0 +1,4 @@
+enum SwapPageStatus {
+  Home,
+  Swap,
+}
