@@ -66,12 +66,7 @@ class ApiProvider {
     };
 
     try {
-      Response response = await Dio()
-          .post(
-        ConstanceData.SearchPhoneUrl,
-        data: data,
-      )
-          .catchError((onError) {
+      Response response = await Dio().post(ConstanceData.SearchPhoneUrl, data: data).catchError((onError) {
         print(onError);
         return false;
       });
@@ -208,49 +203,38 @@ class ApiProvider {
   }
 
   Future<List<UserPhone>> searchUser(String fieldName, String searchtext) async {
-    List<UserPhone> lstText = [];
+    bool isPhone = false;
 
-    ProfileModel objProfileModel;
+    if (double.tryParse(searchtext) != null) isPhone = true;
+
+    QuerySnapshot result;
+
     try {
-      QuerySnapshot result = await Firestore.instance.collection('Users').where(
-        fieldName.toString(),
-        arrayContainsAny: [searchtext],
-      ).getDocuments();
-      if (result.documents.length > 0) {
-        for (var docData in result.documents) {
-          objProfileModel = ProfileModel.parseSnapshot(docData);
+      if (!isPhone)
+        result = await Firestore.instance
+            .collection('Users')
+            .where('userName', isGreaterThanOrEqualTo: searchtext)
+            .where('userName', isLessThan: searchtext + 'z')
+            .limit(10)
+            .getDocuments();
 
-          if (fieldName == "searchUserName") {
-            for (var i = 0; i < objProfileModel.searchUserName.length; i++) {
-              if (objProfileModel.searchUserName[i].contains(searchtext)) {
-                UserPhone objUser = new UserPhone();
+      if (isPhone)
+        result = await Firestore.instance
+            .collection('Users')
+            .where('phone', isGreaterThanOrEqualTo: searchtext)
+            .where('phone', isLessThan: searchtext + 'z')
+            .limit(10)
+            .getDocuments();
 
-                objUser.userName = objProfileModel.searchUserName[i];
-                objUser.userPhone = objProfileModel.searchPhone[i];
-                objUser.userId = objProfileModel.searchUserId[i];
+      if (result != null)
+        result.documents.forEach((element) {
+          print(element['userName']);
+        });
 
-                lstText.add(objUser);
-              }
-            }
-          } else {
-            for (var i = 0; i < objProfileModel.searchPhone.length; i++) {
-              if (objProfileModel.searchPhone[i].contains(searchtext)) {
-                UserPhone objUser = new UserPhone();
-
-                objUser.userName = objProfileModel.searchUserName[i];
-                objUser.userPhone = objProfileModel.searchPhone[i];
-                objUser.userId = objProfileModel.searchUserId[i];
-
-                lstText.add(objUser);
-              }
-            }
-          }
-        }
-      }
+      return result.documents.map((document) => UserPhone.fromFirestore(document)).toList();
     } catch (e) {
       print(e);
     }
-    return lstText;
   }
 
   Future<List<SwapModel>> getRecentSwapDetail() async {

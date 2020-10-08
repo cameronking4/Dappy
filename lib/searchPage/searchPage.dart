@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -37,10 +38,7 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           Container(
             padding: EdgeInsets.only(top: 16.0, left: 16.0),
-            child: Text(
-              'Find Users',
-              style: TextStyle(color: Colors.black87, fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
+            child: Text('Find Users', style: TextStyle(color: Colors.black87, fontSize: 18.0, fontWeight: FontWeight.bold)),
           ),
           Container(
             padding: EdgeInsets.only(left: 16.0, right: 16.0),
@@ -63,15 +61,9 @@ class _SearchPageState extends State<SearchPage> {
                         children: <Widget>[FaIcon(FontAwesomeIcons.search, color: Colors.black87)],
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(25.0),
-                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(25.0),
-                        ),
-                      ),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(25.0))),
                     ),
                     style: TextStyle(color: Colors.black87),
                     cursorColor: Colors.black87,
@@ -191,6 +183,8 @@ class _SearchPageState extends State<SearchPage> {
     searchedUserDetail.clear();
     List<UserPhone> lstSearchedUserDetail = [];
 
+    if (text.length < 4) return;
+
     if (isNumeric(_searchText.text)) {
       lstSearchedUserDetail = await ApiProvider().searchUser("searchPhone", text);
     } else {
@@ -221,4 +215,13 @@ class UserPhone {
     this.userPhone = "",
     this.userId = "",
   });
+
+  factory UserPhone.fromFirestore(DocumentSnapshot document) {
+    Map data = document.data;
+    return UserPhone(
+      userName: data['userName'] ?? '',
+      userPhone: data['phone'] ?? '',
+      userId: data['userId'] ?? '',
+    );
+  }
 }

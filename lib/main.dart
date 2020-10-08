@@ -1,15 +1,14 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:swapTech/constance/global.dart' as globals;
 import 'package:swapTech/constance/themes.dart';
 import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/loginPage/loginPage.dart';
 import 'package:swapTech/model/playLoadNotification.dart';
 import 'package:swapTech/profile/profile.dart';
-import 'package:swapTech/profile/userProfile.dart';
 import 'package:swapTech/splash/splash.dart';
 import 'package:swapTech/welcome/welcomePage.dart';
-import 'package:swapTech/constance/global.dart' as globals;
 
 const debug = true;
 
@@ -31,7 +30,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
     getFirestoreMessageDetail();
   }
 
