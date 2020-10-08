@@ -54,6 +54,10 @@ dependencies:
   google_fonts: ^0.3.10
   fluttertoast: ^4.0.1
   dio: ^3.0.10
+  flutter_advanced_networkimage: any
+  algolia: ^0.1.7
+  native_contact_dialog: ^0.2.2
+  flutter_country_picker: ^0.1.6
 
 dev_dependencies:
   flutter_test:
