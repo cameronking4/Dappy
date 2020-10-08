@@ -209,11 +209,13 @@ class ApiProvider {
 
     QuerySnapshot result;
 
+    searchtext = searchtext.toLowerCase();
+
     try {
       if (!isPhone)
         result = await Firestore.instance
             .collection('Users')
-            .where('userName', isGreaterThanOrEqualTo: searchtext)
+            .where('userName', isGreaterThanOrEqualTo: searchtext.toLowerCase())
             .where('userName', isLessThan: searchtext + 'z')
             .limit(10)
             .getDocuments();
