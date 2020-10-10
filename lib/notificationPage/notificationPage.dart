@@ -88,7 +88,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                             itemCount: lstNotification.length,
                             itemBuilder: (BuildContext context, index) {
                               return FutureBuilder(
-                                future: ApiProvider().getProfileDetail(lstNotification[index].requestUserId),
+                                future: ApiProvider().getProfileDetail(lstNotification[index].userId),
                                 builder: (BuildContext context, AsyncSnapshot<ProfileModel> objProfileModel) {
                                   if (!objProfileModel.hasData) {
                                     return SizedBox();

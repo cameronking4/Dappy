@@ -263,7 +263,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                       showAlertDialog(context);
                     });
                    
-                    await ContactsService.openExistingContact(newContact);
+                    // await ContactsService.openExistingContact(newContact);
                  },
                   child: Text(
                     "Save to Contacts",

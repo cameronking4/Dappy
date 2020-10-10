@@ -339,9 +339,27 @@ class _HomePageState extends State<HomePage> {
                   QrImage(
                     data: globals.objProfile.userId,
                     version: QrVersions.auto,
-                    gapless: false,
-                    size: 250.0,
+                    gapless: true,
+                    // embeddedImage: NetworkImage(globals.objProfile.photoUrl),
+                    // embeddedImageStyle: QrEmbeddedImageStyle(size: Size(150, 150)),
+                    size: 260.0,
                   ),
+                  Text(globals.objProfile.firstName + " " + globals.objProfile.lastName, 
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 32,
+                    fontFamily: 'Gotham-Medium',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(globals.objProfile.userName , 
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: 'Gotham-Medium',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                   SizedBox(
                     height: 30,
                   ),
@@ -395,8 +413,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _isLoding = true;
     });
-    bool permission = await checkPermission();
-    if (permission) {
+    
       // Get Location Address
 
       try {
@@ -406,14 +423,22 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             barCode = barcode.rawContent;
           });
+
+          bool permission = await checkPermission();
+
+         if (permission) {
           _locationData = await location.getLocation();
           final coordinates = new Coordinates(_locationData.latitude, _locationData.longitude);
           var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+          swapModel.locationAddreess = addresses.first.addressLine;
+         }
+          else {
+           await checkPermission();
+          }
 
           swapModel.userId = globals.objProfile.userId;
           swapModel.swapuserId = barcode.rawContent;
-          swapModel.locationAddreess = addresses.first.addressLine;
-
+          
           await ApiProvider().swapUserProfile(swapModel);
           setState(() {
             _isLoding = false;
@@ -426,8 +451,5 @@ class _HomePageState extends State<HomePage> {
           _isLoding = false;
         });
       }
-    } else {
-      await checkPermission();
-    }
-  }
+    } 
 }

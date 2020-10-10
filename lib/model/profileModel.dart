@@ -16,11 +16,14 @@ class ProfileModel {
   String token;
   String userId;
   String venmo;
+  String website;
+  String twitter;
   String userName;
   int createdAt;
   int updatedAt;
   String countryCode;
   String justPhone;
+  List<String> swappedWith;
   List<String> searchUserName;
   List<String> searchPhone;
   List<String> searchUserId;
@@ -49,6 +52,9 @@ class ProfileModel {
     this.searchUserName,
     this.searchPhone,
     this.searchUserId,
+    this.website,
+    this.swappedWith,
+    this.twitter,
   });
 
   static ProfileModel parseSnapshot(DocumentSnapshot snapshot) {
@@ -59,6 +65,7 @@ class ProfileModel {
       List<dynamic> _searchUserName = snapshot.data['searchUserName'] ?? [];
       List<dynamic> _searchPhone = snapshot.data['searchPhone'] ?? [];
       List<dynamic> _searchUserId = snapshot.data['searchUserId'] ?? [];
+      List<dynamic> _swappedWith = snapshot.data['swappedWith'] ?? [];
 
       return ProfileModel(
         userId: snapshot.data['userId'],
@@ -73,6 +80,8 @@ class ProfileModel {
         photoUrl: snapshot.data['photoUrl'] ?? '',
         snapchat: snapshot.data['snapchat'] ?? '',
         tiktok: snapshot.data['tiktok'] ?? '',
+        twitter: snapshot.data['twitter'] ?? '',
+        website: snapshot.data['website'] ?? '',
         token: snapshot.data['token'] ?? '',
         venmo: snapshot.data['venmo'] ?? '',
         updatedAt: snapshot.data['updatedAt'] ?? 0,
@@ -81,6 +90,7 @@ class ProfileModel {
         contactUserPhone: _contactUserPhone.map((id) => id.toString()).toList(),
         countryCode: snapshot.data['countryCode'] ?? '',
         justPhone: snapshot.data['justPhone'] ?? '',
+        swappedWith: _swappedWith.map((id) => id.toString()).toList(),
         searchUserName: _searchUserName.map((id) => id.toString()).toList(),
         searchPhone: _searchPhone.map((id) => id.toString()).toList(),
         searchUserId: _searchUserId.map((id) => id.toString()).toList(),
@@ -105,6 +115,8 @@ class ProfileModel {
       photoUrl: json['photoUrl'],
       snapchat: json['snapchat'],
       tiktok: json['tiktok'],
+      website: json['website'],
+      twitter: json['twitter'],
       token: json['token'],
       venmo: json['venmo'],
       updatedAt: json['updatedAt'],
@@ -114,6 +126,7 @@ class ProfileModel {
       searchUserName: json['searchUserName'],
       searchPhone: json['searchPhone'],
       searchUserId: json['searchUserId'],
+      swappedWith: json['swappedWith'],
     );
   }
 
@@ -130,6 +143,9 @@ class ProfileModel {
         'photoUrl': photoUrl,
         'snapchat': snapchat,
         'tiktok': tiktok,
+        'website': website,
+        'twitter': twitter,
+        'swappedWith': swappedWith,
         'token': token,
         'venmo': venmo,
         'contactUserName': contactUserName,
