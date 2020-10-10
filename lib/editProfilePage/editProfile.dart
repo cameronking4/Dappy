@@ -15,6 +15,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
   TextEditingController _instagramController = TextEditingController();
   TextEditingController _snapchatController = TextEditingController();
   TextEditingController _facebookController = TextEditingController();
@@ -26,7 +27,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String firstName = '';
   String lastName = '';
   String userName = '';
-
+  String email = '';
+  String typedEmail = '';
   String phone = '';
   String typedInstagram = '';
   String typedSnapchat = '';
@@ -44,6 +46,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _firstNameController.addListener(_typedFirstname);
     _usernameController.addListener(_typedUsername);
     _lastNameController.addListener(_typedLastname);
+    _emailController.addListener(_typedEmail);
     _instagramController.addListener(_typedInstagram);
     _snapchatController.addListener(_typedSnapchat);
     _facebookController.addListener(_typedFacebook);
@@ -63,6 +66,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _firstNameController.text = objProfileModel.firstName;
     _lastNameController.text = objProfileModel.lastName;
     _usernameController.text = objProfileModel.userName;
+    _emailController.text = objProfileModel.email;
     _instagramController.text = objProfileModel.instagram;
     _snapchatController.text = objProfileModel.snapchat;
     _facebookController.text = objProfileModel.facebook;
@@ -82,6 +86,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _usernameController.dispose();
+    _emailController.dispose();
     _instagramController.dispose();
     _snapchatController.dispose();
     _facebookController.dispose();
@@ -190,8 +195,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             center: Alignment.centerLeft,
                             radius: 6.0,
                             colors: [
-                              this.firstName == '' ? Colors.grey : Colors.purple,
-                              this.firstName == '' ? Colors.grey : Colors.purple,
+                              this.firstName == '' ? Colors.grey : Colors.blueGrey[50],
+                              this.firstName == '' ? Colors.grey : Colors.blueGrey[100],
                             ],
                             tileMode: TileMode.clamp,
                           ).createShader(bounds),
@@ -237,8 +242,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 6.0,
                                   colors: [
-                                    this.lastName == '' ? Colors.grey : Colors.purple,
-                                    this.lastName == '' ? Colors.grey : Colors.purple,
+                                    this.lastName == '' ? Colors.grey : Colors.blueGrey[100],
+                                    this.lastName == '' ? Colors.grey : Colors.blueGrey[200],
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -287,8 +292,55 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 6.0,
                                   colors: [
-                                    this.userName == '' ? Colors.grey : Colors.purple,
-                                    this.userName == '' ? Colors.grey : Colors.purple,
+                                    this.userName == '' ? Colors.grey : Colors.lightBlue[200],
+                                    this.userName == '' ? Colors.grey : Colors.deepPurple[100],
+                                  ],
+                                  tileMode: TileMode.clamp)
+                              .createShader(bounds),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ShaderMask(
+                          child: Container(
+                            height: 75.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              color: Colors.white,
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 3,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: FaIcon(FontAwesomeIcons.mailBulk, color: Colors.black87, size: 40.0),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 7,
+                                  child: TextField(
+                                    controller: _emailController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Type Your Email',
+                                      hintStyle: TextStyle(color: Colors.black87),
+                                      contentPadding: EdgeInsets.zero,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                    ),
+                                    style: TextStyle(color: Colors.black87),
+                                    cursorColor: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          shaderCallback: (bounds) => RadialGradient(
+                                  center: Alignment.centerLeft,
+                                  radius: 6.0,
+                                  colors: [
+                                    this.typedEmail == '' ? Colors.grey : Colors.deepPurple[100],
+                                    this.typedEmail == '' ? Colors.grey : Colors.deepPurple[200],
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -435,7 +487,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 10.0,
                                   colors: [
-                                    this.typedFacebook == '' ? Colors.grey : Colors.lightBlue,
+                                    this.typedFacebook == '' ? Colors.grey : Colors.blue,
                                     this.typedFacebook == '' ? Colors.grey : Colors.purple,
                                   ],
                                   tileMode: TileMode.clamp)
@@ -535,8 +587,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 8.0,
                                   colors: [
-                                    this.typedVenmo == '' ? Colors.grey : Colors.red,
-                                    this.typedVenmo == '' ? Colors.grey : Colors.black38,
+                                    this.typedVenmo == '' ? Colors.grey : Colors.lightBlue,
+                                    this.typedVenmo == '' ? Colors.grey : Colors.lightGreen,
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -585,8 +637,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 8.0,
                                   colors: [
-                                    this.typedTikTok == '' ? Colors.grey : Colors.green,
-                                    this.typedTikTok == '' ? Colors.grey : Colors.orange,
+                                    this.typedTikTok == '' ? Colors.grey : Colors.pink[300],
+                                    this.typedTikTok == '' ? Colors.grey : Colors.lightBlueAccent,
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -602,7 +654,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             height: 75,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                              color: Colors.grey,
+                              color: Colors.black,
                             ),
                             child: Row(
                               children: <Widget>[
@@ -621,7 +673,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   flex: 7,
                                   child: Text(
                                     "Save",
-                                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                                    style: TextStyle(color: Colors.white, fontSize: 17.0),
                                   ),
                                 ),
                               ],
@@ -653,6 +705,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         globals.objProfile.facebook = _facebookController.text;
         globals.objProfile.linkedin = _linkedinController.text;
         globals.objProfile.venmo = _venmoController.text;
+        globals.objProfile.email = _emailController.text;
         globals.objProfile.tiktok = _tiktokController.text;
         globals.objProfile.userName = _usernameController.text;
 
@@ -660,7 +713,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
         // Get Result/Objects
         getUserDetail();
-        Fluttertoast.showToast(msg: "Successfully update detail.");
+        Fluttertoast.showToast(msg: "Successfully updated your profile!");
         setState(() {
           isProgress = false;
         });
@@ -744,6 +797,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   _typedVenmo() {
     this.typedVenmo = _venmoController.text;
+  }
+  _typedEmail() {
+    this.typedEmail = _emailController.text;
   }
 
   _typedTikTok() {

@@ -83,7 +83,6 @@ export const searchContactrequest = functions.https.onRequest(async (req, res) =
                         "searchPhone": searchContactNumber,
                         "searchUserName": searchContactName,
                         "searchUserId": searchContactUserId,
-                        "updatedAt": Date.now(),
                     });
                     res.status(200).send({ bool: true });
                 } catch (e) {
@@ -139,8 +138,7 @@ exports.usersUpdate = functions.firestore.document('Users/{UsersId}').onUpdate(a
                     await profileRef.update({
                         "searchPhone": searchContactNumber,
                         "searchUserName": searchContactName,
-                        "searchUserId": searchContactUserId,
-                        "updatedAt": Date.now(),
+                        "searchUserId": searchContactUserId
                     });
                     return;
                 } catch (e) {

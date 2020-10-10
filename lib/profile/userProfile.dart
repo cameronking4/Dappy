@@ -228,6 +228,22 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     },
                                     child: Image.asset('assets/images/tiktok.png'),
                                   ),
+                            widget.userProfile.twitter == ''
+                                ? Container()
+                                : InkWell(
+                                    onTap: () {
+                                      _launchTiktok(widget.userProfile.twitter);
+                                    },
+                                    child: Image.asset('assets/images/tiktok.png'),
+                                  ),
+                            widget.userProfile.website == ''
+                                ? Container()
+                                : InkWell(
+                                    onTap: () {
+                                      _launchTiktok(widget.userProfile.website);
+                                    },
+                                    child: Image.asset('assets/images/tiktok.png'),
+                                  ),
                           ],
                         ),
                       ),
@@ -328,6 +344,24 @@ class UserProfilePageState extends State<UserProfilePage> {
   }
 
   _launchTiktok(link) async {
+    var url = 'https://www.tiktok.com/' + '@' + link;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+   _launchWebsite(link) async {
+    var url = 'https://www.tiktok.com/' + '@' + link;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+   _launchTwitter(link) async {
     var url = 'https://www.tiktok.com/' + '@' + link;
     if (await canLaunch(url)) {
       await launch(url);

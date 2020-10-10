@@ -25,7 +25,7 @@ class ApiProvider {
   }
 
   Future updateUserFields(ProfileModel profile) async {
-    profile.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
+    // profile.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
     try {
       await Firestore.instance.collection('Users').document(profile.userId).updateData({
         "contactUserName": profile.contactUserName,
@@ -40,7 +40,7 @@ class ApiProvider {
         "snapchat": profile.snapchat,
         "tiktok": profile.tiktok,
         "token": profile.token,
-        "updatedAt": profile.updatedAt,
+        // "updatedAt": profile.updatedAt,
         "userName": profile.userName,
         "venmo": profile.venmo,
       });
@@ -58,7 +58,7 @@ class ApiProvider {
       "docId": globals.objProfile.userId,
       "contactUserName": globals.objProfile.contactUserName,
       "contactUserPhone": globals.objProfile.contactUserPhone,
-      "updatedAt": globals.objProfile.updatedAt,
+      // "updatedAt": globals.objProfile.updatedAt,
       "justPhone": globals.objProfile.justPhone,
       "phone": globals.objProfile.phone,
       "userName": globals.objProfile.userName,
@@ -83,12 +83,15 @@ class ApiProvider {
   }
 
   Future updateEditProfileFields(ProfileModel profile) async {
-    profile.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
+    // profile.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
     try {
       await Firestore.instance.collection('Users').document(profile.userId).updateData({
         "facebook": profile.facebook,
         "firstName": profile.firstName,
         "instagram": profile.instagram,
+        "twitter": profile.twitter,
+        "email": profile.email,
+        "website": profile.website,
         "lastName": profile.lastName,
         "linkedin": profile.linkedin,
         "snapchat": profile.snapchat,
