@@ -110,10 +110,18 @@ class _RequestPageState extends State<RequestPage> {
                   height: 10,
                 ),
                 Text(
-                  widget.objUserPhone.userName,
+                  widget.objUserPhone.firstName  ,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  widget.objUserPhone.userName,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

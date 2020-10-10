@@ -207,6 +207,8 @@ class _SearchPageState extends State<SearchPage> {
 
 class UserPhone {
   String userName;
+  String firstName;
+  String lastName;
   String userPhone;
   String userId;
 
@@ -214,6 +216,8 @@ class UserPhone {
     this.userName = "",
     this.userPhone = "",
     this.userId = "",
+    this.firstName = "",
+    this.lastName = "",
   });
 
   factory UserPhone.fromFirestore(DocumentSnapshot document) {
@@ -222,6 +226,8 @@ class UserPhone {
       userName: data['userName'] ?? '',
       userPhone: data['phone'] ?? '',
       userId: data['userId'] ?? '',
+      firstName: data['firstName'] ?? '',
+      lastName: data['lastName'] ?? '',
     );
   }
 }

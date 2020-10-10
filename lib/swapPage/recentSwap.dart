@@ -131,7 +131,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
-                                                          objProfileModel.data.userName,
+                                                          objProfileModel.data.firstName + " " + objProfileModel.data.lastName ,
                                                           style: TextStyle(
                                                             color: Colors.blueGrey,
                                                             fontSize: 14.0,
