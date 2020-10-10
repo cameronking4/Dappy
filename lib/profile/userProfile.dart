@@ -6,6 +6,34 @@ import 'package:swapTech/drawerPage/drawerPage.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:contacts_service/contacts_service.dart';
+
+showAlertDialog(BuildContext context) {
+  // set up the button
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Contact Saved"),
+    content: Text("You successfully tackled corona"),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
 
 class UserProfilePage extends StatefulWidget {
   final ProfileModel userProfile;
@@ -203,6 +231,46 @@ class UserProfilePageState extends State<UserProfilePage> {
                           ],
                         ),
                       ),
+                      Container(
+                width: 300,
+                height: 50,
+                margin: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black,
+                      offset: Offset(5, 5), //(x,y)
+                    ),
+                  ],
+                ),
+                child: FlatButton(
+                  onPressed: () async {
+                     print("saving !");
+                     var newContact = Contact(
+                      //  displayName: widget.userProfile.firstName,
+                       givenName: widget.userProfile.firstName,
+                       familyName: widget.userProfile.lastName,
+                     );
+                     newContact.emails = [ Item(label: "home", value: widget.userProfile.email)];
+                     newContact.company = "Dappy.io";
+                     newContact.phones = [Item(label: "mobile", value: widget.userProfile.phone)];
+                     await ContactsService.addContact(newContact);
+                   
+                    setState(() {
+                      showAlertDialog(context);
+                    });
+                   
+                    await ContactsService.openExistingContact(newContact);
+                 },
+                  child: Text(
+                    "Save to Contacts",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              )
                     ],
                   ),
                 ),

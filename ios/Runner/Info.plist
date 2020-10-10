@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>FirebaseScreenReportingEnabled</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -33,6 +35,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
@@ -40,7 +44,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Please allow us to access your contacts to enable core Swap functionality</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Please allow us to use your location to show users you've swapped with and where you swapped</string>
+	<string>Please allow us to use your location to show users you&apos;ve swapped with and where you swapped</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
