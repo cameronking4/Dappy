@@ -178,7 +178,7 @@ class _DrawerPageState extends State<DrawerPage> {
                       // ),
                       Expanded(
                         child: Text(
-                          'Notifications',
+                          'Swap Requests',
                           style: TextStyle(
                             fontSize: 14.0,
                             fontFamily: 'Gotham-Light',
