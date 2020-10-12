@@ -197,6 +197,7 @@ class ApiProvider {
         "userId": objNotification.userId,
         "requestUserId": objNotification.requestUserId,
         "isAccept": false,
+        "declined": false,
         "createdAt": objNotification.createdAt,
         "updatedAt": objNotification.updatedAt,
       });
@@ -205,6 +206,7 @@ class ApiProvider {
     }
   }
 
+  // ignore: missing_return
   Future<List<UserPhone>> searchUser(String fieldName, String searchtext) async {
     bool isPhone = false;
 
@@ -322,6 +324,7 @@ class ApiProvider {
       await Firestore.instance
           .collection('Notifications')
           .where("requestUserId", isEqualTo: globals.objProfile.userId)
+          .where("declined", isEqualTo: !true)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {
@@ -338,34 +341,36 @@ class ApiProvider {
     return lstNotification;
   }
 
-  Future updateNotification(NotificationModel objNotificationModel) async {
-    objNotificationModel.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
+  // Future deleteNotification(NotificationModel objNotification) async {
+  //  await Firestore.instance.collection('Notifications').document(objNotification.docId).delete();
+  // }
+
+  Future updateNotification(NotificationModel objNotification) async {
+    objNotification.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
     try {
-      await Firestore.instance.collection('Notifications').document(objNotificationModel.docId).updateData({
-        "isAccept": objNotificationModel.isAccept,
-        "updatedAt": objNotificationModel.updatedAt,
-        "declined": objNotificationModel.declined,
+      await Firestore.instance.collection('Notifications').document(objNotification.docId).updateData({
+        "isAccept": objNotification.isAccept,
+        "updatedAt": objNotification.updatedAt,
+        "declined": objNotification.declined,
       });
-      if (objNotificationModel.declined && !objNotificationModel.isAccept){
-         await Firestore.instance.collection('Notifications').document(objNotificationModel.docId).delete();
-      }
+    //   if (objNotificationModel.declined && !objNotificationModel.isAccept){
+    //      await Firestore.instance.collection('Notifications').document(objNotificationModel.docId).delete();
+    //   }
       if (!objNotificationModel.declined && objNotificationModel.isAccept){
-          try {
-            await Firestore.instance.collection("Swap").document().setData({
-              "userId": objNotificationModel.userId,
-              "swapuserID": objNotificationModel.requestUserId,
-              "isAccept": false,
-              "isDismiss": false,
-              "createdAt": objNotificationModel.createdAt,
-              "updatedAt": objNotificationModel.updatedAt,
-              "isScannerUser": false, 
-              "locationAddreess": "Online"
-            });
-          } catch (e) {
-            print(e);
-          }
-          await Firestore.instance.collection('Notifications').document(objNotificationModel.docId).delete();
-      }
+    //       try {
+    //         await Firestore.instance.collection("Swap").document().setData({
+    //           "userId": objNotificationModel.userId,
+    //           "swapuserID": objNotificationModel.requestUserId,
+    //           "isAccept": false,
+    //           "createdAt": objNotificationModel.createdAt,
+    //           "updatedAt": objNotificationModel.updatedAt,
+    //           "isScannerUser": false, 
+    //           "locationAddreess": "Online"
+    //         });
+    //       } catch (e) {
+    //         print(e);
+    //       }
+       }
     }
       catch (e) {
         print(e);

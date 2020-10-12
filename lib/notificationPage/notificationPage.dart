@@ -144,9 +144,10 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                             onTap: () async {
                                                               lstNotification[index].isAccept = false;
                                                               lstNotification[index].declined = true;
-                                                              lstNotification.remove(lstNotification[index]);
                                                               await updateRequest(lstNotification[index]);
+                                                              lstNotification.remove(lstNotification[index]);
                                                               Fluttertoast.showToast(msg: "request decline successfully.");
+                                                              // await deleteRequest(lstNotification[index]);
                                                             },
                                                             child: Container(
                                                               decoration: BoxDecoration(
@@ -174,6 +175,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                               lstNotification[index].isAccept = true;
                                                               lstNotification[index].declined = false;
                                                               await updateRequest(lstNotification[index]);
+                                                              lstNotification.remove(lstNotification[index]);
                                                               Fluttertoast.showToast(msg: "request accept successfully.");
                                                             },
                                                             child: Container(
@@ -224,15 +226,25 @@ class _NotificationDetailState extends State<NotificationDetail> {
     );
   }
 
-  Future updateRequest(NotificationModel objNotificationModel) async {
+  Future updateRequest(NotificationModel objNotification) async {
     setState(() {
       isProgress = true;
     });
-    await ApiProvider().updateNotification(objNotificationModel);
+    await ApiProvider().updateNotification(objNotification);
     setState(() {
       isProgress = false;
     });
   }
+
+  // Future deleteRequest(NotificationModel objNotificationModel) async {
+  //   setState(() {
+  //     isProgress = true;
+  //   });
+  //   await ApiProvider().deleteNotification(objNotificationModel);
+  //   setState(() {
+  //     isProgress = false;
+  //   });
+  // }
 
   Widget appBar() {
     return Container(
