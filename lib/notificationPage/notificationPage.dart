@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -141,6 +143,8 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                           InkWell(
                                                             onTap: () async {
                                                               lstNotification[index].isAccept = false;
+                                                              lstNotification[index].declined = true;
+                                                              lstNotification.remove(lstNotification[index]);
                                                               await updateRequest(lstNotification[index]);
                                                               Fluttertoast.showToast(msg: "request decline successfully.");
                                                             },
@@ -168,6 +172,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                           InkWell(
                                                             onTap: () async {
                                                               lstNotification[index].isAccept = true;
+                                                              lstNotification[index].declined = false;
                                                               await updateRequest(lstNotification[index]);
                                                               Fluttertoast.showToast(msg: "request accept successfully.");
                                                             },

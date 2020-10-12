@@ -4,6 +4,7 @@ class NotificationModel {
   String userId;
   String requestUserId;
   bool isAccept;
+  bool declined;
   int createdAt;
   int updatedAt;
   String docId;
@@ -11,6 +12,7 @@ class NotificationModel {
   NotificationModel({
     this.userId,
     this.docId,
+    this.declined = false,
     this.requestUserId,
     this.isAccept = false,
     this.createdAt = 0,
@@ -22,6 +24,7 @@ class NotificationModel {
       return NotificationModel(
         docId: snapshot.documentID,
         userId: snapshot.data['userId'],
+        declined: snapshot.data['declined'],
         requestUserId: snapshot.data['requestUserId'],
         isAccept: snapshot.data['isAccept'],
         updatedAt: snapshot.data['updatedAt'] ?? 0,
@@ -36,6 +39,7 @@ class NotificationModel {
       userId: json['userId'],
       requestUserId: json['requestUserId'],
       isAccept: json['isAccept'],
+      declined: json['declined'],
       updatedAt: json['updatedAt'],
       createdAt: json['createdAt'],
     );
@@ -45,6 +49,7 @@ class NotificationModel {
         'userId': userId,
         'requestUserId': requestUserId,
         'isAccept': isAccept,
+        'declined': declined,
         'createdAt': createdAt,
         'updatedAt': updatedAt,
       };

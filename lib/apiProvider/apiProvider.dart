@@ -344,9 +344,31 @@ class ApiProvider {
       await Firestore.instance.collection('Notifications').document(objNotificationModel.docId).updateData({
         "isAccept": objNotificationModel.isAccept,
         "updatedAt": objNotificationModel.updatedAt,
+        "declined": objNotificationModel.declined,
       });
-    } catch (e) {
-      print(e);
+      if (objNotificationModel.declined && !objNotificationModel.isAccept){
+         await Firestore.instance.collection('Notifications').document(objNotificationModel.docId).delete();
+      }
+      if (!objNotificationModel.declined && objNotificationModel.isAccept){
+          try {
+            await Firestore.instance.collection("Swap").document().setData({
+              "userId": objNotificationModel.userId,
+              "swapuserID": objNotificationModel.requestUserId,
+              "isAccept": false,
+              "isDismiss": false,
+              "createdAt": objNotificationModel.createdAt,
+              "updatedAt": objNotificationModel.updatedAt,
+              "isScannerUser": false, 
+              "locationAddreess": "Online"
+            });
+          } catch (e) {
+            print(e);
+          }
+          await Firestore.instance.collection('Notifications').document(objNotificationModel.docId).delete();
+      }
+    }
+      catch (e) {
+        print(e);
+      }
     }
   }
-}
