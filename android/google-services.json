@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "872574258487-ca00a97vq5nh086rihu6nii3asjf7tt2.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.gitterhive.swaptact",
-            "certificate_hash": "7964fbd843a6ba06e0a19f8fc87c22aef68412fb"
-          }
-        },
-        {
           "client_id": "872574258487-dmdk5jl8k5cpkpjobn1v0mfjceq308ge.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

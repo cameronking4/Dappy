@@ -1,4 +1,4 @@
-package com.example.swapTech
+package com.gitterhive.swapTech
 
 import io.flutter.embedding.android.FlutterActivity
 
