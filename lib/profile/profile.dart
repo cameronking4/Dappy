@@ -216,8 +216,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             center: Alignment.centerLeft,
                             radius: 6.0,
                             colors: [
-                              this.firstName == '' ? Colors.grey : Colors.purple,
-                              this.firstName == '' ? Colors.grey : Colors.purple,
+                              this.firstName == '' ? Colors.grey : Colors.blueGrey[50],
+                              this.firstName == '' ? Colors.grey : Colors.blueGrey[100],
                             ],
                             tileMode: TileMode.clamp,
                           ).createShader(bounds),
@@ -263,8 +263,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 6.0,
                                   colors: [
-                                    this.lastName == '' ? Colors.grey : Colors.purple,
-                                    this.lastName == '' ? Colors.grey : Colors.purple,
+                                    this.lastName == '' ? Colors.grey : Colors.blueGrey[100],
+                                    this.lastName == '' ? Colors.grey : Colors.blueGrey[200],
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -310,8 +310,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 6.0,
                                   colors: [
-                                    this.userName == '' ? Colors.grey : Colors.purple,
-                                    this.userName == '' ? Colors.grey : Colors.purple,
+                                    this.userName == '' ? Colors.grey : Colors.lightBlue[200],
+                                    this.userName == '' ? Colors.grey : Colors.deepPurple[100],
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -357,8 +357,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 6.0,
                                   colors: [
-                                    this.email == '' ? Colors.grey : Colors.blue,
-                                    this.email == '' ? Colors.grey : Colors.blue,
+                                    this.email == '' ? Colors.grey : Colors.deepPurple[50],
+                                    this.email == '' ? Colors.grey : Colors.deepPurple[200],
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),

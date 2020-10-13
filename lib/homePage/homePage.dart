@@ -97,32 +97,34 @@ class _HomePageState extends State<HomePage> {
                         } else {
                           barCodeScreen();
                         }
-                        // if (objSwapModel.isDismiss == false) {
-                        //   if (objSwapModel.swapuserId == globals.objProfile.userId) {
-                        //     gotoSwapProfileScreen(objSwapModel, true);
-                        //   } else {
-                        //     Stream<QuerySnapshot> snapshot =
-                        //         Firestore.instance.collection('Swap').where("userId", isEqualTo: globals.objProfile.userId).snapshots();
-                        //     snapshot.listen((snapShot) {
-                        //       if (snapShot.documents.length > 0) {
-                        //         SwapModel objSwapModel = SwapModel.parseSnapshot(snapShot.documents[0]);
-                        //         if (objSwapModel.isDismiss) {
-                        //           setState(() {
-                        //             enumSwapPageStatus = SwapPageStatus.Home;
-                        //           });
-                        //         } else {
-                        //           if (objSwapModel.swapuserId == globals.objProfile.userId) {
-                        //             gotoSwapProfileScreen(objSwapModel, true);
-                        //           } else {
-                        //             gotoSwapProfileScreen(objSwapModel, false);
-                        //           }
-                        //         }
-                        //       }
-                        //     });
-                        //   }
-                        // } else {
-                        //   return barCodeScreen();
-                        // }
+                        
+
+                        if (objSwapModel.isDismiss == false) {
+                          if (objSwapModel.swapuserId == globals.objProfile.userId) {
+                            gotoSwapProfileScreen(objSwapModel, true);
+                          } else {
+                            Stream<QuerySnapshot> snapshot =
+                                Firestore.instance.collection('Swap').where("userId", isEqualTo: globals.objProfile.userId).snapshots();
+                            snapshot.listen((snapShot) {
+                              if (snapShot.documents.length > 0) {
+                                SwapModel objSwapModel = SwapModel.parseSnapshot(snapShot.documents[0]);
+                                if (objSwapModel.isDismiss) {
+                                  setState(() {
+                                    enumSwapPageStatus = SwapPageStatus.Home;
+                                  });
+                                } else {
+                                  if (objSwapModel.swapuserId == globals.objProfile.userId) {
+                                    gotoSwapProfileScreen(objSwapModel, true);
+                                  } else {
+                                    gotoSwapProfileScreen(objSwapModel, false);
+                                  }
+                                }
+                              }
+                            });
+                          }
+                        } else {
+                          return barCodeScreen();
+                        }
                       }
                       return barCodeScreen();
                     } else {

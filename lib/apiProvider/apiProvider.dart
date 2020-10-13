@@ -154,7 +154,7 @@ class ApiProvider {
           await Firestore.instance.collection('Swap').document(onValue.documents[0].documentID).updateData({
             "locationAddreess": swapModel.locationAddreess,
             "updatedAt": DateTime.now().toUtc().millisecondsSinceEpoch,
-            "isDismiss": false,
+            // "isDismiss": false,
           });
         } catch (e) {
           print(e);
@@ -246,7 +246,7 @@ class ApiProvider {
 
   Future<List<SwapModel>> getRecentSwapDetail() async {
     List<SwapModel> lstSwapModel = [];
-    try {
+    try { //check userID
       await Firestore.instance
           .collection('Swap')
           .where("userId", isEqualTo: globals.objProfile.userId)
@@ -263,7 +263,7 @@ class ApiProvider {
     } catch (e) {
       print(e);
     }
-    try {
+    try { //check swapuserId
       await Firestore.instance
           .collection('Swap')
           .where("swapuserId", isEqualTo: globals.objProfile.userId)
@@ -325,6 +325,7 @@ class ApiProvider {
           .collection('Notifications')
           .where("requestUserId", isEqualTo: globals.objProfile.userId)
           .where("declined", isEqualTo: !true)
+          .where("isAccept", isEqualTo: !true)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {
@@ -356,7 +357,7 @@ class ApiProvider {
     //   if (objNotificationModel.declined && !objNotificationModel.isAccept){
     //      await Firestore.instance.collection('Notifications').document(objNotificationModel.docId).delete();
     //   }
-      if (!objNotificationModel.declined && objNotificationModel.isAccept){
+    //   if (!objNotificationModel.declined && objNotificationModel.isAccept){
     //       try {
     //         await Firestore.instance.collection("Swap").document().setData({
     //           "userId": objNotificationModel.userId,
@@ -370,7 +371,7 @@ class ApiProvider {
     //       } catch (e) {
     //         print(e);
     //       }
-       }
+    //   }
     }
       catch (e) {
         print(e);

@@ -9,6 +9,7 @@ import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/drawerPage/drawerPage.dart';
 import 'package:swapTech/model/notificationModel.dart';
 import 'package:swapTech/model/profileModel.dart';
+import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/searchPage/searchPage.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
 
@@ -21,6 +22,10 @@ class _NotificationDetailState extends State<NotificationDetail> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<NotificationModel> lstNotification = [];
+
+  SwapModel swapModel = SwapModel();
+  ProfileModel profile;
+  ProfileModel objSwappProfile;
 
   bool isProgress = false;
   bool isSearch = false;
@@ -92,9 +97,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                               return FutureBuilder(
                                 future: ApiProvider().getProfileDetail(lstNotification[index].userId),
                                 builder: (BuildContext context, AsyncSnapshot<ProfileModel> objProfileModel) {
-                                  if (!objProfileModel.hasData) {
-                                    return SizedBox();
-                                  } else {
+                                 if (lstNotification.length > 0) {
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -146,7 +149,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                               lstNotification[index].declined = true;
                                                               await updateRequest(lstNotification[index]);
                                                               lstNotification.remove(lstNotification[index]);
-                                                              Fluttertoast.showToast(msg: "request decline successfully.");
+                                                              Fluttertoast.showToast(msg: "Declined Request Successfully.");
                                                               // await deleteRequest(lstNotification[index]);
                                                             },
                                                             child: Container(
@@ -175,8 +178,12 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                               lstNotification[index].isAccept = true;
                                                               lstNotification[index].declined = false;
                                                               await updateRequest(lstNotification[index]);
+                                                              swapModel.locationAddreess = "Via Search";
+                                                              swapModel.userId = lstNotification[index].userId;
+                                                              swapModel.swapuserId = lstNotification[index].requestUserId;
                                                               lstNotification.remove(lstNotification[index]);
-                                                              Fluttertoast.showToast(msg: "request accept successfully.");
+                                                              await performSwap(swapModel);
+                                                              Fluttertoast.showToast(msg: "Accepted Request Successfully!! :)");
                                                             },
                                                             child: Container(
                                                               decoration: BoxDecoration(
@@ -210,6 +217,9 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                         ),
                                       ],
                                     );
+                                 }
+                                  else {
+                                     return new Text( "You have no new notifications. Come back later :)");
                                   }
                                 },
                               );
@@ -231,6 +241,16 @@ class _NotificationDetailState extends State<NotificationDetail> {
       isProgress = true;
     });
     await ApiProvider().updateNotification(objNotification);
+    setState(() {
+      isProgress = false;
+    });
+  }
+
+   Future performSwap(SwapModel swapModel) async {
+    setState(() {
+      isProgress = true;
+    });
+    await ApiProvider().swapUserProfile(swapModel);
     setState(() {
       isProgress = false;
     });
