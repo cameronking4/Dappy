@@ -41,6 +41,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
     super.initState();
     getData();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +101,11 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 14, right: 14),
+                                          padding: const EdgeInsets.only(left: 10, right: 10),
                                           child: Card(
                                             elevation: 5,
                                             child: Padding(
-                                              padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                                              padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                                               child: Row(
                                                 children: [
                                                   ClipPath(
@@ -136,6 +137,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                             color: Colors.blueGrey,
                                                             fontSize: 14.0,
                                                           ),
+                                                          overflow: TextOverflow.visible,
                                                         ),
                                                         SizedBox(
                                                           height: 10,
@@ -153,7 +155,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                                 color: Colors.white,
                                                                 fontSize: 14.0,
                                                               ),
-                                                              overflow: TextOverflow.ellipsis,
+                                                              overflow: TextOverflow.visible,
                                                             ),
                                                           ),
                                                         ),
@@ -174,7 +176,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                       'View Details',
                                                       style: TextStyle(
                                                         color: Colors.black45,
-                                                        fontSize: 14.0,
+                                                        fontSize: 12.0,
                                                       ),
                                                     ),
                                                   ),

@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>FirebaseScreenReportingEnabled</key>
@@ -45,6 +45,8 @@
 	<string>Please allow us to access your contacts to enable core Swap functionality</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Please allow us to use your location to show users you've swapped with and where you swapped</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Please grant access to photo library to upload profile photo to share for your contact</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

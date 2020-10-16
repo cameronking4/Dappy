@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
@@ -39,12 +40,17 @@ class _ProfilePageState extends State<ProfilePage> {
   String typedLinkedin = '';
   String typedVenmo = '';
   String typedTikTok = '';
+   String typedEmail = '';
 
   FirebaseUser firebaseUser;
   final FirebaseMessaging _fcm = FirebaseMessaging();
   Contact contactsService = Contact();
   List<String> lstuserName = [];
   List<String> lstuserPhone = [];
+
+  bool isProgress = false;
+
+  ProfileModel objProfileModel = new ProfileModel();
 
   contactPermission() async {
     bool permissionStatus = await checkPermission();
@@ -85,6 +91,31 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   ProfileModel profile = ProfileModel();
+
+  getUserDetail() async {
+    setState(() {
+      isProgress = true;
+    });
+    objProfileModel = await ApiProvider().getProfileDetail(globals.objProfile.userId);
+
+    _firstNameController.text = objProfileModel.firstName;
+    _lastNameController.text = objProfileModel.lastName;
+    _usernameController.text = objProfileModel.userName;
+    _emailController.text = objProfileModel.email;
+    _instagramController.text = objProfileModel.instagram;
+    _snapchatController.text = objProfileModel.snapchat;
+    _facebookController.text = objProfileModel.facebook;
+    _linkedinController.text = objProfileModel.linkedin;
+    _venmoController.text = objProfileModel.venmo;
+    _tiktokController.text = objProfileModel.tiktok;
+
+    globals.objProfile = objProfileModel;
+
+    setState(() {
+      isProgress = false;
+    });
+  }
+
 
   @override
   void initState() {
@@ -649,8 +680,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 15,
                         ),
                         InkWell(
-                          onTap: () {
-                            save();
+                          onTap: () async{
+                            print(_usernameController.text.trim());
+                            final valid = await ApiProvider().usernameCheck(_usernameController.text.trim());
+                            print(valid);
+                            if (!valid) {
+                                Fluttertoast.showToast(msg: "Username already taken :(!");
+                                  // username exists
+                              }
+                            else{ save();}
                           },
                           child: Container(
                             height: 75,
@@ -694,44 +732,80 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+
   save() async {
-    setState(() {
-      isLoginProsses = true;
-    });
-    final String fcmToken = await _fcm.getToken();
-
-    final user = await FirebaseAuth.instance.currentUser();
-    if (user != null)
+    if (isValid()) {
       try {
-        globals.objProfile.contactUserName = lstuserName;
-        globals.objProfile.contactUserPhone = lstuserPhone;
-        globals.objProfile.countryCode = globals.objProfile.countryCode;
-        globals.objProfile.email = _emailController.text.trim();
-        globals.objProfile.facebook = _facebookController.text.trim();
-        globals.objProfile.firstName = _firstNameController.text.trim();
-        globals.objProfile.instagram = _instagramController.text.trim();
-        globals.objProfile.lastName = _lastNameController.text.trim();
-        globals.objProfile.linkedin = _linkedinController.text.trim();
-        globals.objProfile.photoUrl = 'https://picsum.photos/200';
-        globals.objProfile.snapchat = _snapchatController.text.trim();
-        globals.objProfile.tiktok = _tiktokController.text.trim();
-        globals.objProfile.token = fcmToken;
-        globals.objProfile.userName = _usernameController.text.trim();
-        globals.objProfile.venmo = _venmoController.text.trim();
-
-        await ApiProvider().updateUserFields(globals.objProfile);
-
         setState(() {
-          isLoginProsses = false;
+          isProgress = true;
         });
-        Navigator.pushReplacementNamed(context, Routes.HOME);
+        globals.objProfile.firstName = _firstNameController.text;
+        globals.objProfile.lastName = _lastNameController.text;
+        globals.objProfile.instagram = _instagramController.text;
+        globals.objProfile.snapchat = _snapchatController.text;
+        globals.objProfile.facebook = _facebookController.text;
+        globals.objProfile.linkedin = _linkedinController.text;
+        globals.objProfile.venmo = _venmoController.text;
+        globals.objProfile.email = _emailController.text;
+        globals.objProfile.tiktok = _tiktokController.text;
+        globals.objProfile.userName = _usernameController.text;
+
+        await ApiProvider().updateEditProfileFields(globals.objProfile);
+
+        // Get Result/Objects
+        getUserDetail();
+        Fluttertoast.showToast(msg: "Successfully created your profile!");
+        setState(() {
+          isProgress = false;
+        });
       } catch (e) {
         print(e);
       } finally {
         setState(() {
-          isLoginProsses = false;
+          isProgress = false;
         });
       }
+    }
+  }
+
+  bool isValid() {
+    if (_firstNameController.text.trim() == null || _firstNameController.text.trim() == "") {
+      Fluttertoast.showToast(msg: "Please, Enter First Name");
+      return false;
+    }
+    if (_lastNameController.text.trim() == null || _lastNameController.text.trim() == "") {
+      Fluttertoast.showToast(msg: "Please, Enter Last Name");
+      return false;
+    }
+    if (_usernameController.text.trim() == null || _usernameController.text.trim() == "") {
+      Fluttertoast.showToast(msg: "Please, Enter a User Name");
+      return false;
+    }
+    // if (_instagramController.text.trim() == null || _instagramController.text.trim() == "") {
+    //   Fluttertoast.showToast(msg: "please, Enter Instagram URL");
+    //   return false;
+    // }
+    // if (_snapchatController.text.trim() == null || _snapchatController.text.trim() == "") {
+    //   Fluttertoast.showToast(msg: "please, Enter Snapchat URL");
+    //   return false;
+    // }
+    // if (_facebookController.text.trim() == null || _facebookController.text.trim() == "") {
+    //   Fluttertoast.showToast(msg: "please, Enter facebook URL");
+    //   return false;
+    // }
+    // if (_linkedinController.text.trim() == null || _linkedinController.text.trim() == "") {
+    //   Fluttertoast.showToast(msg: "please, Enter LinkedIn URL");
+    //   return false;
+    // }
+    // if (_venmoController.text.trim() == null || _venmoController.text.trim() == "") {
+    //   Fluttertoast.showToast(msg: "please, Enter Venmo URL");
+    //   return false;
+    // }
+    // if (_tiktokController.text.trim() == null || _tiktokController.text.trim() == "") {
+    //   Fluttertoast.showToast(msg: "please, Enter Tiktok URL");
+    //   return false;
+    // }
+    return true;
   }
 
   _typedFirstname() {
@@ -744,10 +818,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   _typedUsername() {
     this.userName = _usernameController.text;
-  }
-
-  _typedEmail() {
-    this.email = _emailController.text;
   }
 
   _typedInstagram() {
@@ -768,6 +838,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   _typedVenmo() {
     this.typedVenmo = _venmoController.text;
+  }
+  _typedEmail() {
+    this.typedEmail = _emailController.text;
   }
 
   _typedTikTok() {

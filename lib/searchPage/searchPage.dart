@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
+import 'package:swapTech/model/profileModel.dart';
+import 'package:swapTech/model/swapModel.dart';
+import 'package:swapTech/profile/profile.dart';
+import 'package:swapTech/profile/userProfile.dart';
 import 'package:swapTech/requestPage/requestPage.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
 import 'package:swapTech/constance/global.dart' as globals;
@@ -24,9 +28,18 @@ class _SearchPageState extends State<SearchPage> {
 
   TextEditingController _searchText = TextEditingController();
 
+  List<SwapModel> lstSwapModel = [];
+  List<String> lst = [];
+
+  getData() async {
+    lst = await ApiProvider().getSwapsIds();
+  }
+  
+
   @override
   void initState() {
     searchedUserDetail.clear();
+    getData();
     super.initState();
   }
 
@@ -128,12 +141,28 @@ class _SearchPageState extends State<SearchPage> {
                                           '${data[index].userName}',
                                           style: TextStyle(
                                             color: Colors.blueGrey,
-                                            fontSize: 14.0,
+                                            fontSize: 13.0,
                                           ),
                                         ),
                                         Expanded(child: SizedBox()),
                                         InkWell(
-                                          onTap: () {
+                                          onTap: () async {
+                                            var obj = await ApiProvider().getProfileDetail(data[index].userId);
+                                
+                                            if(lst.contains(data[index].userId)){ 
+                                              Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => UserProfilePage(
+                                                    userProfile: obj,
+                                                 ),
+                                                ),
+                                              );
+                                            print("swapped user");
+                                          }
+                                        
+
+                                            else{ 
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -142,6 +171,10 @@ class _SearchPageState extends State<SearchPage> {
                                                 ),
                                               ),
                                             );
+                                            print("locked user");
+                                            }
+
+                                            
                                           },
                                           child: Text(
                                             'View Details',

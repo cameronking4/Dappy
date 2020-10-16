@@ -63,7 +63,8 @@ class _DrawerPageState extends State<DrawerPage> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: Text(
-                          "${globals.objProfile.firstName}" "\t" + "${globals.objProfile.lastName}",
+                          "${globals.objProfile.userName}" ,
+                          // "\t" + "${globals.objProfile.lastName}"
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.black87, fontSize: 18.0),
                         ),

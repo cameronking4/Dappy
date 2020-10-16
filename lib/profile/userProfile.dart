@@ -20,7 +20,7 @@ showAlertDialog(BuildContext context) {
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: Text("Contact Saved"),
-    content: Text("You successfully tackled corona"),
+    content: Text("Check your contacts app for your newly added contact :) Click buttons on the right or below to take actions."),
     actions: [
       okButton,
     ],

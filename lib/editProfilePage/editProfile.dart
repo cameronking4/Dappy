@@ -647,8 +647,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           height: 15,
                         ),
                         InkWell(
-                          onTap: () {
-                            save();
+                          onTap: () async{
+                            print(_usernameController.text.trim());
+                            final valid = await ApiProvider().usernameCheck(_usernameController.text.trim());
+                            print(valid);
+                            if (!valid) {
+                                Fluttertoast.showToast(msg: "Username already taken :(!");
+                                  // username exists
+                              }
+                            else{ save();}
                           },
                           child: Container(
                             height: 75,
@@ -737,7 +744,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       return false;
     }
     if (_usernameController.text.trim() == null || _usernameController.text.trim() == "") {
-      Fluttertoast.showToast(msg: "please, Enter User Name");
+      Fluttertoast.showToast(msg: "please, Enter a User Name");
       return false;
     }
     // if (_instagramController.text.trim() == null || _instagramController.text.trim() == "") {

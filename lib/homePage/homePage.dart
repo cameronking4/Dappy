@@ -218,6 +218,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 25),
                   Text(
                     objSwappProfile.firstName + " " + objSwappProfile.lastName,
                     style: TextStyle(
@@ -349,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                   Text(globals.objProfile.firstName + " " + globals.objProfile.lastName, 
                     style: TextStyle(
                     color: Colors.black,
-                    fontSize: 32,
+                    fontSize: 18,
                     fontFamily: 'Gotham-Medium',
                     fontWeight: FontWeight.bold,
                   ),
@@ -357,7 +358,7 @@ class _HomePageState extends State<HomePage> {
                 Text(globals.objProfile.userName , 
                     style: TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
+                    fontSize: 15,
                     fontFamily: 'Gotham-Medium',
                     fontWeight: FontWeight.bold,
                   ),

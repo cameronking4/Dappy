@@ -154,7 +154,7 @@ class ApiProvider {
           await Firestore.instance.collection('Swap').document(onValue.documents[0].documentID).updateData({
             "locationAddreess": swapModel.locationAddreess,
             "updatedAt": DateTime.now().toUtc().millisecondsSinceEpoch,
-            // "isDismiss": false,
+            "isDismiss": false,
           });
         } catch (e) {
           print(e);
@@ -244,12 +244,61 @@ class ApiProvider {
     }
   }
 
+  Future<bool> usernameCheck(String potentialId) async {
+    final result = await Firestore.instance
+        .collection('Users')
+        .where('userName', isEqualTo: potentialId)
+        .getDocuments();
+    return result.documents.isEmpty;
+  }
+
+
+  Future<List<String>> getSwapsIds() async {
+    List<String> strings = [];
+    try { //check userID
+      await Firestore.instance
+          .collection('Swap')
+          .where("userId", isEqualTo: globals.objProfile.userId)
+          .orderBy('createdAt', descending: true)
+          .getDocuments()
+          .then((onValue) {
+        if (onValue.documents.length > 0) {
+          onValue.documents.forEach((snapshotdata) {
+            final data = SwapModel.parseSnapshot(snapshotdata);
+            strings.add(data.swapuserId);
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+    try { //check swapuserId
+      await Firestore.instance
+          .collection('Swap')
+          .where("swapuserId", isEqualTo: globals.objProfile.userId)
+          .orderBy('createdAt', descending: true)
+          .getDocuments()
+          .then((onValue) {
+        if (onValue.documents.length > 0) {
+          onValue.documents.forEach((snapshotdata) {
+            final data = SwapModel.parseSnapshot(snapshotdata);
+            strings.add(data.userId);
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+    return strings;
+  }
+
+
   Future<List<SwapModel>> getRecentSwapDetail() async {
     List<SwapModel> lstSwapModel = [];
     try { //check userID
       await Firestore.instance
           .collection('Swap')
-          .where("userId", isEqualTo: globals.objProfile.userId)
+          .where("swapuserId", isEqualTo: globals.objProfile.userId)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {
@@ -266,7 +315,7 @@ class ApiProvider {
     try { //check swapuserId
       await Firestore.instance
           .collection('Swap')
-          .where("swapuserId", isEqualTo: globals.objProfile.userId)
+          .where("userId", isEqualTo: globals.objProfile.userId)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {
@@ -354,24 +403,6 @@ class ApiProvider {
         "updatedAt": objNotification.updatedAt,
         "declined": objNotification.declined,
       });
-    //   if (objNotificationModel.declined && !objNotificationModel.isAccept){
-    //      await Firestore.instance.collection('Notifications').document(objNotificationModel.docId).delete();
-    //   }
-    //   if (!objNotificationModel.declined && objNotificationModel.isAccept){
-    //       try {
-    //         await Firestore.instance.collection("Swap").document().setData({
-    //           "userId": objNotificationModel.userId,
-    //           "swapuserID": objNotificationModel.requestUserId,
-    //           "isAccept": false,
-    //           "createdAt": objNotificationModel.createdAt,
-    //           "updatedAt": objNotificationModel.updatedAt,
-    //           "isScannerUser": false, 
-    //           "locationAddreess": "Online"
-    //         });
-    //       } catch (e) {
-    //         print(e);
-    //       }
-    //   }
     }
       catch (e) {
         print(e);

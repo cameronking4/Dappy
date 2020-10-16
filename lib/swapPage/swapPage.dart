@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
 // import 'package:flutter_advanced_networkimage/provider.dart';
@@ -104,7 +105,7 @@ class SwappedPageState extends State<SwappedPage> {
               padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
               child:
                   Text("Dismiss", style: TextStyle(fontSize: 18.0, fontFamily: 'Gotham-Light', fontWeight: FontWeight.bold, color: Colors.black54)),
-              onPressed: () => null,
+              onPressed: () async => await ApiProvider().dismissSwapReq(swapModel);,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
               hoverElevation: 0.0,
             ),

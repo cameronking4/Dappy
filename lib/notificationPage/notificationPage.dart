@@ -7,11 +7,16 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/drawerPage/drawerPage.dart';
+import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/model/notificationModel.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/model/swapModel.dart';
+import 'package:swapTech/profile/userProfile.dart';
 import 'package:swapTech/searchPage/searchPage.dart';
+import 'package:swapTech/swapPage/recentSwap.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
+
+import '../main.dart';
 
 class NotificationDetail extends StatefulWidget {
   @override
@@ -181,9 +186,16 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                               swapModel.locationAddreess = "Via Search";
                                                               swapModel.userId = lstNotification[index].userId;
                                                               swapModel.swapuserId = lstNotification[index].requestUserId;
-                                                              lstNotification.remove(lstNotification[index]);
                                                               await performSwap(swapModel);
+                                                              lstNotification.remove(lstNotification[index]);
+                                                              // var obj = await ApiProvider().getProfileDetail(lstNotification[index].userId);
                                                               Fluttertoast.showToast(msg: "Accepted Request Successfully!! :)");
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (context) => RecentSwapPage(),
+                                                                  ),
+                                                                ); 
                                                             },
                                                             child: Container(
                                                               decoration: BoxDecoration(
