@@ -649,12 +649,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         InkWell(
                           onTap: () async{
                             print(_usernameController.text.trim());
-                            final valid = await ApiProvider().usernameCheck(_usernameController.text.trim());
-                            print(valid);
-                            if (!valid) {
-                                Fluttertoast.showToast(msg: "Username already taken :(!");
-                                  // username exists
-                              }
+
+                            if( globals.objProfile.userName != _usernameController.text.trim() ){
+                              // if username does not equal the typed username, check if it is available
+                              var valid = await ApiProvider().usernameCheck(_usernameController.text.trim());
+                              print(valid);
+                              if (!valid) {
+                                  Fluttertoast.showToast(msg: "Username already taken :(!");
+                                    // username exists
+                                }
+                            }
+
                             else{ save();}
                           },
                           child: Container(
