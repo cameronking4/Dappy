@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:swapTech/constance/constance.dart';
@@ -155,6 +157,7 @@ class ApiProvider {
             "locationAddreess": swapModel.locationAddreess,
             "updatedAt": DateTime.now().toUtc().millisecondsSinceEpoch,
             "isDismiss": false,
+            "id": onValue.documents[0].documentID
           });
         } catch (e) {
           print(e);
@@ -175,6 +178,7 @@ class ApiProvider {
                 "locationAddreess": swapModel.locationAddreess,
                 "updatedAt": DateTime.now().toUtc().millisecondsSinceEpoch,
                 "isDismiss": false,
+                "id": value.documents[0].documentID
               });
             } catch (e) {
               print(e);
@@ -252,8 +256,50 @@ class ApiProvider {
     return result.documents.isEmpty;
   }
 
+  Future<List<String>> getSwapLocation(userID) async {
+    List<String> strings = [];
+    try { //check userID
+      await Firestore.instance
+          .collection('Swap')
+          .where("userId", isEqualTo: globals.objProfile.userId)
+          .where("swapuserId", isEqualTo: userID)
+          .orderBy('createdAt', descending: true)
+          .limit(1)
+          .getDocuments()
+          .then((onValue) {
+        if (onValue.documents.length > 0) {
+          onValue.documents.forEach((snapshotdata) {
+            final data = SwapModel.parseSnapshot(snapshotdata);
+            strings.add(data.locationAddreess);
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+    try { //check swapuserId
+      await Firestore.instance
+          .collection('Swap')
+          .where("swapuserId", isEqualTo: globals.objProfile.userId)
+          .where("userId", isEqualTo: userID)
+          .orderBy('createdAt', descending: true)
+          .limit(1)
+          .getDocuments()
+          .then((onValue) {
+        if (onValue.documents.length > 0) {
+          onValue.documents.forEach((snapshotdata) {
+            final data = SwapModel.parseSnapshot(snapshotdata);
+            strings.add(data.locationAddreess);
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+    return strings;
+  }
 
-  Future<List<String>> getSwapsIds() async {
+ Future<List<String>> getSwapsIds() async {
     List<String> strings = [];
     try { //check userID
       await Firestore.instance
@@ -291,7 +337,6 @@ class ApiProvider {
     }
     return strings;
   }
-
 
   Future<List<SwapModel>> getRecentSwapDetail() async {
     List<SwapModel> lstSwapModel = [];

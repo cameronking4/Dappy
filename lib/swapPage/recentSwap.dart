@@ -150,7 +150,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                           child: Padding(
                                                             padding: const EdgeInsets.all(3.0),
                                                             child: Text(
-                                                              lstSwapModel[index].locationAddreess,
+                                                              objProfileModel.data.userName,
                                                               style: TextStyle(
                                                                 color: Colors.white,
                                                                 fontSize: 14.0,

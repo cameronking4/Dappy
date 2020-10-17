@@ -176,6 +176,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.name,
+                                    textCapitalization: TextCapitalization.words,
+                                    autocorrect: false,
                                     controller: _firstNameController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your Firstname',
@@ -223,6 +226,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.name,
+                                    autocorrect: false,
+                                    textCapitalization: TextCapitalization.words,
                                     controller: _lastNameController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your Lastname',
@@ -320,6 +326,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.emailAddress,
+                                    autocorrect: false,
                                     controller: _emailController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your Email',

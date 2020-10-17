@@ -228,6 +228,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.name,
+                                    textCapitalization: TextCapitalization.words,
+                                    autocorrect: false,
                                     controller: _firstNameController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your Firstname',
@@ -275,6 +278,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.name,
+                                    textCapitalization: TextCapitalization.words,
+                                    autocorrect: false,
                                     controller: _lastNameController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your Lastname',
@@ -322,6 +328,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
                                     controller: _usernameController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your UserName',
@@ -369,6 +377,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.emailAddress,
+                                    autocorrect: false,
                                     controller: _emailController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your Email',
@@ -416,6 +426,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
                                     controller: _instagramController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Instagram Username',
@@ -464,6 +476,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 7,
                                   child: TextField(
                                     controller: _snapchatController,
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
                                     decoration: InputDecoration(
                                       hintText: 'Type Snapchat Username',
                                       hintStyle: TextStyle(color: Colors.black87),
@@ -510,6 +524,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
                                     controller: _facebookController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Facebook ID',
@@ -557,6 +573,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
                                     controller: _linkedinController,
                                     decoration: InputDecoration(
                                       hintText: 'Type LinkedIn ID',
@@ -604,6 +622,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
                                     controller: _venmoController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Venmo ID',
@@ -651,6 +671,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
                                     controller: _tiktokController,
                                     decoration: InputDecoration(
                                       hintText: 'Type TikTok Username',
