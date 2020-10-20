@@ -112,7 +112,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               color: Colors.black,
             ),
             Container(
-              height: 75,
+              height: 80,
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.only(
@@ -149,9 +149,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Gotham-Light',
+                                  fontSize: 20,
+                                  fontFamily: 'Gotham-Medium',
                           ),
                         ),
                         SizedBox(
@@ -278,7 +277,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   child: TextField(
                                     keyboardType: TextInputType.visiblePassword,
                                     autocorrect: false,
-                                    autofocus: true,
+                                    autofocus: false,
                                     controller: _usernameController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your UserName',
@@ -475,7 +474,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   child: TextField(
                                     keyboardType: TextInputType.visiblePassword,
                                     autocorrect: false,
-                                    autofocus: true,
+                                    autofocus: false,
                                     controller: _facebookController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Facebook ID',
@@ -525,7 +524,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   child: TextField(
                                     keyboardType: TextInputType.visiblePassword,
                                     autocorrect: false,
-                                    autofocus: true,
+                                    autofocus: false,
                                     controller: _linkedinController,
                                     decoration: InputDecoration(
                                       hintText: 'Type LinkedIn ID',
@@ -575,7 +574,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   child: TextField(
                                     keyboardType: TextInputType.visiblePassword,
                                     autocorrect: false,
-                                    autofocus: true,
+                                    autofocus: false,
                                     controller: _venmoController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Venmo ID',
@@ -625,7 +624,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   child: TextField(
                                     keyboardType: TextInputType.visiblePassword,
                                     autocorrect: false,
-                                    autofocus: true,
+                                    autofocus: false,
                                     controller: _tiktokController,
                                     decoration: InputDecoration(
                                       hintText: 'Type TikTok Username',

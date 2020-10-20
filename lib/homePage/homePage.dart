@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -282,12 +285,12 @@ class _HomePageState extends State<HomePage> {
       children: [
         Container(
           height: MediaQuery.of(context).padding.top,
-          color: Colors.black,
+          color: Colors.white,
         ),
         Container(
-          height: 150,
+          height: 70,
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: Colors.white,
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20),
               bottomRight: Radius.circular(20),
@@ -303,12 +306,12 @@ class _HomePageState extends State<HomePage> {
                   },
                   child: Image.asset(
                     ConstanceData.drawerIcon,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
                 Expanded(child: SizedBox()),
                 SizedBox(
-                  height: 80,
+                  height: 70,
                   child: Image.asset(
                     ConstanceData.appLogo,
                     fit: BoxFit.cover,
@@ -323,7 +326,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   child: Image.asset(
                     ConstanceData.searchIcon,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 )
               ],
@@ -343,9 +346,9 @@ class _HomePageState extends State<HomePage> {
                     data: globals.objProfile.userId,
                     version: QrVersions.auto,
                     gapless: true,
-                    // embeddedImage: NetworkImage(globals.objProfile.photoUrl),
-                    // embeddedImageStyle: QrEmbeddedImageStyle(size: Size(150, 150)),
-                    size: 260.0,
+                    embeddedImage: AssetImage(ConstanceData.appLogo),
+                    embeddedImageStyle: QrEmbeddedImageStyle(size: Size.square(130)),
+                    size: 275.0,
                   ),
                   Text(globals.objProfile.firstName + " " + globals.objProfile.lastName, 
                     style: TextStyle(
@@ -364,7 +367,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                   SizedBox(
-                    height: 30,
+                    height: 60,
                   ),
                   InkWell(
                     onTap: () {
@@ -401,6 +404,22 @@ class _HomePageState extends State<HomePage> {
       enumSwapPageStatus = SwapPageStatus.Swap;
     });
   }
+
+  Future<Uint8List> toQrImageData(String text) async {
+  try {
+    final image = await QrPainter(
+      data: text,
+      version: QrVersions.auto,
+      gapless: false,
+      color: Colors.black,
+      emptyColor: Colors.white,
+    ).toImage(300);
+    final a = await image.toByteData(format: ImageByteFormat.png);
+    return a.buffer.asUint8List();
+  } catch (e) {
+    throw e;
+  }
+}
 
   Future<bool> checkPermission() async {
     bool result = await Permissions().getPermission();

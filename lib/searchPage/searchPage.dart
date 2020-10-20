@@ -50,7 +50,7 @@ class _SearchPageState extends State<SearchPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.only(top: 16.0, left: 16.0),
+            padding: EdgeInsets.only(top: 10.0, left: 16.0),
             child: Text('Find Users', style: TextStyle(color: Colors.black87, fontSize: 18.0, fontWeight: FontWeight.bold)),
           ),
           Container(

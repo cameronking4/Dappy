@@ -5,6 +5,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/drawerPage/drawerPage.dart';
+import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/profile/userProfile.dart';
@@ -57,7 +58,8 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).padding.top,
+              height: MediaQuery.of(context).padding.top + 10,
+              // height: 75,
               color: Colors.black,
             ),
             appBar(),
@@ -75,7 +77,6 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                   color: Colors.black,
                                   fontSize: 20,
                                   fontFamily: 'Gotham-Medium',
-                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
@@ -84,6 +85,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                         SizedBox(
                           height: 10,
                         ),
+                      lstSwapModel.length > 0 ? 
                         Expanded(
                           child: ListView.builder(
                             padding: EdgeInsets.zero,
@@ -195,7 +197,62 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                               );
                             },
                           ),
-                        )
+                        ): 
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: 
+                             Center(
+                              child: Card(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    const ListTile(
+                                      // leading: Icon(Icons.album),
+                                      title: Text('No Swaps Yet!'),
+                                      subtitle: Text('Seems like you have no swaps yet. Start swapping by sharing your link, searching for your users or contactless displaying your QR code. All of your swap history will display here.'),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        TextButton(
+                                          child: const Text('Home'),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => HomePage(
+                                                    
+                                                 ),
+                                                ),
+                                              );
+                                          },
+                                        ),
+                                        const SizedBox(width: 10),
+                                        TextButton(
+                                          child: const Text('Search'),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => SearchPage(
+                                                 ),
+                                                ),
+                                              );
+                                          },
+                                        ),
+                                        const SizedBox(width: 8),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                           )
+                          )
                       ],
                     ),
                   )
@@ -208,7 +265,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
 
   Widget appBar() {
     return Container(
-      height: 150,
+      height: 75,
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.only(
@@ -231,7 +288,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
             ),
             Expanded(child: SizedBox()),
             SizedBox(
-              height: 80,
+              height: 55,
               child: Image.asset(
                 ConstanceData.appLogo,
                 fit: BoxFit.cover,

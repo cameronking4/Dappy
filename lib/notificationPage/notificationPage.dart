@@ -16,7 +16,6 @@ import 'package:swapTech/searchPage/searchPage.dart';
 import 'package:swapTech/swapPage/recentSwap.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
 
-import '../main.dart';
 
 class NotificationDetail extends StatefulWidget {
   @override
@@ -64,7 +63,8 @@ class _NotificationDetailState extends State<NotificationDetail> {
         child: Column(
           children: [
             Container(
-              height: MediaQuery.of(context).padding.top,
+              height: MediaQuery.of(context).padding.top + 10,
+              // height: 75,
               color: Colors.black,
             ),
             appBar(),
@@ -85,7 +85,6 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                   color: Colors.black,
                                   fontSize: 20,
                                   fontFamily: 'Gotham-Medium',
-                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
@@ -94,6 +93,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                         SizedBox(
                           height: 20,
                         ),
+                        lstNotification.length > 0 ? 
                         Expanded(
                           child: ListView.builder(
                             padding: EdgeInsets.zero,
@@ -102,7 +102,6 @@ class _NotificationDetailState extends State<NotificationDetail> {
                               return FutureBuilder(
                                 future: ApiProvider().getProfileDetail(lstNotification[index].userId),
                                 builder: (BuildContext context, AsyncSnapshot<ProfileModel> objProfileModel) {
-                                 if (lstNotification.length > 0) {
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -229,15 +228,66 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                         ),
                                       ],
                                     );
-                                 }
-                                  else {
-                                     return new Text( "You have no new notifications. Come back later :)");
                                   }
-                                },
                               );
                             },
                           ),
-                        )
+                        ): 
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: 
+                             Center(
+                              child: Card(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    const ListTile(
+                                      // leading: Icon(Icons.album),
+                                      title: Text('No New Notifications'),
+                                      subtitle: Text('Sorry, it seems you have no new swap requests. Feel free to check again later. In the meantime, you can always share your link, search for users and keep swapping.'),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        TextButton(
+                                          child: const Text('Home'),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => HomePage(
+                                                    
+                                                 ),
+                                                ),
+                                              );
+                                          },
+                                        ),
+                                        const SizedBox(width: 10),
+                                        TextButton(
+                                          child: const Text('Swap History'),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => RecentSwapPage(
+                                                 ),
+                                                ),
+                                              );
+                                          },
+                                        ),
+                                        const SizedBox(width: 8),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                           )
+                          )
                       ],
                     ),
                   )
@@ -280,7 +330,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
 
   Widget appBar() {
     return Container(
-      height: 150,
+      height: 75,
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.only(
@@ -303,7 +353,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
             ),
             Expanded(child: SizedBox()),
             SizedBox(
-              height: 80,
+              height: 55,
               child: Image.asset(
                 ConstanceData.appLogo,
                 fit: BoxFit.cover,
