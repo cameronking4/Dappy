@@ -342,6 +342,7 @@ class _HomePageState extends State<HomePage> {
         isSearch
             ? SearchPage()
             : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   QrImage(
                     data: globals.objProfile.userId,
@@ -351,12 +352,21 @@ class _HomePageState extends State<HomePage> {
                     embeddedImageStyle: QrEmbeddedImageStyle(size: Size.square(130)),
                     size: 275.0,
                   ),
-                  Text(globals.objProfile.firstName + " " + globals.objProfile.lastName, 
-                    style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontFamily: 'Gotham-Medium',
-                    fontWeight: FontWeight.bold,
+                  Container(
+                  width:250, 
+                  child:
+                  Center(child:
+                    Text(globals.objProfile.firstName + " " + globals.objProfile.lastName, 
+                      style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: 'Gotham-Medium',
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 4,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   ),
                 ),
                 Text(globals.objProfile.userName , 
