@@ -5,7 +5,9 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/constance/global.dart' as globals;
+import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/model/profileModel.dart';
+import 'package:swapTech/profile/userProfile.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -726,7 +728,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         globals.objProfile.venmo = _venmoController.text;
         globals.objProfile.email = _emailController.text;
         globals.objProfile.tiktok = _tiktokController.text;
-        globals.objProfile.userName = _usernameController.text;
+        globals.objProfile.userName = _usernameController.text.toLowerCase();
 
         await ApiProvider().updateEditProfileFields(globals.objProfile);
 
@@ -742,8 +744,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
         setState(() {
           isProgress = false;
         });
+        Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserProfilePage(userProfile: globals.objProfile,),
+                  ),
+                );
+              }
       }
-    }
   }
 
   bool isValid() {

@@ -12,6 +12,7 @@ import 'package:swapTech/model/notificationModel.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/profile/userProfile.dart';
+import 'package:swapTech/requestPage/Accept.dart';
 import 'package:swapTech/searchPage/searchPage.dart';
 import 'package:swapTech/swapPage/recentSwap.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
@@ -111,7 +112,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                           Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => UserProfilePage(
+                                            builder: (context) => RequestPageAccept(
                                               userProfile: objProfileModel.data,
                                             ),
                                           ),);
@@ -163,7 +164,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                         height: 10,
                                                       ),
                                                       Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.end,
                                                         children: [
                                                           InkWell(
                                                             onTap: () async {

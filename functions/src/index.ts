@@ -19,8 +19,10 @@ exports.notificationCreate = functions.firestore.document('Notifications/{Notifi
                     const objUsersModel: UsersModel = <UsersModel>snap.data();
                     const payload = {
                         'notification': {
-                            'title': objUsersModel.firstName + " " + objUsersModel.lastName,
-                            'body': "You have got new invitation",
+                            'title': "Hey, " + objUsersModel.firstName + ". You got a new swap request! ",
+                            'body': "Click this notifications to accept or decline the invite.",
+                            'sound'  : "default",
+                            // 'vibrate': "true",
                         },
                     }
                     await fcm.sendToDevice(objUsersModel.token, payload);
@@ -79,8 +81,10 @@ exports.onUpdate = functions.firestore.document('Notifications/{NotificationsId}
             }
             const payload = {
                 notification: {
-                    title: 'New Swap!',
-                    body: 'Someone accepted your swap request. Check your Recent Swaps for details!'
+                    title: 'New Swap Alert!',
+                    body: 'Someone accepted your swap request. Check your Recent Swaps for more details!',
+                    sound  : 'default',
+                    // vibrate: 'true',
                 }
             };
 

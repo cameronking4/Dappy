@@ -73,7 +73,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                           child: Row(
                             children: [
                               Text(
-                                "Recent Swaps",
+                                "Swap History",
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -103,6 +103,17 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
+                                        new InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => UserProfilePage(
+                                              userProfile: objProfileModel.data,
+                                            ),
+                                          ),);
+                                        }, 
+                                        child:
                                         Padding(
                                           padding: const EdgeInsets.only(left: 10, right: 10),
                                           child: Card(
@@ -180,7 +191,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                     child: Text(
                                                       'View Details',
                                                       style: TextStyle(
-                                                        color: Colors.blue,
+                                                        color: Colors.blueGrey[300],
                                                         fontSize: 13.0,
                                                       ),
                                                     ),
@@ -189,7 +200,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                               ),
                                             ),
                                           ),
-                                        ),
+                                        )),
                                         SizedBox(
                                           height: 15,
                                         ),
@@ -218,6 +229,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                       title: Text('No Swaps History'),
                                       subtitle: Text('Seems like you do not have any swaps yet. Start swapping by sharing your link, searching for users or contactlessy displaying your QR code. All of your swap history will display here.'),
                                     ),
+                                    SizedBox(height:15),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: <Widget>[

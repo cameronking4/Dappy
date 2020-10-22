@@ -7,6 +7,7 @@ import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:swapTech/constance/global.dart' as globals;
 
 showAlertDialog(BuildContext context) {
   // set up the button
@@ -76,7 +77,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                     },
                     child: Image.asset(
                       ConstanceData.drawerIcon,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                   Expanded(child: SizedBox()),
@@ -96,7 +97,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                     },
                     child: Image.asset(
                       ConstanceData.searchIcon,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   )
                 ],
@@ -136,29 +137,29 @@ class UserProfilePageState extends State<UserProfilePage> {
                             child: Padding(
                               padding: EdgeInsets.only(right: 16.0),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  InkWell(
-                                    onTap: () {
-                                      _sendSMS(widget.userProfile.phone);
-                                    },
-                                    child: Image.asset('assets/images/message.png'),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        _sendEmail(widget.userProfile.email);
-                                      },
-                                      child: Image.asset('assets/images/mail.png'),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      _makeCall(widget.userProfile.phone);
-                                    },
-                                    child: Image.asset('assets/images/telephone.png'),
-                                  ),
+                                  // InkWell(
+                                  //   onTap: () {
+                                  //     _sendSMS(widget.userProfile.phone);
+                                  //   },
+                                  //   child: Image.asset('assets/images/message.png'),
+                                  // ),
+                                  // Padding(
+                                  //   padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                                  //   child: InkWell(
+                                  //     onTap: () {
+                                  //       _sendEmail(widget.userProfile.email);
+                                  //     },
+                                  //     child: Image.asset('assets/images/mail.png'),
+                                  //   ),
+                                  // ),
+                                  // InkWell(
+                                  //   onTap: () {
+                                  //     _makeCall(widget.userProfile.phone);
+                                  //   },
+                                  //   child: Image.asset('assets/images/telephone.png'),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -173,6 +174,32 @@ class UserProfilePageState extends State<UserProfilePage> {
                           style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center, maxLines: 4,)), 
                       Text(widget.userProfile.userName,
                           style: TextStyle(fontSize: 12.0)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                _sendSMS(widget.userProfile.phone);
+                              },
+                              child: Image.asset('assets/images/message.png'),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 10.0, bottom: 10.0, right: 15, left: 15),
+                              child: InkWell(
+                                onTap: () {
+                                  _sendEmail(widget.userProfile.email);
+                                },
+                                child: Image.asset('assets/images/mail.png'),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                _makeCall(widget.userProfile.phone);
+                              },
+                              child: Image.asset('assets/images/telephone.png'),
+                            )
+
+                      ],),
                       Padding(
                         padding: EdgeInsets.only(top: 20.0),
                         child: Wrap(
@@ -249,6 +276,8 @@ class UserProfilePageState extends State<UserProfilePage> {
                           ],
                         ),
                       ),
+                      widget.userProfile.userId == globals.objProfile.userId ?
+                      Container() :
                       Container(
                 width: 300,
                 height: 50,
