@@ -8,6 +8,7 @@ import 'package:swapTech/drawerPage/drawerPage.dart';
 import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/model/swapModel.dart';
+import 'package:swapTech/notificationPage/notificationPage.dart';
 import 'package:swapTech/profile/userProfile.dart';
 import 'package:swapTech/searchPage/searchPage.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
@@ -214,8 +215,8 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                   children: <Widget>[
                                     const ListTile(
                                       // leading: Icon(Icons.album),
-                                      title: Text('No Swaps Requests'),
-                                      subtitle: Text('Seems like you do not have any swap request notifications. Start swapping by sharing your link, searching for your users or contactless displaying your QR code. All of your swap history will display here.'),
+                                      title: Text('No Swaps History'),
+                                      subtitle: Text('Seems like you do not have any swaps yet. Start swapping by sharing your link, searching for users or contactlessy displaying your QR code. All of your swap history will display here.'),
                                     ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -235,12 +236,12 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                         ),
                                         const SizedBox(width: 10),
                                         TextButton(
-                                          child: const Text('Search'),
+                                          child: const Text('Notifications'),
                                           onPressed: () {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => SearchPage(
+                                                builder: (context) => NotificationDetail(
                                                  ),
                                                 ),
                                               );

@@ -786,6 +786,7 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           isProgress = false;
         });
+        Navigator.pushReplacementNamed(context, Routes.HOME);
       }
     }
   }
