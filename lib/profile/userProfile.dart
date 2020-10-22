@@ -111,6 +111,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                   child: Column(
                     children: <Widget>[
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Expanded(
                             child: Container(),
@@ -167,8 +168,9 @@ class UserProfilePageState extends State<UserProfilePage> {
                       SizedBox(
                         height: 10,
                       ),
+                      Container(width: 270, child: 
                       Text(widget.userProfile.firstName + ' ' + widget.userProfile.lastName,
-                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center, maxLines: 4,)), 
                       Text(widget.userProfile.userName,
                           style: TextStyle(fontSize: 12.0)),
                       Padding(

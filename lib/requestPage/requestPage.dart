@@ -109,14 +109,18 @@ class _RequestPageState extends State<RequestPage> {
                 SizedBox(
                   height: 10,
                 ),
-                Text(
-                  widget.objUserPhone.firstName  ,
+                Container(width: 250,
+                 child: Text(
+                  widget.objUserPhone.firstName + " " + widget.objUserPhone.lastName  ,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  maxLines: 4,
+                )),
                 Text(
                   widget.objUserPhone.userName,
                   style: TextStyle(

@@ -106,9 +106,21 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
+                                        new InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => UserProfilePage(
+                                              userProfile: objProfileModel.data,
+                                            ),
+                                          ),);
+                                        }, 
+                                        child:
                                         Padding(
                                           padding: const EdgeInsets.only(left: 14, right: 14),
-                                          child: Card(
+                                          child: 
+                                           Card(
                                             elevation: 5,
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
@@ -136,15 +148,15 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                   Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [ 
-                                                    Container( width: 150,
+                                                    Container( width: 220,
                                                       child: 
                                                       Text(
                                                         objProfileModel.data.firstName + " " + objProfileModel.data.lastName,
                                                         style: TextStyle(
                                                           color: Colors.blueGrey,
-                                                          fontSize: 14.0,
+                                                          fontSize: 15.0,
                                                         ),
-                                                        // overflow: TextOverflow.ellipsis,
+                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 4
                                                       )),
                                                       SizedBox(
@@ -228,7 +240,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                               ),
                                             ),
                                           ),
-                                        ),
+                                        )),
                                         SizedBox(
                                           height: 15,
                                         ),

@@ -39,6 +39,66 @@ exports.notificationCreate = functions.firestore.document('Notifications/{Notifi
     }
 });
 
+exports.onUpdate = functions.firestore.document('Notifications/{NotificationsId}').onUpdate((event, context) => {
+    const oldData = event.before.data();
+    const newData = event.after.data();
+    console.log('onUpdate started');
+    if(oldData == null)
+    {
+        console.log('onUpdate oldData == null');
+        return;
+    }
+        
+    if(newData == null)
+    {
+        console.log('onUpdate newData == null');
+        return;
+    }
+
+    if(oldData.isAccept == false && newData.isAccept == true)
+    {
+        // const requester = newData.userId;
+        // const requester = newData.requestUserId;
+        const requestee = newData.userId;
+        const ref2 = admin.firestore().doc(`Users/${requestee}`);
+    
+        return ref2.get().then(function(snapshot){
+        
+            const user = snapshot.data();
+            if(user == null) {
+                console.log('User: not reached');
+                return;
+            }
+
+            console.log('User Name: ' + user.firstName + " " + user.lastName);
+            console.log('User Messaging Token: ' + user.token);
+                
+            if(user.token == null || user.token == "")
+            {
+                return;
+            }
+            const payload = {
+                notification: {
+                    title: 'New Swap!',
+                    body: 'Someone accepted your swap request. Check your Recent Swaps for details!'
+                }
+            };
+
+            admin.messaging().sendToDevice(user.token, payload).then(function(response) {
+                console.log('Accept swap notification sent to: ' + newData.userId);
+            }).catch(function(error)
+            {
+                console.log('Error: ' + error);
+            });
+
+        }).catch(function(error)
+        {
+            console.log('${userId} error on notification update.');
+        });
+    }
+    return true;
+});
+
 export const searchContactrequest = functions.https.onRequest(async (req, res) => {
     const objUsersModel: UsersModel = <UsersModel>req.body;
     console.log(objUsersModel.docId);

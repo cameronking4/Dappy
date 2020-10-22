@@ -143,6 +143,8 @@ class _SearchPageState extends State<SearchPage> {
                                             color: Colors.blueGrey,
                                             fontSize: 13.0,
                                           ),
+                                          maxLines: 3,
+                                          overflow: TextOverflow.visible,
                                         ),
                                         Expanded(child: SizedBox()),
                                         InkWell(
@@ -180,7 +182,7 @@ class _SearchPageState extends State<SearchPage> {
                                             'View Details',
                                             style: TextStyle(
                                               color: Colors.black45,
-                                              fontSize: 14.0,
+                                              fontSize: 13.0,
                                             ),
                                           ),
                                         ),

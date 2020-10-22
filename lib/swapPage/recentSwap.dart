@@ -132,16 +132,16 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                   Expanded(
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
+                                                      children: [ Container(width: 370, child: 
                                                         Text(
                                                           objProfileModel.data.firstName + " " + objProfileModel.data.lastName ,
                                                           style: TextStyle(
                                                             color: Colors.blueGrey,
-                                                            fontSize: 14.0,
+                                                            fontSize: 15.0,
                                                           ),
-                                                          overflow: TextOverflow.visible,
+                                                          overflow: TextOverflow.ellipsis,
                                                           maxLines: 4
-                                                        ),
+                                                        )),
                                                         SizedBox(
                                                           height: 10,
                                                         ),
@@ -156,9 +156,10 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                               objProfileModel.data.userName,
                                                               style: TextStyle(
                                                                 color: Colors.white,
-                                                                fontSize: 12.0,
+                                                                fontSize: 13.0,
                                                               ),
                                                               overflow: TextOverflow.visible,
+                                                              maxLines: 3,
                                                             ),
                                                           ),
                                                         ),
@@ -178,8 +179,8 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                     child: Text(
                                                       'View Details',
                                                       style: TextStyle(
-                                                        color: Colors.black45,
-                                                        fontSize: 14.0,
+                                                        color: Colors.blue,
+                                                        fontSize: 13.0,
                                                       ),
                                                     ),
                                                   ),
@@ -213,8 +214,8 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                   children: <Widget>[
                                     const ListTile(
                                       // leading: Icon(Icons.album),
-                                      title: Text('No Swaps Yet!'),
-                                      subtitle: Text('Seems like you have no swaps yet. Start swapping by sharing your link, searching for your users or contactless displaying your QR code. All of your swap history will display here.'),
+                                      title: Text('No Swaps Requests'),
+                                      subtitle: Text('Seems like you do not have any swap request notifications. Start swapping by sharing your link, searching for your users or contactless displaying your QR code. All of your swap history will display here.'),
                                     ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
