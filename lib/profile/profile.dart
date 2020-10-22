@@ -692,8 +692,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 8.0,
                                   colors: [
-                                    this.typedTikTok == '' ? Colors.grey : Colors.green,
-                                    this.typedTikTok == '' ? Colors.grey : Colors.orange,
+                                    this.typedTikTok == '' ? Colors.grey : Colors.pink[300],
+                                    this.typedTikTok == '' ? Colors.grey : Colors.lightBlueAccent,
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),

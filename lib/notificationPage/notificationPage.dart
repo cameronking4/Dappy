@@ -78,6 +78,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                         Padding(
                           padding: const EdgeInsets.only(left: 14),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 "Notifications",
@@ -247,8 +248,8 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                   children: <Widget>[
                                     const ListTile(
                                       // leading: Icon(Icons.album),
-                                      title: Text('No New Notifications'),
-                                      subtitle: Text('Sorry, it seems you have no new swap requests. Feel free to check again later. In the meantime, you can always share your link, search for users and keep swapping.'),
+                                      title: Text('No Swap Requests'),
+                                      subtitle: Text('Sorry, it seems you have no new notifications. Feel free to check again later. In the meantime, you can always share your link, search for users and keep swapping.'),
                                     ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
