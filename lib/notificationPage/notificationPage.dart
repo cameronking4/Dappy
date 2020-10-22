@@ -78,10 +78,10 @@ class _NotificationDetailState extends State<NotificationDetail> {
                         Padding(
                           padding: const EdgeInsets.only(left: 14),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            // mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Notifications",
+                                "Swap Requests",
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -135,18 +135,23 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                   ),
                                                   Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
+                                                    children: [ 
+                                                    Container( width: 150,
+                                                      child: 
                                                       Text(
                                                         objProfileModel.data.firstName + " " + objProfileModel.data.lastName,
                                                         style: TextStyle(
                                                           color: Colors.blueGrey,
                                                           fontSize: 14.0,
                                                         ),
-                                                      ),
+                                                        // overflow: TextOverflow.ellipsis,
+                                                        maxLines: 4
+                                                      )),
                                                       SizedBox(
                                                         height: 10,
                                                       ),
                                                       Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
                                                           InkWell(
                                                             onTap: () async {
@@ -154,21 +159,21 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                               lstNotification[index].declined = true;
                                                               await updateRequest(lstNotification[index]);
                                                               lstNotification.remove(lstNotification[index]);
-                                                              Fluttertoast.showToast(msg: "Declined Request Successfully.");
+                                                              Fluttertoast.showToast(msg: "Declined Request Successfully. Only you sees this.");
                                                               // await deleteRequest(lstNotification[index]);
                                                             },
                                                             child: Container(
                                                               decoration: BoxDecoration(
-                                                                color: Colors.grey[700],
-                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: Colors.red,
+                                                                borderRadius: BorderRadius.circular(5),
                                                               ),
                                                               child: Padding(
-                                                                padding: const EdgeInsets.all(4),
+                                                                padding: const EdgeInsets.all(8),
                                                                 child: Text(
-                                                                  "Decline Request",
+                                                                  " Decline ",
                                                                   style: TextStyle(
                                                                     color: Colors.white,
-                                                                    fontSize: 14.0,
+                                                                    fontSize: 16.0,
                                                                   ),
                                                                   overflow: TextOverflow.ellipsis,
                                                                 ),
@@ -199,16 +204,16 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                             },
                                                             child: Container(
                                                               decoration: BoxDecoration(
-                                                                color: Colors.grey[700],
-                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: Colors.green,
+                                                                borderRadius: BorderRadius.circular(5),
                                                               ),
                                                               child: Padding(
-                                                                padding: const EdgeInsets.all(4),
+                                                                padding: const EdgeInsets.all(8),
                                                                 child: Text(
-                                                                  "Accept Request",
+                                                                  " Accept ",
                                                                   style: TextStyle(
                                                                     color: Colors.white,
-                                                                    fontSize: 14.0,
+                                                                    fontSize: 16.0,
                                                                   ),
                                                                   overflow: TextOverflow.ellipsis,
                                                                 ),
@@ -340,7 +345,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
+        padding: const EdgeInsets.only(left: 20, right: 5),
         child: Row(
           children: [
             InkWell(

@@ -140,6 +140,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                             fontSize: 14.0,
                                                           ),
                                                           overflow: TextOverflow.visible,
+                                                          maxLines: 4
                                                         ),
                                                         SizedBox(
                                                           height: 10,
@@ -155,7 +156,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                               objProfileModel.data.userName,
                                                               style: TextStyle(
                                                                 color: Colors.white,
-                                                                fontSize: 14.0,
+                                                                fontSize: 12.0,
                                                               ),
                                                               overflow: TextOverflow.visible,
                                                             ),
@@ -178,7 +179,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                       'View Details',
                                                       style: TextStyle(
                                                         color: Colors.black45,
-                                                        fontSize: 12.0,
+                                                        fontSize: 14.0,
                                                       ),
                                                     ),
                                                   ),
@@ -274,7 +275,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
+        padding: const EdgeInsets.only(left: 20, right: 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -10,7 +10,7 @@ import 'package:swapTech/profile/profile.dart';
 import 'package:swapTech/splash/splash.dart';
 import 'package:swapTech/welcome/welcomePage.dart';
 
-const debug = true;
+const debug = false;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

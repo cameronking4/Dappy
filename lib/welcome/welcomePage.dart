@@ -129,7 +129,7 @@ class WelcomePageState extends State<WelcomePage> {
         status == PermissionStatus.restricted ||
         status == PermissionStatus.undetermined) {
       Timer(Duration(milliseconds: 3000), () async {
-        _fcm.requestNotificationPermissions(const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: true));
+        _fcm.requestNotificationPermissions(const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: false));
         _fcm.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
           print("Settings registered: $settings");
         });
