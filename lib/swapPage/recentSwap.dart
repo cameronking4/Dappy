@@ -139,12 +139,12 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                     ),
                                                   ),
                                                   SizedBox(
-                                                    width: 25,
+                                                    width: 15,
                                                   ),
                                                   Expanded(
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [ Container(width: 370, child: 
+                                                      children: [ Container(width: 350, child: 
                                                         Text(
                                                           objProfileModel.data.firstName + " " + objProfileModel.data.lastName ,
                                                           style: TextStyle(
@@ -178,7 +178,6 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                       ],
                                                     ),
                                                   ),
-                                                  Expanded(child: SizedBox()),
                                                   InkWell(
                                                     onTap: () {
                                                       Navigator.push(

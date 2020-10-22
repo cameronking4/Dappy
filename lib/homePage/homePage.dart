@@ -349,7 +349,7 @@ class _HomePageState extends State<HomePage> {
                     version: QrVersions.auto,
                     gapless: true,
                     embeddedImage: AssetImage(ConstanceData.appLogo),
-                    embeddedImageStyle: QrEmbeddedImageStyle(size: Size.square(130)),
+                    embeddedImageStyle: QrEmbeddedImageStyle(size: Size.square(75)),
                     size: 275.0,
                   ),
                   Container(

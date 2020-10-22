@@ -310,7 +310,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         ShaderMask(
                           child: Container(
-                            height: 75.0,
+                            height: 70.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
@@ -359,7 +359,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         ShaderMask(
                           child: Container(
-                            height: 75.0,
+                            height: 65.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
@@ -408,7 +408,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         ShaderMask(
                           child: Container(
-                            height: 75.0,
+                            height: 65.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
@@ -457,7 +457,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         ShaderMask(
                           child: Container(
-                            height: 75.0,
+                            height: 65.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
@@ -507,7 +507,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         ShaderMask(
                           child: Container(
-                            height: 75.0,
+                            height: 65.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
@@ -557,7 +557,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         ShaderMask(
                           child: Container(
-                            height: 75.0,
+                            height: 65.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
@@ -607,7 +607,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         ShaderMask(
                           child: Container(
-                            height: 75.0,
+                            height: 65.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
