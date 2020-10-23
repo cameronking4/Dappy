@@ -99,17 +99,17 @@ class SwappedPageState extends State<SwappedPage> {
               color: Colors.black,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(left: 32.0, right: 32.0, top: 16.0),
-            child: RaisedButton(
-              padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
-              child:
-                  Text("Dismiss", style: TextStyle(fontSize: 18.0, fontFamily: 'Gotham-Light', fontWeight: FontWeight.bold, color: Colors.black54)),
-              onPressed: () async => await ApiProvider().dismissSwapReq(swapModel);,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
-              hoverElevation: 0.0,
-            ),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.only(left: 32.0, right: 32.0, top: 16.0),
+          //   child: RaisedButton(
+          //     padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
+          //     child:
+          //         Text("Dismiss", style: TextStyle(fontSize: 18.0, fontFamily: 'Gotham-Light', fontWeight: FontWeight.bold, color: Colors.black54)),
+          //     onPressed: () async => await ApiProvider().dismissSwapReq(swapModel);,
+          //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+          //     hoverElevation: 0.0,
+          //   ),
+          // ),
         ],
       ),
     );

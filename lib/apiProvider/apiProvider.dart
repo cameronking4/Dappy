@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:swapTech/apiProvider/apiServices.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/model/notificationModel.dart';
 import 'package:swapTech/model/profileModel.dart';
@@ -22,6 +26,21 @@ class ApiProvider {
         });
       }
     });
+  }
+
+  Future updateUserProfilePhoto({ProfileModel profile, File file}) async {
+    try {
+      File imageFile = await ZImageCompress.getCompressImageFile(file);
+      String photoUrl = await ZImageCompress.uploadImgFireStorageFile(imageFile: imageFile);
+
+      await Firestore.instance.collection('Users').document(profile.userId).updateData({
+        "photoUrl": photoUrl,
+      });
+
+      globals.objProfile.photoUrl = photoUrl;
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future updateUserFields(ProfileModel profile) async {
@@ -248,16 +267,14 @@ class ApiProvider {
   }
 
   Future<bool> usernameCheck(String potentialId) async {
-    final result = await Firestore.instance
-        .collection('Users')
-        .where('userName', isEqualTo: potentialId)
-        .getDocuments();
+    final result = await Firestore.instance.collection('Users').where('userName', isEqualTo: potentialId).getDocuments();
     return result.documents.isEmpty;
   }
 
   Future<List<String>> getSwapLocation(userID) async {
     List<String> strings = [];
-    try { //check userID
+    try {
+      //check userID
       await Firestore.instance
           .collection('Swap')
           .where("userId", isEqualTo: globals.objProfile.userId)
@@ -276,7 +293,8 @@ class ApiProvider {
     } catch (e) {
       print(e);
     }
-    try { //check swapuserId
+    try {
+      //check swapuserId
       await Firestore.instance
           .collection('Swap')
           .where("swapuserId", isEqualTo: globals.objProfile.userId)
@@ -298,9 +316,10 @@ class ApiProvider {
     return strings;
   }
 
- Future<List<String>> getSwapsIds() async {
+  Future<List<String>> getSwapsIds() async {
     List<String> strings = [];
-    try { //check userID
+    try {
+      //check userID
       await Firestore.instance
           .collection('Swap')
           .where("userId", isEqualTo: globals.objProfile.userId)
@@ -317,7 +336,8 @@ class ApiProvider {
     } catch (e) {
       print(e);
     }
-    try { //check swapuserId
+    try {
+      //check swapuserId
       await Firestore.instance
           .collection('Swap')
           .where("swapuserId", isEqualTo: globals.objProfile.userId)
@@ -339,7 +359,8 @@ class ApiProvider {
 
   Future<List<SwapModel>> getRecentSwapDetail() async {
     List<SwapModel> lstSwapModel = [];
-    try { //check userID
+    try {
+      //check userID
       await Firestore.instance
           .collection('Swap')
           .where("swapuserId", isEqualTo: globals.objProfile.userId)
@@ -356,7 +377,8 @@ class ApiProvider {
     } catch (e) {
       print(e);
     }
-    try { //check swapuserId
+    try {
+      //check swapuserId
       await Firestore.instance
           .collection('Swap')
           .where("userId", isEqualTo: globals.objProfile.userId)
@@ -447,9 +469,8 @@ class ApiProvider {
         "updatedAt": objNotification.updatedAt,
         "declined": objNotification.declined,
       });
-    }
-      catch (e) {
-        print(e);
-      }
+    } catch (e) {
+      print(e);
     }
   }
+}

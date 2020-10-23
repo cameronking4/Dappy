@@ -1,14 +1,18 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:swapTech/apiProvider/apiProvider.dart';
+import 'package:swapTech/apiProvider/apiServices.dart';
+import 'package:swapTech/components/z_select_single_image.dart';
+import 'package:swapTech/constance/global.dart' as globals;
 import 'package:swapTech/editProfilePage/editProfile.dart';
 import 'package:swapTech/main.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:swapTech/constance/global.dart' as globals;
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/notificationPage/notificationPage.dart';
 import 'package:swapTech/swapPage/recentSwap.dart';
-import 'package:swapTech/topBarClipper/topBarClipare.dart';
 
 class DrawerPage extends StatefulWidget {
   @override
@@ -18,6 +22,7 @@ class DrawerPage extends StatefulWidget {
 class _DrawerPageState extends State<DrawerPage> {
   SwapModel swapModel = SwapModel();
   ProfileModel objSwappProfile;
+  File newProfileImage;
 
   @override
   Widget build(BuildContext context) {
@@ -36,21 +41,17 @@ class _DrawerPageState extends State<DrawerPage> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
-                    ClipPath(
-                      clipper: TopBarClipper(
-                        topLeft: true,
-                        topRight: true,
-                        bottomLeft: true,
-                        bottomRight: true,
-                        radius: 150,
-                      ),
-                      child: CachedNetworkImage(
-                        height: 150,
-                        width: 150,
-                        imageUrl: globals.objProfile.photoUrl,
-                        placeholder: (context, url) => CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
+                    ZSelectSingleImage(
+                      height: 150,
+                      width: 150,
+                      imageFile: newProfileImage,
+                      imageUrl: globals.objProfile.photoUrl,
+                      borderRadius: BorderRadius.circular(100),
+                      onImageChange: (res) {
+                        newProfileImage = res;
+                        ApiProvider().updateUserProfilePhoto(profile: globals.objProfile, file: newProfileImage);
+                        setState(() {});
+                      },
                     ),
                     Positioned(
                       bottom: 0.0,
@@ -63,7 +64,7 @@ class _DrawerPageState extends State<DrawerPage> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: Text(
-                          "${globals.objProfile.userName}" ,
+                          "${globals.objProfile.userName}",
                           // "\t" + "${globals.objProfile.lastName}"
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.black87, fontSize: 18.0),
