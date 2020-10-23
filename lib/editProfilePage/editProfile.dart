@@ -17,6 +17,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _instagramController = TextEditingController();
   TextEditingController _snapchatController = TextEditingController();
@@ -24,7 +25,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController _linkedinController = TextEditingController();
   TextEditingController _venmoController = TextEditingController();
   TextEditingController _tiktokController = TextEditingController();
-  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _twitterController = TextEditingController();
+  TextEditingController _websiteController = TextEditingController();
+  TextEditingController _cashappController = TextEditingController();
 
   String firstName = '';
   String lastName = '';
@@ -38,6 +41,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String typedLinkedin = '';
   String typedVenmo = '';
   String typedTikTok = '';
+  String typedTwitter = '';
+  String typedCashapp = '';
+  String typedWebsite = '';
 
   bool isProgress = false;
 
@@ -55,6 +61,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _linkedinController.addListener(_typedLinkedin);
     _venmoController.addListener(_typedVenmo);
     _tiktokController.addListener(_typedTikTok);
+    _twitterController.addListener(_typedTwitter);
+    _cashappController.addListener(_typedCashapp);
+    _websiteController.addListener(_typedWebsite);
     getUserDetail();
     super.initState();
   }
@@ -75,6 +84,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _linkedinController.text = objProfileModel.linkedin;
     _venmoController.text = objProfileModel.venmo;
     _tiktokController.text = objProfileModel.tiktok;
+    _websiteController.text = objProfileModel.website;
+    _cashappController.text = objProfileModel.cashapp;
+    _twitterController.text = objProfileModel.twitter;
 
     globals.objProfile = objProfileModel;
 
@@ -95,6 +107,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _linkedinController.dispose();
     _venmoController.dispose();
     _tiktokController.dispose();
+    _twitterController.dispose();
+    _cashappController.dispose();
+    _websiteController.dispose();
     super.dispose();
   }
 
@@ -444,10 +459,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                           shaderCallback: (bounds) => RadialGradient(
                                   center: Alignment.center,
-                                  radius: 12.0,
+                                  radius: 8.0,
                                   colors: [
+                                    this.typedSnapchat == '' ? Colors.grey : Colors.yellowAccent,
                                     this.typedSnapchat == '' ? Colors.grey : Colors.yellow,
-                                    this.typedSnapchat == '' ? Colors.grey : Colors.black,
                                   ],
                                   tileMode: TileMode.repeated)
                               .createShader(bounds),
@@ -647,7 +662,157 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   radius: 8.0,
                                   colors: [
                                     this.typedTikTok == '' ? Colors.grey : Colors.pink[300],
-                                    this.typedTikTok == '' ? Colors.grey : Colors.lightBlueAccent,
+                                    this.typedTikTok == '' ? Colors.grey : Colors.pink,
+                                  ],
+                                  tileMode: TileMode.clamp)
+                              .createShader(bounds),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ShaderMask(
+                          child: Container(
+                            height: 65.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              color: Colors.white,
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 3,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: FaIcon(FontAwesomeIcons.algolia, color: Colors.black87, size: 40.0),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 7,
+                                  child: TextField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
+                                    autofocus: false,
+                                    controller: _cashappController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Type CashApp ID (no dollar sign)',
+                                      hintStyle: TextStyle(color: Colors.black87),
+                                      contentPadding: EdgeInsets.zero,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                    ),
+                                    style: TextStyle(color: Colors.black87),
+                                    cursorColor: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          shaderCallback: (bounds) => RadialGradient(
+                                  center: Alignment.centerLeft,
+                                  radius: 8.0,
+                                  colors: [
+                                    this.typedCashapp == '' ? Colors.grey : Colors.greenAccent,
+                                    this.typedCashapp == '' ? Colors.grey : Colors.green[300],
+                                  ],
+                                  tileMode: TileMode.clamp)
+                              .createShader(bounds),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ShaderMask(
+                          child: Container(
+                            height: 65.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              color: Colors.white,
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 3,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: FaIcon(FontAwesomeIcons.algolia, color: Colors.black87, size: 40.0),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 7,
+                                  child: TextField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
+                                    autofocus: false,
+                                    controller: _twitterController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Twitter Username',
+                                      hintStyle: TextStyle(color: Colors.black87),
+                                      contentPadding: EdgeInsets.zero,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                    ),
+                                    style: TextStyle(color: Colors.black87),
+                                    cursorColor: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          shaderCallback: (bounds) => RadialGradient(
+                                  center: Alignment.centerLeft,
+                                  radius: 12.0,
+                                  colors: [
+                                    this.typedTwitter == '' ? Colors.grey : Colors.lightBlue[200],
+                                    this.typedTwitter == '' ? Colors.grey : Colors.lightBlue,
+                                  ],
+                                  tileMode: TileMode.clamp)
+                              .createShader(bounds),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ShaderMask(
+                          child: Container(
+                            height: 65.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              color: Colors.white,
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 3,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: FaIcon(FontAwesomeIcons.algolia, color: Colors.black87, size: 40.0),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 7,
+                                  child: TextField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    autocorrect: false,
+                                    autofocus: false,
+                                    controller: _websiteController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Website Link (ex. dappy.com)',
+                                      hintStyle: TextStyle(color: Colors.black87),
+                                      contentPadding: EdgeInsets.zero,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                    ),
+                                    style: TextStyle(color: Colors.black87),
+                                    cursorColor: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          shaderCallback: (bounds) => RadialGradient(
+                                  center: Alignment.centerLeft,
+                                  radius: 12.0,
+                                  colors: [
+                                    this.typedWebsite == '' ? Colors.grey : Colors.deepOrange,
+                                    this.typedWebsite == '' ? Colors.grey : Colors.red,
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -661,7 +826,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                             if( globals.objProfile.userName != _usernameController.text.trim() ){
                               // if username does not equal the typed username, check if it is available
-                              var valid = await ApiProvider().usernameCheck(_usernameController.text.trim());
+                              var valid = await ApiProvider().usernameCheck(_usernameController.text.trim().toLowerCase());
                               print(valid);
                               if (!valid) {
                                   Fluttertoast.showToast(msg: "Username already taken :(!");
@@ -729,6 +894,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
         globals.objProfile.email = _emailController.text;
         globals.objProfile.tiktok = _tiktokController.text;
         globals.objProfile.userName = _usernameController.text.toLowerCase();
+        globals.objProfile.email = _emailController.text;
+        globals.objProfile.twitter = _twitterController.text;
+        globals.objProfile.cashapp = _cashappController.text;
+        globals.objProfile.website = _websiteController.text;
 
         await ApiProvider().updateEditProfileFields(globals.objProfile);
 
@@ -831,5 +1000,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   _typedTikTok() {
     this.typedTikTok = _tiktokController.text;
+  }
+
+  _typedCashapp() {
+    this.typedCashapp = _cashappController.text;
+  }
+  _typedWebsite() {
+    this.typedWebsite = _websiteController.text;
+  }
+  _typedTwitter() {
+    this.typedTwitter = _twitterController.text;
   }
 }

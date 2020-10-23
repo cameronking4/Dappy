@@ -261,7 +261,15 @@ class UserProfilePageState extends State<UserProfilePage> {
                                 ? Container()
                                 : InkWell(
                                     onTap: () {
-                                      _launchTiktok(widget.userProfile.twitter);
+                                      _launchTwitter(widget.userProfile.twitter);
+                                    },
+                                    child: Image.asset('assets/images/tiktok.png'),
+                                  ),
+                            widget.userProfile.cashapp == ''
+                                ? Container()
+                                : InkWell(
+                                    onTap: () {
+                                      _launchCashapp(widget.userProfile.cashapp);
                                     },
                                     child: Image.asset('assets/images/tiktok.png'),
                                   ),
@@ -269,7 +277,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                 ? Container()
                                 : InkWell(
                                     onTap: () {
-                                      _launchTiktok(widget.userProfile.website);
+                                      _launchWebsite(widget.userProfile.website);
                                     },
                                     child: Image.asset('assets/images/tiktok.png'),
                                   ),
@@ -382,10 +390,18 @@ class UserProfilePageState extends State<UserProfilePage> {
       throw 'Could not launch $url';
     }
   }
+    _launchWebsite(link) async {
+    var url = 'http://' + link;
+    if (await canLaunch(url.trim())) {
+      await launch(url.trim());
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
-   _launchWebsite(link) async {
-    var url = 'https://www.tiktok.com/' + '@' + link;
-    if (await canLaunch(url)) {
+   _launchCashapp(link) async {
+    var url = r"https://cash.app/$" + link;
+    if (await canLaunch(url.trim())) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
@@ -393,7 +409,7 @@ class UserProfilePageState extends State<UserProfilePage> {
   }
 
    _launchTwitter(link) async {
-    var url = 'https://www.tiktok.com/' + '@' + link;
+    var url = 'https://www.twitter.com/' + link;
     if (await canLaunch(url)) {
       await launch(url);
     } else {

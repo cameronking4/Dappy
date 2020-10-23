@@ -17,6 +17,7 @@ class ProfileModel {
   String userId;
   String venmo;
   String website;
+  String cashapp;
   String twitter;
   String userName;
   int createdAt;
@@ -55,6 +56,7 @@ class ProfileModel {
     this.website,
     this.swappedWith,
     this.twitter,
+    this.cashapp,
   });
 
   static ProfileModel parseSnapshot(DocumentSnapshot snapshot) {
@@ -82,6 +84,7 @@ class ProfileModel {
         tiktok: snapshot.data['tiktok'] ?? '',
         twitter: snapshot.data['twitter'] ?? '',
         website: snapshot.data['website'] ?? '',
+        cashapp: snapshot.data['cashapp'] ?? '',
         token: snapshot.data['token'] ?? '',
         venmo: snapshot.data['venmo'] ?? '',
         updatedAt: snapshot.data['updatedAt'] ?? 0,
@@ -116,6 +119,7 @@ class ProfileModel {
       snapchat: json['snapchat'],
       tiktok: json['tiktok'],
       website: json['website'],
+      cashapp: json['cashapp'],
       twitter: json['twitter'],
       token: json['token'],
       venmo: json['venmo'],
@@ -144,6 +148,7 @@ class ProfileModel {
         'snapchat': snapchat,
         'tiktok': tiktok,
         'website': website,
+        'cashapp': cashapp,
         'twitter': twitter,
         'swappedWith': swappedWith,
         'token': token,

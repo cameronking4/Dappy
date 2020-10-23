@@ -92,6 +92,7 @@ class ApiProvider {
         "twitter": profile.twitter,
         "email": profile.email,
         "website": profile.website,
+        "cashapp": profile.cashapp,
         "lastName": profile.lastName,
         "linkedin": profile.linkedin,
         "snapchat": profile.snapchat,
