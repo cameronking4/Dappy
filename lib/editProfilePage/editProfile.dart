@@ -160,6 +160,33 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Expanded(
               child: ListView(
                 children: [
+                      Text(
+                          'Tap to Change Profile Photo',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                                  fontSize: 14,
+                                  fontFamily: 'Gotham-Medium',
+                          ),
+                        ),
+                         SizedBox(
+                          height: 20,
+                      ),
+                        ZSelectSingleImage(
+                        height: 90,
+                        width: 90,
+                        isEnabled: true,
+                        imageFile: newProfileImage,
+                        imageUrl: globals.objProfile.photoUrl,
+                        borderRadius: BorderRadius.circular(100),
+                        onImageChange: (res) {
+                        newProfileImage = res;
+                        ApiProvider().updateUserProfilePhoto(profile: globals.objProfile, file: newProfileImage);
+                        setState(() {});
+                      }),
+                        SizedBox(
+                          height: 20,
+                        ),
                   Padding(
                     padding: EdgeInsets.only(left: 20, right: 20, bottom: MediaQuery.of(context).padding.bottom + 24),
                     child: Column(
@@ -178,34 +205,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         SizedBox(
                           height: 20,
                         ),
-                        ZSelectSingleImage(
-                        height: 150,
-                        width: 150,
-                        isEnabled: true,
-                        imageFile: newProfileImage,
-                        imageUrl: globals.objProfile.photoUrl,
-                        borderRadius: BorderRadius.circular(100),
-                        onImageChange: (res) {
-                        newProfileImage = res;
-                        ApiProvider().updateUserProfilePhoto(profile: globals.objProfile, file: newProfileImage);
-                        setState(() {});
-                      }),
-                      SizedBox(
-                          height: 20,
-                      ),
-                      Text(
-                          'Tap to Change Profile Photo',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                                  fontSize: 15,
-                                  fontFamily: 'Gotham-Medium',
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                    
                         ShaderMask(
                           child: Container(
                             height: 75.0,

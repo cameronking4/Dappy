@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
+import 'package:swapTech/components/z_select_single_image.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/main.dart';
 import 'package:swapTech/model/profileModel.dart';
@@ -51,6 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isProgress = false;
 
   ProfileModel objProfileModel = new ProfileModel();
+  File newProfileImage;
 
   contactPermission() async {
     bool permissionStatus = await checkPermission();
@@ -195,7 +199,35 @@ class _ProfilePageState extends State<ProfilePage> {
                     padding: EdgeInsets.only(left: 20, right: 20, bottom: MediaQuery.of(context).padding.bottom + 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        ZSelectSingleImage(
+                        height: 150,
+                        width: 150,
+                        isEnabled: true,
+                        imageFile: newProfileImage,
+                        imageUrl: globals.objProfile.photoUrl,
+                        borderRadius: BorderRadius.circular(100),
+                        onImageChange: (res) {
+                        newProfileImage = res;
+                        ApiProvider().updateUserProfilePhoto(profile: globals.objProfile, file: newProfileImage);
+                        setState(() {});
+                      }),
+                      SizedBox(
+                          height: 20,
+                      ),
+                      Text(
+                          'Tap to Change Profile Photo',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                                  fontSize: 15,
+                                  fontFamily: 'Gotham-Medium',
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
                         Text(
                           'Edit Profile & Connect Socials',
                           textAlign: TextAlign.center,
