@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
+import 'package:swapTech/components/z_select_single_image.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/constance/global.dart' as globals;
 import 'package:swapTech/homePage/homePage.dart';
@@ -48,6 +51,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   bool isProgress = false;
 
   ProfileModel objProfileModel = new ProfileModel();
+  File newProfileImage;
 
   @override
   void initState() {
@@ -160,6 +164,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     padding: EdgeInsets.only(left: 20, right: 20, bottom: MediaQuery.of(context).padding.bottom + 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           'Edit Profile & Connect Socials',
@@ -173,6 +178,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         SizedBox(
                           height: 20,
                         ),
+                        ZSelectSingleImage(
+                        height: 150,
+                        width: 150,
+                        isEnabled: true,
+                        imageFile: newProfileImage,
+                        imageUrl: globals.objProfile.photoUrl,
+                        borderRadius: BorderRadius.circular(100),
+                        onImageChange: (res) {
+                        newProfileImage = res;
+                        ApiProvider().updateUserProfilePhoto(profile: globals.objProfile, file: newProfileImage);
+                        setState(() {});
+                      }),
+                      SizedBox(
+                          height: 20,
+                      ),
+                      Text(
+                          'Tap to Change Profile Photo',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                                  fontSize: 15,
+                                  fontFamily: 'Gotham-Medium',
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                    
                         ShaderMask(
                           child: Container(
                             height: 75.0,
@@ -186,7 +219,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.angular, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.addressCard, color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -286,7 +319,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.addressCard, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.userTag, color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -336,7 +369,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.mailBulk, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.inbox, color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -683,7 +716,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.algolia, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.dollarSign, color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -733,7 +766,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.algolia, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.twitter, color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -744,7 +777,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     autofocus: false,
                                     controller: _twitterController,
                                     decoration: InputDecoration(
-                                      hintText: 'Twitter Username',
+                                      hintText: 'Type Twitter Username',
                                       hintStyle: TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
@@ -783,7 +816,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.algolia, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.paperclip, color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(

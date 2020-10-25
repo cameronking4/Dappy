@@ -44,6 +44,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     ZSelectSingleImage(
                       height: 150,
                       width: 150,
+                      isEnabled: true,
                       imageFile: newProfileImage,
                       imageUrl: globals.objProfile.photoUrl,
                       borderRadius: BorderRadius.circular(100),

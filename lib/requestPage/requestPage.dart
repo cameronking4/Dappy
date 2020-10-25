@@ -96,15 +96,15 @@ class _RequestPageState extends State<RequestPage> {
                     topRight: true,
                     bottomLeft: true,
                     bottomRight: true,
-                    radius: 140,
+                    radius: 130,
                   ),
-                  child: CachedNetworkImage(
-                    height: 140,
-                    width: 140,
-                    imageUrl: globals.objProfile.photoUrl,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
+                child:
+                  CircleAvatar(
+                    radius: 80.0,
+                    backgroundImage:
+                        NetworkImage(widget.objUserPhone.photoUrl),
+                    backgroundColor: Colors.black,
+                 )
                 ),
                 SizedBox(
                   height: 10,

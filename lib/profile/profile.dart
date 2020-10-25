@@ -222,7 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.angular, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.addressCard, color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -322,7 +322,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.addressCard, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.userTag, color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -371,7 +371,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.mailBulk, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.inbox, color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -716,7 +716,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             height: 75,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                              color: Colors.grey,
+                              color: Colors.black,
                             ),
                             child: Row(
                               children: <Widget>[
@@ -734,7 +734,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Expanded(
                                   flex: 7,
                                   child: Text(
-                                    "Save",
+                                    "Create Profile!",
                                     style: TextStyle(color: Colors.white, fontSize: 16.0),
                                   ),
                                 ),

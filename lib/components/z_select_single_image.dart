@@ -30,7 +30,7 @@ class ZSelectSingleImage extends StatefulWidget {
       this.imageFile,
       this.imageUrl = '',
       this.isEnabled = true,
-      this.height = 155,
+      this.height = 255,
       this.width = 155,
       this.margin,
       this.borderRadius})
@@ -54,12 +54,12 @@ class _ZSelectSingleImageState extends State<ZSelectSingleImage> {
           text: Text('Camera'),
           icon: Icon(AntDesign.camera),
         ),
-        ZBottomSheetItem(text: Text('Galery'), icon: Icon(AntDesign.picture)),
+        ZBottomSheetItem(text: Text('Gallery'), icon: Icon(AntDesign.picture)),
         // ZBottomSheetItem(text: Text('Delete', style: TextStyle(color: Colors.red)), icon: Icon(AntDesign.delete, color: Colors.red)),
       ],
       onValueChanged: (v) {
         if (v == 'Camera') getImage(true);
-        if (v == 'Galery') getImage(false);
+        if (v == 'Gallery') getImage(false);
         if (v == 'Delete') {
           widget.onDeleteImage(true);
           widget.onImageChange(null);
@@ -172,6 +172,7 @@ class _ZSelectSingleImageState extends State<ZSelectSingleImage> {
       _imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
     } else {
       _imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+      print("Selected Gallery click");
     }
     widget.onImageChange(_imageFile ?? widget.imageFile);
     setState(() {});

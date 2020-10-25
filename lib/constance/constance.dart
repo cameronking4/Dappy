@@ -25,6 +25,9 @@ class ConstanceData {
   static final topImageLogin = BaseImageUrl + "top_image_login.png";
   static final topImageVerify = BaseImageUrl + "top_image_verify.png";
   static final venmo = BaseImageUrl + "venmo.png";
+  static final share = BaseImageUrl + "connection.png";
+  static final search1 = BaseImageUrl + "loupe.png";
+  static final search2 = BaseImageUrl + "search.png";
 
   static const SearchPhoneUrl = "https://us-central1-swaptact-988da.cloudfunctions.net/searchContactrequest";
 }

@@ -124,7 +124,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                            Card(
                                             elevation: 5,
                                             child: Padding(
-                                              padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                                              padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 10),
                                               child: Row(
                                                 children: [
                                                   ClipPath(
@@ -136,7 +136,6 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                       radius: 60,
                                                     ),
                                                     child: CachedNetworkImage(
-                                                      height: 60,
                                                       width: 60,
                                                       imageUrl: objProfileModel.data.photoUrl,
                                                       placeholder: (context, url) => CircularProgressIndicator(),
@@ -155,16 +154,16 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                         objProfileModel.data.firstName + " " + objProfileModel.data.lastName,
                                                         style: TextStyle(
                                                           color: Colors.blueGrey,
-                                                          fontSize: 15.0,
+                                                          fontSize: 16.0,
                                                         ),
                                                          overflow: TextOverflow.ellipsis,
                                                         maxLines: 4
                                                       )),
                                                       SizedBox(
-                                                        height: 10,
+                                                        height: 12,
                                                       ),
                                                       Row(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
                                                           InkWell(
                                                             onTap: () async {
@@ -358,7 +357,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 5),
+        padding: const EdgeInsets.only(left: 20, right: 15),
         child: Row(
           children: [
             InkWell(

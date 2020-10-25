@@ -112,7 +112,7 @@ class _ZBottomSheetState extends State<ZBottomSheet> {
                         ],
                       ),
                     SizedBox(
-                      height: 22,
+                      height: 35,
                     )
                   ]),
             ),

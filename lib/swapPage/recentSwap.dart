@@ -130,13 +130,21 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                       bottomRight: true,
                                                       radius: 60,
                                                     ),
-                                                    child: CachedNetworkImage(
-                                                      height: 60,
-                                                      width: 60,
-                                                      imageUrl: objProfileModel.data.photoUrl,
-                                                      placeholder: (context, url) => CircularProgressIndicator(),
-                                                      errorWidget: (context, url, error) => Icon(Icons.error),
-                                                    ),
+                                                    child: 
+                                                    CircleAvatar(
+                                                      radius: 35.0,
+                                                      backgroundImage:
+                                                          NetworkImage(objProfileModel.data.photoUrl),
+                                                      backgroundColor: Colors.transparent,
+                                                    )
+                                                    
+                                                    //  CachedNetworkImage(
+                                                    //   height: 60,
+                                                    //   width: 60,
+                                                    //   imageUrl: objProfileModel.data.photoUrl,
+                                                    //   placeholder: (context, url) => CircularProgressIndicator(),
+                                                    //   errorWidget: (context, url, error) => Icon(Icons.error),
+                                                    // ),
                                                   ),
                                                   SizedBox(
                                                     width: 15,
@@ -288,7 +296,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 5),
+        padding: const EdgeInsets.only(left: 20, right: 15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

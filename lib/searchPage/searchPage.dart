@@ -106,6 +106,34 @@ class _SearchPageState extends State<SearchPage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                    InkWell(  //makes whole card tappable (should refactor as function later)
+                      onTap: () async {
+                        var obj = await ApiProvider().getProfileDetail(data[index].userId);
+            
+                        if(lst.contains(data[index].userId)){ 
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserProfilePage(
+                                userProfile: obj,
+                              ),
+                            ),
+                          );
+                        print("view swapped user");
+                      }
+                      else{ 
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RequestPage(
+                              objUserPhone: data[index],
+                            ),
+                          ),
+                        );
+                        print("locked user");
+                      }
+                    },
+                    child: 
                       Padding(
                         padding: const EdgeInsets.only(left: 14, right: 14),
                         child: Row(
@@ -126,13 +154,21 @@ class _SearchPageState extends State<SearchPage> {
                                             bottomRight: true,
                                             radius: 60,
                                           ),
-                                          child: CachedNetworkImage(
-                                            height: 60,
-                                            width: 60,
-                                            imageUrl: globals.objProfile.photoUrl,
-                                            placeholder: (context, url) => CircularProgressIndicator(),
-                                            errorWidget: (context, url, error) => Icon(Icons.error),
-                                          ),
+                                          child: 
+                                          CircleAvatar(
+                                            radius: 35.0,
+                                            backgroundImage:
+                                                NetworkImage(data[index].photoUrl),
+                                            backgroundColor: Colors.transparent,
+                                          )
+                                          
+                                          //  CachedNetworkImage(
+                                          //   height: 60,
+                                          //   width: 60,
+                                          //   imageUrl: objProfileModel.data.photoUrl,
+                                          //   placeholder: (context, url) => CircularProgressIndicator(),
+                                          //   errorWidget: (context, url, error) => Icon(Icons.error),
+                                          // ),
                                         ),
                                         SizedBox(
                                           width: 25,
@@ -160,7 +196,7 @@ class _SearchPageState extends State<SearchPage> {
                                                  ),
                                                 ),
                                               );
-                                            print("swapped user");
+                                            print("view swapped user");
                                           }
                                         
 
@@ -194,7 +230,8 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                           ],
                         ),
-                      ),
+                      )
+                    ),
                       SizedBox(
                         height: 15,
                       ),
@@ -246,10 +283,12 @@ class UserPhone {
   String lastName;
   String userPhone;
   String userId;
+  String photoUrl;
 
   UserPhone({
     this.userName = "",
     this.userPhone = "",
+    this.photoUrl = "",
     this.userId = "",
     this.firstName = "",
     this.lastName = "",
@@ -260,6 +299,7 @@ class UserPhone {
     return UserPhone(
       userName: data['userName'] ?? '',
       userPhone: data['phone'] ?? '',
+      photoUrl: data['photoUrl'] ?? '',
       userId: data['userId'] ?? '',
       firstName: data['firstName'] ?? '',
       lastName: data['lastName'] ?? '',

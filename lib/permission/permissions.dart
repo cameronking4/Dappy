@@ -8,6 +8,20 @@ class Permissions {
       Permission.camera,
     ].request();
 
+    if (await Permission.contacts.isPermanentlyDenied ) {
+    // The user opted to never again see the permission request dialog for this
+    // app. The only way to change the permission's status now is to let the
+    // user manually enable it in the system settings.
+    openAppSettings();
+    }
+
+      if (await Permission.camera.isPermanentlyDenied ) {
+    // The user opted to never again see the permission request dialog for this
+    // app. The only way to change the permission's status now is to let the
+    // user manually enable it in the system settings.
+    openAppSettings();
+    }
+
     if (statuses[Permission.location] == PermissionStatus.granted &&
         statuses[Permission.contacts] == PermissionStatus.granted &&
         statuses[Permission.camera] == PermissionStatus.granted) {

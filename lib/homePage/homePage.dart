@@ -1,11 +1,12 @@
 import 'dart:typed_data';
 import 'dart:ui';
-
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:share/share.dart';
 import 'package:swapTech/constance/global.dart' as globals;
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:flutter/material.dart';
@@ -277,7 +278,56 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
       ),
-    );
+      floatingActionButton:
+      isSearch ? null :  
+      SpeedDial(
+          // both default to 16
+          marginRight: 18,
+          marginBottom: 20,
+          // animatedIcon: AnimatedIcons.add_event,
+          // animatedIconTheme: IconThemeData(size: 22.0),
+          // this is ignored if animatedIcon is non null
+          child: Icon(Icons.share),
+          // If true user is forced to close dial manually 
+          // by tapping main button and overlay is not rendered.
+          closeManually: true,
+          curve: Curves.bounceInOut,
+          overlayColor: Colors.black,
+          overlayOpacity: 0.5,
+          onOpen: () => print('OPENING DIAL'),
+          onClose: () => print('DIAL CLOSED'),
+          tooltip: 'Speed Dial',
+          heroTag: 'speed-dial-hero-tag',
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          elevation: 10.0,
+          shape: CircleBorder(),
+          children: [
+            SpeedDialChild(
+              child: Icon(Icons.account_balance_wallet_rounded),
+              backgroundColor: Colors.purple,
+              label: 'Add to Wallet',
+              labelStyle: TextStyle(fontSize: 18.0),
+              onTap: () => print('Download QR Code')
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.link),
+              backgroundColor: Colors.orange,
+              label: 'Share Private Link',
+              labelStyle: TextStyle(fontSize: 18.0),
+              onTap: () => shareUserLink(globals.objProfile.userId, globals.objProfile.token),
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.qr_code_scanner_rounded),
+              backgroundColor: Colors.pink,
+              label: 'Scan QR Code',
+              labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
+              onTap: () => scanQrCode(),
+            ),
+          ],
+        ),
+     floatingActionButtonLocation: FloatingActionButtonLocation.endDocked
+     );
   }
 
   Widget barCodeScreen() {
@@ -297,7 +347,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 5),
+            padding: const EdgeInsets.only(left: 20, right: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -310,7 +360,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.black,
                   ),
                 ),
-                Expanded(child: SizedBox()),
+                Expanded(child: SizedBox( width: 30,)),
                 SizedBox(
                   height: 70,
                   child: Image.asset(
@@ -348,8 +398,8 @@ class _HomePageState extends State<HomePage> {
                     data: globals.objProfile.userId,
                     version: QrVersions.auto,
                     gapless: true,
-                    embeddedImage: AssetImage(ConstanceData.appLogo),
-                    embeddedImageStyle: QrEmbeddedImageStyle(size: Size.square(75)),
+                    embeddedImage:  NetworkImage(globals.objProfile.photoUrl),
+                    embeddedImageStyle: QrEmbeddedImageStyle(size: Size.square(65)),
                     size: 275.0,
                   ),
                   Container(
@@ -369,16 +419,29 @@ class _HomePageState extends State<HomePage> {
                   ),
                   ),
                 ),
-                Text(globals.objProfile.userName , 
-                    style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15,
-                    fontFamily: 'Gotham-Medium',
-                    fontWeight: FontWeight.bold,
+                 SizedBox(
+                    height: 8,
                   ),
-                ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Text(
+                        " " + globals.objProfile.userName + " " ,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
+                        overflow: TextOverflow.visible,
+                        maxLines: 3,
+                      ),
+                    ),
+                  ),
                   SizedBox(
-                    height: 60,
+                    height: 50,
                   ),
                   InkWell(
                     onTap: () {
@@ -441,6 +504,16 @@ class _HomePageState extends State<HomePage> {
       return false;
     }
   }
+
+  shareUserLink(userId, token ) {
+    final RenderBox box = context.findRenderObject();
+    Share.share(
+      'Check out my link https://dappyweb.web.app/' + token + "/" + userId + " !",
+      subject: 'This private link has all my contact info and socials :)',
+      sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size
+    );
+  }
+
 
   scanQrCode() async {
     setState(() {

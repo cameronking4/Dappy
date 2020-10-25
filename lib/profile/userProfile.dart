@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+import 'package:network_image_to_byte/network_image_to_byte.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -125,13 +127,22 @@ class UserProfilePageState extends State<UserProfilePage> {
                               bottomRight: true,
                               radius: 130,
                             ),
-                            child: CachedNetworkImage(
-                              height: 130,
-                              width: 130,
-                              imageUrl: widget.userProfile.photoUrl,
-                              placeholder: (context, url) => CircularProgressIndicator(),
-                              errorWidget: (context, url, error) => Icon(Icons.error),
-                            ),
+                            child:
+                            CircleAvatar(
+                              radius: 80.0,
+                              backgroundImage:
+                                  NetworkImage(widget.userProfile.photoUrl),
+                              backgroundColor: Colors.black,
+                            )
+                            
+                            
+                            //  CachedNetworkImage(
+                            //   // height: 130,
+                            //   // width: 130,
+                            //   imageUrl: widget.userProfile.photoUrl,
+                            //   placeholder: (context, url) => CircularProgressIndicator(),
+                            //   errorWidget: (context, url, error) => Icon(Icons.error),
+                            // ),
                           ),
                           Expanded(
                             child: Padding(
@@ -263,7 +274,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     onTap: () {
                                       _launchTwitter(widget.userProfile.twitter);
                                     },
-                                    child: Image.asset('assets/images/tiktok.png'),
+                                    child: Image.asset('assets/images/twitter.png'),
                                   ),
                             widget.userProfile.cashapp == ''
                                 ? Container()
@@ -271,7 +282,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     onTap: () {
                                       _launchCashapp(widget.userProfile.cashapp);
                                     },
-                                    child: Image.asset('assets/images/tiktok.png'),
+                                    child: Image.asset('assets/images/cashapp.png'),
                                   ),
                             widget.userProfile.website == ''
                                 ? Container()
@@ -279,7 +290,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     onTap: () {
                                       _launchWebsite(widget.userProfile.website);
                                     },
-                                    child: Image.asset('assets/images/tiktok.png'),
+                                    child: Image.asset('assets/images/website.png'),
                                   ),
                           ],
                         ),
@@ -287,30 +298,32 @@ class UserProfilePageState extends State<UserProfilePage> {
                       widget.userProfile.userId == globals.objProfile.userId ?
                       Container() :
                       Container(
-                width: 300,
-                height: 50,
-                margin: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black,
-                      offset: Offset(5, 5), //(x,y)
+                      width: 300,
+                      height: 50,
+                      margin: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(),
+                        boxShadow: [
+                        BoxShadow(
+                          color: Colors.black,
+                          offset: Offset(5, 5), //(x,y)
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: FlatButton(
-                  onPressed: () async {
-                     print("saving !");
-                     var newContact = Contact(
-                      //  displayName: widget.userProfile.firstName,
-                       givenName: widget.userProfile.firstName,
-                       familyName: widget.userProfile.lastName,
-                     );
+                    child: FlatButton(
+                      onPressed: () async {
+                        print("saving !");
+                        var newContact = Contact(
+                          //  displayName: widget.userProfile.firstName,
+                          givenName: widget.userProfile.firstName,
+                          familyName: widget.userProfile.lastName,
+                        );
                      newContact.emails = [ Item(label: "home", value: widget.userProfile.email)];
                      newContact.company = "Dappy.io";
+                     Uint8List byteImage = await networkImageToByte(widget.userProfile.photoUrl);
+                     newContact.avatar = byteImage;
                      newContact.phones = [Item(label: "mobile", value: widget.userProfile.phone)];
                      await ContactsService.addContact(newContact);
                    
