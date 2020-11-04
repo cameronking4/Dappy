@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/components/z_select_single_image.dart';
 import 'package:swapTech/constance/constance.dart';
-import 'package:swapTech/main.dart';
+import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -43,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String typedLinkedin = '';
   String typedVenmo = '';
   String typedTikTok = '';
-   String typedEmail = '';
+  String typedEmail = '';
 
   FirebaseUser firebaseUser;
   final FirebaseMessaging _fcm = FirebaseMessaging();
@@ -60,7 +61,8 @@ class _ProfilePageState extends State<ProfilePage> {
     bool permissionStatus = await checkPermission();
     if (permissionStatus) {
       //upload Contact
-      Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
+      Iterable<Contact> contacts =
+          await ContactsService.getContacts(withThumbnails: false);
       List<Contact> contactsList = contacts.toList();
 
       contactsList.forEach((element) {
@@ -100,7 +102,8 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       isProgress = true;
     });
-    objProfileModel = await ApiProvider().getProfileDetail(globals.objProfile.userId);
+    objProfileModel =
+        await ApiProvider().getProfileDetail(globals.objProfile.userId);
 
     _firstNameController.text = objProfileModel.firstName;
     _lastNameController.text = objProfileModel.lastName;
@@ -120,9 +123,9 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-
   @override
   void initState() {
+    print("WE're INSIDE PROFILE PAGE");
     _firstNameController.addListener(_typedFirstname);
     _usernameController.addListener(_typedUsername);
     _lastNameController.addListener(_typedLastname);
@@ -133,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _linkedinController.addListener(_typedLinkedin);
     _venmoController.addListener(_typedVenmo);
     _tiktokController.addListener(_typedTikTok);
-    contactPermission();
+    // contactPermission();
     super.initState();
   }
 
@@ -196,33 +199,38 @@ class _ProfilePageState extends State<ProfilePage> {
               child: ListView(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20, bottom: MediaQuery.of(context).padding.bottom + 24),
+                    padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        bottom: MediaQuery.of(context).padding.bottom + 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ZSelectSingleImage(
-                        height: 150,
-                        width: 150,
-                        isEnabled: true,
-                        imageFile: newProfileImage,
-                        imageUrl: globals.objProfile.photoUrl,
-                        borderRadius: BorderRadius.circular(100),
-                        onImageChange: (res) {
-                        newProfileImage = res;
-                        ApiProvider().updateUserProfilePhoto(profile: globals.objProfile, file: newProfileImage);
-                        setState(() {});
-                      }),
-                      SizedBox(
+                            height: 150,
+                            width: 150,
+                            isEnabled: true,
+                            imageFile: newProfileImage,
+                            imageUrl: globals.objProfile?.photoUrl ?? "",
+                            borderRadius: BorderRadius.circular(100),
+                            onImageChange: (res) {
+                              newProfileImage = res;
+                              ApiProvider().updateUserProfilePhoto(
+                                  profile: globals.objProfile,
+                                  file: newProfileImage);
+                              setState(() {});
+                            }),
+                        SizedBox(
                           height: 20,
-                      ),
-                      Text(
+                        ),
+                        Text(
                           'Tap to Change Profile Photo',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.black,
-                                  fontSize: 15,
-                                  fontFamily: 'Gotham-Medium',
+                            fontSize: 15,
+                            fontFamily: 'Gotham-Medium',
                           ),
                         ),
                         SizedBox(
@@ -245,7 +253,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -254,19 +263,22 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.addressCard, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.addressCard,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
                                     keyboardType: TextInputType.name,
-                                    textCapitalization: TextCapitalization.words,
+                                    textCapitalization:
+                                        TextCapitalization.words,
                                     autocorrect: false,
                                     controller: _firstNameController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your Firstname',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -282,8 +294,12 @@ class _ProfilePageState extends State<ProfilePage> {
                             center: Alignment.centerLeft,
                             radius: 6.0,
                             colors: [
-                              this.firstName == '' ? Colors.grey : Colors.blueGrey[50],
-                              this.firstName == '' ? Colors.grey : Colors.blueGrey[100],
+                              this.firstName == ''
+                                  ? Colors.grey
+                                  : Colors.blueGrey[50],
+                              this.firstName == ''
+                                  ? Colors.grey
+                                  : Colors.blueGrey[100],
                             ],
                             tileMode: TileMode.clamp,
                           ).createShader(bounds),
@@ -295,7 +311,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -304,19 +321,22 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.addressCard, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.addressCard,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
                                   flex: 7,
                                   child: TextField(
                                     keyboardType: TextInputType.name,
-                                    textCapitalization: TextCapitalization.words,
+                                    textCapitalization:
+                                        TextCapitalization.words,
                                     autocorrect: false,
                                     controller: _lastNameController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your Lastname',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -332,8 +352,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 6.0,
                                   colors: [
-                                    this.lastName == '' ? Colors.grey : Colors.blueGrey[100],
-                                    this.lastName == '' ? Colors.grey : Colors.blueGrey[200],
+                                    this.lastName == ''
+                                        ? Colors.grey
+                                        : Colors.blueGrey[100],
+                                    this.lastName == ''
+                                        ? Colors.grey
+                                        : Colors.blueGrey[200],
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -345,7 +369,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -354,7 +379,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.userTag, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.userTag,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -365,7 +391,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     controller: _usernameController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your UserName',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -381,8 +408,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 6.0,
                                   colors: [
-                                    this.userName == '' ? Colors.grey : Colors.lightBlue[200],
-                                    this.userName == '' ? Colors.grey : Colors.deepPurple[100],
+                                    this.userName == ''
+                                        ? Colors.grey
+                                        : Colors.lightBlue[200],
+                                    this.userName == ''
+                                        ? Colors.grey
+                                        : Colors.deepPurple[100],
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -394,7 +425,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -403,7 +435,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.inbox, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.inbox,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -414,7 +447,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     controller: _emailController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Your Email',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -430,8 +464,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 6.0,
                                   colors: [
-                                    this.email == '' ? Colors.grey : Colors.deepPurple[50],
-                                    this.email == '' ? Colors.grey : Colors.deepPurple[200],
+                                    this.email == ''
+                                        ? Colors.grey
+                                        : Colors.deepPurple[50],
+                                    this.email == ''
+                                        ? Colors.grey
+                                        : Colors.deepPurple[200],
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -443,7 +481,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -452,7 +491,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.instagram, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.instagram,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -463,7 +503,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     controller: _instagramController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Instagram Username',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -479,8 +520,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 6.0,
                                   colors: [
-                                    this.typedInstagram == '' ? Colors.grey : Colors.orange,
-                                    this.typedInstagram == '' ? Colors.grey : Colors.purple,
+                                    this.typedInstagram == ''
+                                        ? Colors.grey
+                                        : Colors.orange,
+                                    this.typedInstagram == ''
+                                        ? Colors.grey
+                                        : Colors.purple,
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -492,7 +537,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -501,7 +547,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.snapchat, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.snapchat,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -512,7 +559,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     autocorrect: false,
                                     decoration: InputDecoration(
                                       hintText: 'Type Snapchat Username',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -528,8 +576,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.center,
                                   radius: 12.0,
                                   colors: [
-                                    this.typedSnapchat == '' ? Colors.grey : Colors.yellow,
-                                    this.typedSnapchat == '' ? Colors.grey : Colors.black,
+                                    this.typedSnapchat == ''
+                                        ? Colors.grey
+                                        : Colors.yellow,
+                                    this.typedSnapchat == ''
+                                        ? Colors.grey
+                                        : Colors.black,
                                   ],
                                   tileMode: TileMode.repeated)
                               .createShader(bounds),
@@ -541,7 +593,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -550,7 +603,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.facebookF, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.facebookF,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -561,7 +615,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     controller: _facebookController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Facebook ID',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -577,8 +632,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 10.0,
                                   colors: [
-                                    this.typedFacebook == '' ? Colors.grey : Colors.lightBlue,
-                                    this.typedFacebook == '' ? Colors.grey : Colors.purple,
+                                    this.typedFacebook == ''
+                                        ? Colors.grey
+                                        : Colors.lightBlue,
+                                    this.typedFacebook == ''
+                                        ? Colors.grey
+                                        : Colors.purple,
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -590,7 +649,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -599,7 +659,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.linkedin, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.linkedin,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -610,7 +671,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     controller: _linkedinController,
                                     decoration: InputDecoration(
                                       hintText: 'Type LinkedIn ID',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -626,8 +688,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 8.0,
                                   colors: [
-                                    this.typedLinkedin == '' ? Colors.grey : Colors.lightBlueAccent,
-                                    this.typedLinkedin == '' ? Colors.grey : Colors.blue,
+                                    this.typedLinkedin == ''
+                                        ? Colors.grey
+                                        : Colors.lightBlueAccent,
+                                    this.typedLinkedin == ''
+                                        ? Colors.grey
+                                        : Colors.blue,
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -639,7 +705,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -648,7 +715,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.vimeoSquare, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.vimeoSquare,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -659,7 +727,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     controller: _venmoController,
                                     decoration: InputDecoration(
                                       hintText: 'Type Venmo ID',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -675,8 +744,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 8.0,
                                   colors: [
-                                    this.typedVenmo == '' ? Colors.grey : Colors.red,
-                                    this.typedVenmo == '' ? Colors.grey : Colors.black38,
+                                    this.typedVenmo == ''
+                                        ? Colors.grey
+                                        : Colors.red,
+                                    this.typedVenmo == ''
+                                        ? Colors.grey
+                                        : Colors.black38,
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -688,7 +761,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             height: 75.0,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.white,
                             ),
                             child: Row(
@@ -697,7 +771,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.algolia, color: Colors.black87, size: 40.0),
+                                    child: FaIcon(FontAwesomeIcons.algolia,
+                                        color: Colors.black87, size: 40.0),
                                   ),
                                 ),
                                 Expanded(
@@ -708,7 +783,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     controller: _tiktokController,
                                     decoration: InputDecoration(
                                       hintText: 'Type TikTok Username',
-                                      hintStyle: TextStyle(color: Colors.black87),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -724,8 +800,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   center: Alignment.centerLeft,
                                   radius: 8.0,
                                   colors: [
-                                    this.typedTikTok == '' ? Colors.grey : Colors.pink[300],
-                                    this.typedTikTok == '' ? Colors.grey : Colors.lightBlueAccent,
+                                    this.typedTikTok == ''
+                                        ? Colors.grey
+                                        : Colors.pink[300],
+                                    this.typedTikTok == ''
+                                        ? Colors.grey
+                                        : Colors.lightBlueAccent,
                                   ],
                                   tileMode: TileMode.clamp)
                               .createShader(bounds),
@@ -734,20 +814,24 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 15,
                         ),
                         InkWell(
-                          onTap: () async{
+                          onTap: () async {
                             print(_usernameController.text.trim());
-                            final valid = await ApiProvider().usernameCheck(_usernameController.text.trim());
+                            final valid = await ApiProvider()
+                                .usernameCheck(_usernameController.text.trim());
                             print(valid);
                             if (!valid) {
-                                Fluttertoast.showToast(msg: "Username already taken :(!");
-                                  // username exists
-                              }
-                            else{ save();}
+                              Fluttertoast.showToast(
+                                  msg: "Username already taken :(!");
+                              // username exists
+                            } else {
+                              save();
+                            }
                           },
                           child: Container(
                             height: 75,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
                               color: Colors.black,
                             ),
                             child: Row(
@@ -767,7 +851,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   flex: 7,
                                   child: Text(
                                     "Create Profile!",
-                                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16.0),
                                   ),
                                 ),
                               ],
@@ -785,7 +870,6 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-
 
   save() async {
     if (isValid()) {
@@ -818,21 +902,24 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           isProgress = false;
         });
-        Navigator.pushReplacementNamed(context, Routes.HOME);
+        Get.to(HomePage());
       }
     }
   }
 
   bool isValid() {
-    if (_firstNameController.text.trim() == null || _firstNameController.text.trim() == "") {
+    if (_firstNameController.text.trim() == null ||
+        _firstNameController.text.trim() == "") {
       Fluttertoast.showToast(msg: "Please, Enter First Name");
       return false;
     }
-    if (_lastNameController.text.trim() == null || _lastNameController.text.trim() == "") {
+    if (_lastNameController.text.trim() == null ||
+        _lastNameController.text.trim() == "") {
       Fluttertoast.showToast(msg: "Please, Enter Last Name");
       return false;
     }
-    if (_usernameController.text.trim() == null || _usernameController.text.trim() == "") {
+    if (_usernameController.text.trim() == null ||
+        _usernameController.text.trim() == "") {
       Fluttertoast.showToast(msg: "Please, Enter a User Name");
       return false;
     }
@@ -894,6 +981,7 @@ class _ProfilePageState extends State<ProfilePage> {
   _typedVenmo() {
     this.typedVenmo = _venmoController.text;
   }
+
   _typedEmail() {
     this.typedEmail = _emailController.text;
   }
