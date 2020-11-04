@@ -1,15 +1,19 @@
 import 'dart:typed_data';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:network_image_to_byte/network_image_to_byte.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/drawerPage/drawerPage.dart';
 import 'package:swapTech/model/profileModel.dart';
+import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:swapTech/constance/global.dart' as globals;
+import 'package:intl/intl.dart';
 
 showAlertDialog(BuildContext context) {
   // set up the button
@@ -40,188 +44,366 @@ showAlertDialog(BuildContext context) {
 
 class UserProfilePage extends StatefulWidget {
   final ProfileModel userProfile;
+  final SwapModel swapModel;
 
-  UserProfilePage({this.userProfile});
+  UserProfilePage({this.userProfile, this.swapModel});
   UserProfilePageState createState() => UserProfilePageState();
 }
 
 class UserProfilePageState extends State<UserProfilePage> {
   bool isSearch = false;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool hasSaved = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: DrawerPage(),
-      body: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).padding.top,
-            color: Colors.black,
-          ),
-          Container(
-            height: 150,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      _scaffoldKey.currentState.openDrawer();
-                    },
-                    child: Image.asset(
-                      ConstanceData.drawerIcon,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Expanded(child: SizedBox()),
-                  SizedBox(
-                    height: 80,
-                    child: Image.asset(
-                      ConstanceData.appLogo,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Expanded(child: SizedBox()),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        isSearch = true;
-                      });
-                    },
-                    child: Image.asset(
-                      ConstanceData.searchIcon,
-                      color: Colors.black,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 16.0),
-                  child: Column(
+    Size size = MediaQuery.of(context).size;
+                return Scaffold(
+                  backgroundColor: Colors.grey[50],
+                  key: _scaffoldKey,
+                  drawer: DrawerPage(),
+                  body: Stack(
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(),
+                      Center(
+                        child: Image.network(
+                          widget.userProfile.photoUrl,
+                          fit: BoxFit.fitHeight,
+                          width: size.width,
+                          height: size.height,
+                        ),
+                      ),
+                      Container(
+                        height: 115,
+                        margin: EdgeInsets.symmetric(),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
                           ),
-                          ClipPath(
-                            clipper: TopBarClipper(
-                              topLeft: true,
-                              topRight: true,
-                              bottomLeft: true,
-                              bottomRight: true,
-                              radius: 130,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  _scaffoldKey.currentState.openDrawer();
+                                },
+                                child: Image.asset(
+                                  ConstanceData.drawerIcon,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              SizedBox(
+                                height: 55,
+                                child: Image.asset(
+                                  ConstanceData.appLogo,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isSearch = true;
+                                  });
+                                },
+                                child: Image.asset(
+                                  ConstanceData.searchIcon,
+                                  color: Colors.transparent,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20,),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Card(
+                            color: Colors.white,
+                            margin: EdgeInsets.all(0),
+                            clipBehavior: Clip.antiAlias,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            child:
-                            CircleAvatar(
-                              radius: 80.0,
-                              backgroundImage:
-                                  NetworkImage(widget.userProfile.photoUrl),
-                              backgroundColor: Colors.black,
-                            )
-                            
-                            
-                            //  CachedNetworkImage(
-                            //   // height: 130,
-                            //   // width: 130,
-                            //   imageUrl: widget.userProfile.photoUrl,
-                            //   placeholder: (context, url) => CircularProgressIndicator(),
-                            //   errorWidget: (context, url, error) => Icon(Icons.error),
-                            // ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                            elevation: 9,
+                            child: Container(
+                              height: size.height * 0.79,
+                              padding: EdgeInsets.symmetric(vertical:12, horizontal: 8),
+                              child: ListView(
                                 children: <Widget>[
-                                  // InkWell(
-                                  //   onTap: () {
-                                  //     _sendSMS(widget.userProfile.phone);
-                                  //   },
-                                  //   child: Image.asset('assets/images/message.png'),
-                                  // ),
-                                  // Padding(
-                                  //   padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                                  //   child: InkWell(
-                                  //     onTap: () {
-                                  //       _sendEmail(widget.userProfile.email);
-                                  //     },
-                                  //     child: Image.asset('assets/images/mail.png'),
-                                  //   ),
-                                  // ),
-                                  // InkWell(
-                                  //   onTap: () {
-                                  //     _makeCall(widget.userProfile.phone);
-                                  //   },
-                                  //   child: Image.asset('assets/images/telephone.png'),
-                                  // ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(blurRadius: 5, color: Colors.grey, spreadRadius: 2)
+                                              ],
+                                            ),
+                                            child:
+                                            CircleAvatar(
+                                              radius: 40,
+                                              backgroundImage: NetworkImage(widget.userProfile.photoUrl),
+                                            )
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                // if user is itself (global)
+                                                widget.userProfile.userId == globals.objProfile.userId ?
+                                                Container() :  // ELSE ADD/VIEW CONTACTS
+                                                hasSaved == true ? //if saved, open in contacts
+                                                  Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.lightBlue,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey.withOpacity(0.4),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 5,
+                                                        offset: Offset(0, 5), // changes position of shadow
+                                                      ),
+                                                    ],
+                                                    borderRadius: BorderRadius.all(
+                                                      Radius.circular(20),
+                                                    ),
+                                                  ),
+                                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12,),
+                                                  child: InkWell( 
+                                                    onTap: () async {
+                                                        await ContactsService.openDeviceContactPicker();
+                                                        },
+                                                    child: Center(
+                                                      child: 
+                                                      Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                      children: const <Widget>[
+                                                      Icon(
+                                                        Icons.contacts,
+                                                        color: Colors.white,
+                                                        size: 24.0,
+                                                        semanticLabel: 'View in Contacts',
+                                                      ),
+                                                      Text(
+                                                      "  View in Contacts",
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                    ]
+                                                  )
+                                                  ),
+                                                ),
+                                                ): //if user has saved already and swap user has not updated
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.green,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey.withOpacity(0.4),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 5,
+                                                        offset: Offset(0, 5), // changes position of shadow
+                                                      ),
+                                                    ],
+                                                    borderRadius: BorderRadius.all(
+                                                      Radius.circular(20),
+                                                    ),
+                                                  ),
+                                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12,),
+                                                  child: InkWell( 
+                                                    onTap: () async {
+                                                        print("saving !");
+                                                        var newContact = Contact(
+                                                          //  displayName: widget.userProfile.firstName,
+                                                          givenName: widget.userProfile.firstName,
+                                                          familyName: widget.userProfile.lastName,
+                                                          );
+                                                        newContact.emails = [ Item(label: "home", value: widget.userProfile.email)];
+                                                        newContact.company = "Dappy.io";
+                                                        Uint8List byteImage = await networkImageToByte(widget.userProfile.photoUrl);
+                                                        newContact.avatar = byteImage;
+                                                        newContact.phones = [Item(label: "mobile", value: widget.userProfile.phone)];
+                                                        await ContactsService.addContact(newContact);
+                                                        hasSaved = true;
+                                                        setState(() {
+                                                          showAlertDialog(context);
+                                                          hasSaved = true;
+                                                        });},
+                                                    child: Center(
+                                                      child: 
+                                                      Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                      children: const <Widget>[
+                                                      Icon(
+                                                        Icons.cloud_download,
+                                                        color: Colors.white,
+                                                        size: 24.0,
+                                                        semanticLabel: 'Save to Contacts',
+                                                      ),
+                                                      Text(
+                                                      "  Save to Contacts",
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                    ]
+                                                  )
+                                                  ),
+                                                ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 8,
+                                        ),
+                                        Text(
+                                          widget.userProfile.firstName + " " + widget.userProfile.lastName ,
+                                          style: TextStyle(
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Text(
+                                         "id: " + widget.userProfile.userName,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.blueGrey,
+                                            fontWeight: FontWeight.w500
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Text(
+                                          "Swapped " + widget.swapModel.locationAddreess + " " + readTimestamp(widget.swapModel.createdAt),
+                                           style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.black,
+                              ),
+                            ),
+    
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Container(
+                        height: 64,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Container(
+                              width: 110,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+
+                                  Text(
+                                    "CALL", 
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  InkWell(
+                                  onTap: (){ _makeCall(widget.userProfile.phone);},
+                                  child:
+                                  Image.asset('assets/images/telephone.png')
+                                  )
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(width: 270, child: 
-                      Text(widget.userProfile.firstName + ' ' + widget.userProfile.lastName,
-                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center, maxLines: 4,)), 
-                      Text(widget.userProfile.userName,
-                          style: TextStyle(fontSize: 12.0)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                              onTap: () {
-                                _sendSMS(widget.userProfile.phone);
-                              },
-                              child: Image.asset('assets/images/message.png'),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 10.0, bottom: 10.0, right: 15, left: 15),
-                              child: InkWell(
-                                onTap: () {
-                                  _sendEmail(widget.userProfile.email);
-                                },
-                                child: Image.asset('assets/images/mail.png'),
+
+                            Container(
+                              width: 110,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    "TEXT", 
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  InkWell(
+                                  onTap: (){ _sendSMS(widget.userProfile.phone);},
+                                  child:
+                                  Image.asset('assets/images/message.png')
+                                  )
+                                ],
                               ),
                             ),
-                            InkWell(
-                              onTap: () {
-                                _makeCall(widget.userProfile.phone);
-                              },
-                              child: Image.asset('assets/images/telephone.png'),
-                            )
+                            Container(
+                              width: 110,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    "EMAIL", 
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  InkWell(
+                                  onTap: (){ _sendEmail(widget.userProfile.email);},
+                                  child:
+                                  Image.asset('assets/images/mail.png'))
+                                ],
+                              ),
+                            ),
 
-                      ],),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20.0),
-                        child: Wrap(
+                          ],
+                        ),
+                      ),
+
+                    Divider(
+                        color: Colors.grey[400],
+                      ),
+
+                      Wrap(
                           direction: Axis.horizontal,
-                          spacing: 10.0,
-                          runSpacing: 10.0,
+                          spacing: 5.0,
+                          runSpacing: 5.0,
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: <Widget>[
                             widget.userProfile.instagram == ''
-                                ? Container()
+                                ? SizedBox(width:0)
                                 : InkWell(
                                     onTap: () {
                                       _launchInstagram(widget.userProfile.instagram);
@@ -229,7 +411,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     child: Image.asset('assets/images/instagram.png'),
                                   ),
                             widget.userProfile.snapchat == ''
-                                ? Container()
+                                ? SizedBox(width:0)
                                 : InkWell(
                                     onTap: () {
                                       _launchSnapchat(widget.userProfile.snapchat);
@@ -237,7 +419,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     child: Image.asset('assets/images/snapchat.png'),
                                   ),
                             widget.userProfile.facebook == ''
-                                ? Container()
+                                ? SizedBox(width:0)
                                 : InkWell(
                                     onTap: () {
                                       _launchFacebook(widget.userProfile.facebook);
@@ -245,7 +427,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     child: Image.asset('assets/images/facebook.png'),
                                   ),
                             widget.userProfile.linkedin == ''
-                                ? Container()
+                                ? SizedBox(width:0)
                                 : InkWell(
                                     onTap: () {
                                       _launchLinkedin(widget.userProfile.linkedin);
@@ -253,7 +435,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     child: Image.asset('assets/images/linkedin.png'),
                                   ),
                             widget.userProfile.venmo == ''
-                                ? Container()
+                                ? SizedBox(width:0)
                                 : InkWell(
                                     onTap: () {
                                       _launchVenmo(widget.userProfile.venmo);
@@ -261,7 +443,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     child: Image.asset('assets/images/venmo.png'),
                                   ),
                             widget.userProfile.tiktok == ''
-                                ? Container()
+                                ? SizedBox(width:0)
                                 : InkWell(
                                     onTap: () {
                                       _launchTiktok(widget.userProfile.tiktok);
@@ -269,7 +451,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     child: Image.asset('assets/images/tiktok.png'),
                                   ),
                             widget.userProfile.twitter == ''
-                                ? Container()
+                                ? SizedBox(width:0)
                                 : InkWell(
                                     onTap: () {
                                       _launchTwitter(widget.userProfile.twitter);
@@ -277,7 +459,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     child: Image.asset('assets/images/twitter.png'),
                                   ),
                             widget.userProfile.cashapp == ''
-                                ? Container()
+                                ? SizedBox(width:0)
                                 : InkWell(
                                     onTap: () {
                                       _launchCashapp(widget.userProfile.cashapp);
@@ -285,7 +467,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     child: Image.asset('assets/images/cashapp.png'),
                                   ),
                             widget.userProfile.website == ''
-                                ? Container()
+                                ? SizedBox(width:0)
                                 : InkWell(
                                     onTap: () {
                                       _launchWebsite(widget.userProfile.website);
@@ -293,56 +475,13 @@ class UserProfilePageState extends State<UserProfilePage> {
                                     child: Image.asset('assets/images/website.png'),
                                   ),
                           ],
-                        ),
                       ),
-                      widget.userProfile.userId == globals.objProfile.userId ?
-                      Container() :
-                      Container(
-                      width: 300,
-                      height: 50,
-                      margin: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(),
-                        boxShadow: [
-                        BoxShadow(
-                          color: Colors.black,
-                          offset: Offset(5, 5), //(x,y)
-                        ),
-                      ],
-                    ),
-                    child: FlatButton(
-                      onPressed: () async {
-                        print("saving !");
-                        var newContact = Contact(
-                          //  displayName: widget.userProfile.firstName,
-                          givenName: widget.userProfile.firstName,
-                          familyName: widget.userProfile.lastName,
-                        );
-                     newContact.emails = [ Item(label: "home", value: widget.userProfile.email)];
-                     newContact.company = "Dappy.io";
-                     Uint8List byteImage = await networkImageToByte(widget.userProfile.photoUrl);
-                     newContact.avatar = byteImage;
-                     newContact.phones = [Item(label: "mobile", value: widget.userProfile.phone)];
-                     await ContactsService.addContact(newContact);
-                   
-                    setState(() {
-                      showAlertDialog(context);
-                    });
-                   
-                    // await ContactsService.openExistingContact(newContact);
-                 },
-                  child: Text(
-                    "Save to Contacts",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              )
+                     Expanded(child: Container(),),
+                    
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ],
@@ -357,6 +496,38 @@ class UserProfilePageState extends State<UserProfilePage> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  String readTimestamp(int timestamp) {
+    var now = new DateTime.now();
+    var format = DateFormat('HH:mm a');
+    var date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    var diff = now.difference(date);
+    var time = '';
+    print(diff);
+    print(diff.inDays);
+
+    if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
+      time = format.format(date);
+    } else if (diff.inDays > 0 && diff.inDays < 7) {
+      if (diff.inDays <= 1) {
+        if (diff.inHours <= 24) {
+        time = (diff.inHours).floor().toString() + ' hours ago';
+        }
+        else{
+        time = diff.inDays.toString() + ' day ago';}
+      } else {
+        time = diff.inDays.toString() + ' days ago';
+      }
+    } else {
+      if ((diff.inDays / 7).floor() == 1) {
+        time = (diff.inDays / 7).floor().toString() + ' week ago';
+      } else {
+        time = (diff.inDays / 7).floor().toString() + ' weeks ago';
+      }
+    }
+    print(time);
+    return time;
   }
 
   _launchSnapchat(link) async {

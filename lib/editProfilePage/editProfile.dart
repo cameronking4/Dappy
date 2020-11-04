@@ -726,7 +726,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     autofocus: false,
                                     controller: _cashappController,
                                     decoration: InputDecoration(
-                                      hintText: 'Type CashApp ID (no dollar sign)',
+                                      hintText: 'CashApp ID (no dollar sign)',
                                       hintStyle: TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
@@ -826,7 +826,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     autofocus: false,
                                     controller: _websiteController,
                                     decoration: InputDecoration(
-                                      hintText: 'Website Link (ex. dappy.com)',
+                                      hintText: 'Website (ex. dappy.com)',
                                       hintStyle: TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,

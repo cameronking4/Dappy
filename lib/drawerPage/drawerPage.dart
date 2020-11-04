@@ -8,10 +8,12 @@ import 'package:swapTech/apiProvider/apiServices.dart';
 import 'package:swapTech/components/z_select_single_image.dart';
 import 'package:swapTech/constance/global.dart' as globals;
 import 'package:swapTech/editProfilePage/editProfile.dart';
+import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/main.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/notificationPage/notificationPage.dart';
+import 'package:swapTech/searchPage/searchPage.dart';
 import 'package:swapTech/swapPage/recentSwap.dart';
 
 class DrawerPage extends StatefulWidget {
@@ -26,10 +28,13 @@ class _DrawerPageState extends State<DrawerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Container(
-        color: Colors.black,
-        child: ListView(
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+          topRight: Radius.circular(0), bottomRight: Radius.circular(80)),
+      child: Drawer(
+       child: Container(
+          color: Colors.black,
+          child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             SizedBox(
@@ -41,7 +46,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
-                    ZSelectSingleImage(
+                   ZSelectSingleImage(
                       height: 150,
                       width: 150,
                       isEnabled: true,
@@ -105,6 +110,36 @@ class _DrawerPageState extends State<DrawerPage> {
               height: 2.0,
               color: Colors.white,
             ),
+            // InkWell(
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => HomePage(),
+            //       ),
+            //     );
+            //   },
+            // //   child: Container(
+            // //     color: Colors.black,
+            // //     child: ListTile(
+            // //       contentPadding: EdgeInsets.symmetric(vertical: 6.0),
+            // //       title: Text(
+            // //         'Search for Friends',
+            // //         style: TextStyle(
+            // //           fontSize: 14.0,
+            // //           fontFamily: 'Gotham-Light',
+            // //           fontWeight: FontWeight.bold,
+            // //           color: Colors.white,
+            // //         ),
+            // //         textAlign: TextAlign.center,
+            // //       ),
+            // //     ),
+            // //   ),
+            // // ),
+            // // Divider(
+            // //   height: 2.0,
+            // //   color: Colors.white,
+            // // ),
             InkWell(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePage()));
@@ -264,6 +299,7 @@ class _DrawerPageState extends State<DrawerPage> {
           ],
         ),
       ),
+    )
     );
   }
 }

@@ -1,9 +1,12 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:network_image_to_byte/network_image_to_byte.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/drawerPage/drawerPage.dart';
@@ -135,13 +138,13 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                       bottomRight: true,
                                                       radius: 60,
                                                     ),
-                                                    child: CachedNetworkImage(
-                                                      width: 60,
-                                                      imageUrl: objProfileModel.data.photoUrl,
-                                                      placeholder: (context, url) => CircularProgressIndicator(),
-                                                      errorWidget: (context, url, error) => Icon(Icons.error),
-                                                    ),
-                                                  ),
+                                                    child: 
+                                                    CircleAvatar(
+                                                      radius: 35.0,
+                                                      backgroundImage:
+                                                          NetworkImage(objProfileModel.data.photoUrl),
+                                                      backgroundColor: Colors.transparent,
+                                                    )),
                                                   SizedBox(
                                                     width: 8,
                                                   ),
@@ -200,7 +203,7 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                               lstNotification[index].isAccept = true;
                                                               lstNotification[index].declined = false;
                                                               await updateRequest(lstNotification[index]);
-                                                              swapModel.locationAddreess = "Via Search";
+                                                              swapModel.locationAddreess = "via search request";
                                                               swapModel.userId = lstNotification[index].userId;
                                                               swapModel.swapuserId = lstNotification[index].requestUserId;
                                                               await performSwap(swapModel);
@@ -326,11 +329,28 @@ class _NotificationDetailState extends State<NotificationDetail> {
     });
   }
 
+  addToContacts(userID) async {
+    final obj = await ApiProvider().getProfileDetail(userID);
+    print("saving !");
+    var newContact = Contact(
+      //  displayName: widget.userProfile.firstName,
+      givenName: obj.firstName,
+      familyName: obj.lastName,
+    );
+    newContact.emails = [ Item(label: "home", value: obj.email)];
+    newContact.company = "Dappy.io";
+    Uint8List byteImage = await networkImageToByte(obj.photoUrl);
+    newContact.avatar = byteImage;
+    newContact.phones = [Item(label: "mobile", value: obj.phone)];
+    await ContactsService.addContact(newContact);
+  }
+
    Future performSwap(SwapModel swapModel) async {
     setState(() {
       isProgress = true;
     });
     await ApiProvider().swapUserProfile(swapModel);
+    addToContacts(swapModel.swapuserId);
     setState(() {
       isProgress = false;
     });

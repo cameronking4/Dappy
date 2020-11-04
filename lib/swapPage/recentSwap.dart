@@ -110,6 +110,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                           MaterialPageRoute(
                                             builder: (context) => UserProfilePage(
                                               userProfile: objProfileModel.data,
+                                              swapModel: lstSwapModel[index],
                                             ),
                                           ),);
                                         }, 
@@ -167,13 +168,13 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                         ),
                                                         Container(
                                                           decoration: BoxDecoration(
-                                                            color: Colors.grey,
+                                                            color: Colors.black54,
                                                             borderRadius: BorderRadius.circular(10),
                                                           ),
                                                           child: Padding(
                                                             padding: const EdgeInsets.all(3.0),
                                                             child: Text(
-                                                              objProfileModel.data.userName,
+                                                              " " + objProfileModel.data.userName + " ",
                                                               style: TextStyle(
                                                                 color: Colors.white,
                                                                 fontSize: 13.0,
@@ -191,7 +192,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                          builder: (context) => UserProfilePage(userProfile: objProfileModel.data),
+                                                          builder: (context) => UserProfilePage(userProfile: objProfileModel.data, swapModel: lstSwapModel[index] ,),
                                                         ),
                                                       );
                                                     },

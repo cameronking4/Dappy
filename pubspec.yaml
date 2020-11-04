@@ -46,12 +46,15 @@ dependencies:
   google_fonts: ^0.3.10
   flutter_image_compress: ^0.6.3
   flutter_icons: ^1.0.0+1
-  fluttertoast: ^4.0.1
+  fluttertoast: ^7.1.1
   dio: ^3.0.10
+  intl: ^0.16.1
+  esys_flutter_share: ^1.0.2
   flutter_advanced_networkimage: any
   # algolia: ^0.1.7
   native_contact_dialog: ^0.2.2
   flutter_country_picker: ^0.1.6
+  # flutter_nearby_connections: ^0.0.5
 
 dev_dependencies:
   flutter_test:

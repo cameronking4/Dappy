@@ -6,7 +6,7 @@ import UserNotifications
 import FirebaseInstanceID
 
 @UIApplicationMain
-@objc class AppDelegate: FlutterAppDelegate {
+ @objc class AppDelegate: FlutterAppDelegate {
     
     
 //    override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

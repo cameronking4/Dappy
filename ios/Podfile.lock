@@ -267,6 +267,8 @@ PODS:
   - DKPhotoGallery/Resource (0.0.17):
     - SDWebImage
     - SwiftyGif
+  - esys_flutter_share (0.0.1):
+    - Flutter
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
@@ -366,6 +368,7 @@ PODS:
     - SDWebImageWebPCoder
   - fluttertoast (0.0.2):
     - Flutter
+    - Toast
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -486,6 +489,7 @@ PODS:
     - FMDB (~> 2.7.2)
   - SwiftProtobuf (1.12.0)
   - SwiftyGif (5.3.0)
+  - Toast (4.0.0)
   - url_launcher (0.0.1):
     - Flutter
 
@@ -494,6 +498,7 @@ DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
+  - esys_flutter_share (from `.symlinks/plugins/esys_flutter_share/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -554,6 +559,7 @@ SPEC REPOS:
     - SDWebImageWebPCoder
     - SwiftProtobuf
     - SwiftyGif
+    - Toast
 
 EXTERNAL SOURCES:
   barcode_scan:
@@ -564,6 +570,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity/ios"
   contacts_service:
     :path: ".symlinks/plugins/contacts_service/ios"
+  esys_flutter_share:
+    :path: ".symlinks/plugins/esys_flutter_share/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   firebase_auth:
@@ -617,6 +625,7 @@ SPEC CHECKSUMS:
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
+  esys_flutter_share: 403498dab005b36ce1f8d7aff377e81f0621b0b4
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Firebase: c23a36d9e4cdf7877dfcba8dd0c58add66358999
   firebase_auth: af8784c4d8d87c36f730a305f97bfbcb24db024b
@@ -635,7 +644,7 @@ SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_country_picker: b73efbc3f1b01519adb99bf8635865737b9422df
   flutter_image_compress: 082f8daaf6c1b0c9fe798251c750ef0ecd98d7ae
-  fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
+  fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
   geolocator: f7622e0e7e2a24718285b73916d60c4a54b9f5b6
@@ -668,6 +677,7 @@ SPEC CHECKSUMS:
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   SwiftProtobuf: 4ef85479c18ca85b5482b343df9c319c62bda699
   SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
 PODFILE CHECKSUM: 4a9d72f9142dc86c5926a98a4054802133465090

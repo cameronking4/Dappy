@@ -271,7 +271,7 @@ class ApiProvider {
     return result.documents.isEmpty;
   }
 
-  Future<List<String>> getSwapLocation(userID) async {
+    Future<List<String>> getSwapLocation(userID) async {
     List<String> strings = [];
     try {
       //check userID
@@ -315,6 +315,49 @@ class ApiProvider {
     }
     return strings;
   }
+
+  Future<SwapModel> getSwapModel(userId) async {
+    var swapModel =  new SwapModel();
+    try {
+      //check userID
+      await Firestore.instance
+          .collection('Swap')
+          .where("userId", isEqualTo: globals.objProfile.userId)
+          .where("swapuserId", isEqualTo: userId)
+          .limit(1)
+          .getDocuments()
+          .then((onValue) {
+        if (onValue.documents.length > 0) {
+          onValue.documents.forEach((snapshotdata) {
+            final data = SwapModel.parseSnapshot(snapshotdata);
+            swapModel = data;
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+    try {
+      //check swapuserId
+      await Firestore.instance
+          .collection('Swap')
+          .where("swapuserId", isEqualTo: globals.objProfile.userId)
+          .where("userId", isEqualTo: userId)
+          .limit(1)
+          .getDocuments()
+          .then((onValue) {
+        if (onValue.documents.length > 0) {
+          onValue.documents.forEach((snapshotdata) {
+            final data = SwapModel.parseSnapshot(snapshotdata);
+            swapModel = data;
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+    return swapModel;
+    }
 
   Future<List<String>> getSwapsIds() async {
     List<String> strings = [];

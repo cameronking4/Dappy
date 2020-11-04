@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
+import 'package:swapTech/drawerPage/drawerPage.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/profile/profile.dart';
@@ -30,6 +31,12 @@ class _SearchPageState extends State<SearchPage> {
 
   List<SwapModel> lstSwapModel = [];
   List<String> lst = [];
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  // bool isSearch = false;
+  SwapModel objSwapModel;
+
+  bool isProgress = false;
+
 
   getData() async {
     lst = await ApiProvider().getSwapsIds();
@@ -45,10 +52,27 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return Scaffold(
+      key: _scaffoldKey,
+      drawer: DrawerPage(),
+      body: ModalProgressHUD(
+        inAsyncCall: isProgress,
+        progressIndicator: CircularProgressIndicator(
+          strokeWidth: 2.0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: MediaQuery.of(context).padding.top + 10,
+              // height: 75,
+              color: Colors.black,
+            ),
+          appBar(),
+          Expanded(
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Container(
             padding: EdgeInsets.only(top: 10.0, left: 16.0),
             child: Text('Find Users', style: TextStyle(color: Colors.black87, fontSize: 18.0, fontWeight: FontWeight.bold)),
@@ -109,14 +133,13 @@ class _SearchPageState extends State<SearchPage> {
                     InkWell(  //makes whole card tappable (should refactor as function later)
                       onTap: () async {
                         var obj = await ApiProvider().getProfileDetail(data[index].userId);
-                        var swapObj = await ApiProvider().getSwapModel(data[index].userId);
+            
                         if(lst.contains(data[index].userId)){ 
                           Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => UserProfilePage(
                                 userProfile: obj,
-                                swapModel: swapObj,
                               ),
                             ),
                           );
@@ -211,9 +234,7 @@ class _SearchPageState extends State<SearchPage> {
                                               ),
                                             );
                                             print("locked user");
-                                            }
-
-                                            
+                                            } 
                                           },
                                           child: Text(
                                             'View Details',
@@ -243,7 +264,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
           )
         ],
-      ),
+          ))])),
     );
   }
 

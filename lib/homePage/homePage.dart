@@ -1,12 +1,18 @@
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:contacts_service/contacts_service.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'dart:ui';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:share/share.dart';
+import 'package:network_image_to_byte/network_image_to_byte.dart';
+// import 'package:share/share.dart';
 import 'package:swapTech/constance/global.dart' as globals;
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +30,9 @@ import 'package:swapTech/profile/userProfile.dart';
 import 'package:swapTech/searchPage/searchPage.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
 import 'package:location/location.dart' as locationPlugin;
+import 'dart:async';
+import 'package:path_provider/path_provider.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -40,6 +49,8 @@ class _HomePageState extends State<HomePage> {
   String qrCodeData;
   String connection = "";
   String barCode = "";
+
+  GlobalKey globalKey = new GlobalKey();
 
   SwapModel swapModel = SwapModel();
   ProfileModel profile;
@@ -285,15 +296,15 @@ class _HomePageState extends State<HomePage> {
           marginRight: 18,
           marginBottom: 20,
           // animatedIcon: AnimatedIcons.add_event,
-          // animatedIconTheme: IconThemeData(size: 22.0),
+          animatedIconTheme: IconThemeData(size: 22.0),
           // this is ignored if animatedIcon is non null
           child: Icon(Icons.share),
           // If true user is forced to close dial manually 
           // by tapping main button and overlay is not rendered.
-          closeManually: true,
-          curve: Curves.bounceInOut,
-          overlayColor: Colors.black,
-          overlayOpacity: 0.5,
+          closeManually: false,
+          curve: Curves.easeInOutExpo,
+          overlayColor: Colors.white,
+           overlayOpacity: 0.8,
           onOpen: () => print('OPENING DIAL'),
           onClose: () => print('DIAL CLOSED'),
           tooltip: 'Speed Dial',
@@ -303,25 +314,40 @@ class _HomePageState extends State<HomePage> {
           elevation: 10.0,
           shape: CircleBorder(),
           children: [
+             SpeedDialChild(
+              child: Icon(Icons.mic_outlined),
+              backgroundColor: Colors.lightBlue,
+              elevation: 8,
+              label: 'Add Siri Shortcut',
+              labelBackgroundColor: Colors.lightBlue,
+              labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
+              onTap: () => launchSiriShortcut()
+            ),
             SpeedDialChild(
               child: Icon(Icons.account_balance_wallet_rounded),
               backgroundColor: Colors.purple,
-              label: 'Add to Wallet',
-              labelStyle: TextStyle(fontSize: 18.0),
-              onTap: () => print('Download QR Code')
+              elevation: 8,
+              label: 'Export QR to Photos',
+              labelBackgroundColor: Colors.purple,
+              labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
+              onTap: () => exportQRcode()
             ),
             SpeedDialChild(
               child: Icon(Icons.link),
               backgroundColor: Colors.orange,
+              elevation: 8,
               label: 'Share Private Link',
-              labelStyle: TextStyle(fontSize: 18.0),
+              labelBackgroundColor: Colors.orange,
+              labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
               onTap: () => shareUserLink(globals.objProfile.userId, globals.objProfile.token),
             ),
             SpeedDialChild(
               child: Icon(Icons.qr_code_scanner_rounded),
               backgroundColor: Colors.pink,
+              elevation: 8,
               label: 'Scan QR Code',
-              labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
+              labelBackgroundColor: Colors.pink,
+              labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
               onTap: () => scanQrCode(),
             ),
           ],
@@ -391,25 +417,39 @@ class _HomePageState extends State<HomePage> {
             : SizedBox(),
         isSearch
             ? SearchPage()
-            : Column(
+            :  Column(
               mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+              children: [
+              RepaintBoundary(
+              key: globalKey,
+              child:
+              Card( 
+                elevation: 4,
+                shadowColor: Colors.black,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child:
                   QrImage(
                     data: globals.objProfile.userId,
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black87,
                     version: QrVersions.auto,
                     gapless: true,
                     embeddedImage:  NetworkImage(globals.objProfile.photoUrl),
                     embeddedImageStyle: QrEmbeddedImageStyle(size: Size.square(65)),
-                    size: 275.0,
-                  ),
-                  Container(
+                    size: 325.0,
+                ))
+                )
+              ),
+              SizedBox(height:20),
+                Container(
                   width:250, 
                   child:
                   Center(child:
                     Text(globals.objProfile.firstName + " " + globals.objProfile.lastName, 
                       style: TextStyle(
                       color: Colors.black,
-                      fontSize: 18,
+                      fontSize: 20,
                       fontFamily: 'Gotham-Medium',
                       fontWeight: FontWeight.bold,
                     ),
@@ -441,7 +481,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   SizedBox(
-                    height: 50,
+                    height: 30,
                   ),
                   InkWell(
                     onTap: () {
@@ -505,21 +545,64 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  shareUserLink(userId, token ) {
-    final RenderBox box = context.findRenderObject();
-    Share.share(
-      'Check out my link https://dappyweb.web.app/' + token + "/" + userId + " !",
-      subject: 'This private link has all my contact info and socials :)',
-      sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size
-    );
+  launchSiriShortcut() async{
+    var url = 'https://www.icloud.com/shortcuts/3ba77293fc6a4540b0dfae8e2ee8168f';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch Siri Shortcut';
+    }
   }
 
+  shareUserLink(userId, token ) {
+    // final RenderBox box = context.findRenderObject();
+     Share.text( 'Check out my link',
+          'This private link has all my contact info and socials: https://dappy.me/'+
+          globals.objProfile.token + "/"+ globals.objProfile.userId, 'text/plain');
+      // Share.share(
+      // 'Check out my link https://dappyweb.web.app/' + token + "/" + userId + " !",
+      // subject: 'This private link has all my contact info and socials :)',
+      // sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size );
+  }
 
+  exportQRcode()  async {
+    try {
+      RenderRepaintBoundary boundary = globalKey.currentContext.findRenderObject();
+      var image = await boundary.toImage();
+      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final file = await new File('${tempDir.path}/image.png').create();
+      await file.writeAsBytes(pngBytes);
+
+      await Share.file('https://dappyweb.web.app/' + globals.objProfile.token + "/" + globals.objProfile.userId, 'MYQRCODE.png', pngBytes, 'image/png');
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+  addToContacts(userID) async {
+    final obj = await ApiProvider().getProfileDetail(userID);
+    print("saving !");
+    var newContact = Contact(
+      //  displayName: widget.userProfile.firstName,
+      givenName: obj.firstName,
+      familyName: obj.lastName,
+    );
+    newContact.emails = [ Item(label: "home", value: obj.email)];
+    newContact.company = "Dappy.io";
+    Uint8List byteImage = await networkImageToByte(obj.photoUrl);
+    newContact.avatar = byteImage;
+    newContact.phones = [Item(label: "mobile", value: obj.phone)];
+    await ContactsService.addContact(newContact);
+  }
+
+  
   scanQrCode() async {
     setState(() {
       _isLoding = true;
     });
-    
       // Get Location Address
 
       try {
@@ -536,7 +619,7 @@ class _HomePageState extends State<HomePage> {
           _locationData = await location.getLocation();
           final coordinates = new Coordinates(_locationData.latitude, _locationData.longitude);
           var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-          swapModel.locationAddreess = addresses.first.addressLine;
+          swapModel.locationAddreess = "@ " + addresses.first.addressLine;
          }
           else {
            await checkPermission();
@@ -546,6 +629,7 @@ class _HomePageState extends State<HomePage> {
           swapModel.swapuserId = barcode.rawContent;
           
           await ApiProvider().swapUserProfile(swapModel);
+          addToContacts(swapModel.swapuserId);
           setState(() {
             _isLoding = false;
           });
