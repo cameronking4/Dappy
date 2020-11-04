@@ -1,13 +1,12 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
-
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:image_picker/image_picker.dart';
 import 'package:swapTech/components/z_bottom_sheet.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 typedef Null ValueChangeCallback(File value);
 typedef Null ValueChangeCallbackDeleteImg(bool value);
@@ -168,13 +167,22 @@ class _ZSelectSingleImageState extends State<ZSelectSingleImage> {
 
   Future getImage(bool isCamera) async {
     File _imageFile;
+
     if (isCamera) {
       _imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
     } else {
       _imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
       print("Selected Gallery click");
     }
-    widget.onImageChange(_imageFile ?? widget.imageFile);
+
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: _imageFile.path,
+      cropStyle: CropStyle.circle,
+      maxWidth: 1000,
+      maxHeight: 1000
+    );
+    
+    widget.onImageChange(croppedFile ?? widget.imageFile);
     setState(() {});
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:network_image_to_byte/network_image_to_byte.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,8 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/drawerPage/drawerPage.dart';
+import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/model/swapModel.dart';
+import 'package:swapTech/swapPage/recentSwap.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -42,15 +45,14 @@ showAlertDialog(BuildContext context) {
   );
 }
 
-class UserProfilePage extends StatefulWidget {
+class MyProfilePage extends StatefulWidget {
   final ProfileModel userProfile;
-  final SwapModel swapModel;
 
-  UserProfilePage({this.userProfile, this.swapModel});
-  UserProfilePageState createState() => UserProfilePageState();
+  MyProfilePage({this.userProfile,});
+  MyProfilePageState createState() => MyProfilePageState();
 }
 
-class UserProfilePageState extends State<UserProfilePage> {
+class MyProfilePageState extends State<MyProfilePage> {
   bool isSearch = false;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool hasSaved = false;
@@ -82,7 +84,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                           child: Row(
                             children: [
                               InkWell(
@@ -95,12 +97,21 @@ class UserProfilePageState extends State<UserProfilePage> {
                                 ),
                               ),
                               Expanded(child: SizedBox()),
-                              SizedBox(
+                              InkWell( 
+                                onTap: () {
+                                Navigator.push(context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomePage()
+                                    )
+                                  );
+                                }, 
+                                child: SizedBox(
                                 height: 55,
                                 child: Image.asset(
                                   ConstanceData.appLogo,
                                   fit: BoxFit.cover,
                                 ),
+                              )
                               ),
                               Expanded(child: SizedBox()),
                               InkWell(
@@ -164,11 +175,9 @@ class UserProfilePageState extends State<UserProfilePage> {
                                                 ),
                                                 // if user is itself (global)
                                                 widget.userProfile.userId == globals.objProfile.userId ?
-                                                Container() :  // ELSE ADD/VIEW CONTACTS
-                                                hasSaved == true ? //if saved, open in contacts
-                                                  Container(
+                                                Container(
                                                   decoration: BoxDecoration(
-                                                    color: Colors.lightBlue,
+                                                    color: Colors.pink,
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Colors.grey.withOpacity(0.4),
@@ -184,7 +193,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12,),
                                                   child: InkWell( 
                                                     onTap: () async {
-                                                        await ContactsService.openDeviceContactPicker();
+                                                         shareUserLink(globals.objProfile.userId, globals.objProfile.token);
                                                         },
                                                     child: Center(
                                                       child: 
@@ -192,13 +201,13 @@ class UserProfilePageState extends State<UserProfilePage> {
                                                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                       children: const <Widget>[
                                                       Icon(
-                                                        Icons.contacts,
+                                                        Icons.ios_share,
                                                         color: Colors.white,
                                                         size: 24.0,
-                                                        semanticLabel: 'View in Contacts',
+                                                        semanticLabel: 'Share Link',
                                                       ),
                                                       Text(
-                                                      "  View in Contacts",
+                                                      "  Share Link",
                                                       style: TextStyle(
                                                         fontSize: 18,
                                                         color: Colors.white,
@@ -208,68 +217,11 @@ class UserProfilePageState extends State<UserProfilePage> {
                                                   )
                                                   ),
                                                 ),
-                                                ): //if user has saved already and swap user has not updated
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.green,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey.withOpacity(0.4),
-                                                        spreadRadius: 2,
-                                                        blurRadius: 5,
-                                                        offset: Offset(0, 5), // changes position of shadow
-                                                      ),
-                                                    ],
-                                                    borderRadius: BorderRadius.all(
-                                                      Radius.circular(20),
-                                                    ),
-                                                  ),
-                                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12,),
-                                                  child: InkWell( 
-                                                    onTap: () async {
-                                                        print("saving !");
-                                                        var newContact = Contact(
-                                                          //  displayName: widget.userProfile.firstName,
-                                                          givenName: widget.userProfile.firstName,
-                                                          familyName: widget.userProfile.lastName,
-                                                          );
-                                                        newContact.emails = [ Item(label: "home", value: widget.userProfile.email)];
-                                                        newContact.company = "Dappy.io";
-                                                        Uint8List byteImage = await networkImageToByte(widget.userProfile.photoUrl);
-                                                        newContact.avatar = byteImage;
-                                                        newContact.phones = [Item(label: "mobile", value: widget.userProfile.phone)];
-                                                        await ContactsService.addContact(newContact);
-                                                        hasSaved = true;
-                                                        setState(() {
-                                                          showAlertDialog(context);
-                                                          hasSaved = true;
-                                                        });},
-                                                    child: Center(
-                                                      child: 
-                                                      Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                      children: const <Widget>[
-                                                      Icon(
-                                                        Icons.cloud_download,
-                                                        color: Colors.white,
-                                                        size: 24.0,
-                                                        semanticLabel: 'Save to Contacts',
-                                                      ),
-                                                      Text(
-                                                      "  Save to Contacts",
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        color: Colors.white,
-                                                      ),
-                                                    )
-                                                    ]
-                                                  )
-                                                  ),
-                                                ),
+                                                ) :  
+                                                Container()
+                                              ]
                                                 ),
                                               ],
-                                            ),
-                                          ],
                                         ),
                                         SizedBox(
                                           height: 8,
@@ -297,7 +249,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                                           height: 6,
                                         ),
                                         Text(
-                                          "Swapped " + widget.swapModel.locationAddreess + " " + readTimestamp(widget.swapModel.createdAt),
+                                          "Joined Swappy " + readTimestamp(widget.userProfile.createdAt),
                                            style: TextStyle(
                                             fontSize: 13,
                                             color: Colors.black,
@@ -487,6 +439,17 @@ class UserProfilePageState extends State<UserProfilePage> {
         ],
       ),
     );
+  }
+
+   shareUserLink(userId, token ) {
+    // final RenderBox box = context.findRenderObject();
+     Share.text( 'Check out my link',
+          'This private link has all my contact info and socials: https://dappy.me/'+
+          globals.objProfile.token + "/"+ globals.objProfile.userId, 'text/plain');
+      // Share.share(
+      // 'Check out my link https://dappyweb.web.app/' + token + "/" + userId + " !",
+      // subject: 'This private link has all my contact info and socials :)',
+      // sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size );
   }
 
   _launchInstagram(link) async {

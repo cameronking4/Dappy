@@ -10,7 +10,7 @@ import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/constance/global.dart' as globals;
 import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/model/profileModel.dart';
-import 'package:swapTech/profile/userProfile.dart';
+import 'package:swapTech/profile/myProfile.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -146,12 +146,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    InkWell( 
+                      onTap: () {
+                      Navigator.push(context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage()
+                          )
+                        );
+                      }, 
+                      child: SizedBox(
                       height: 55,
                       child: Image.asset(
                         ConstanceData.appLogo,
                         fit: BoxFit.cover,
                       ),
+                    )
                     ),
                   ],
                 ),
@@ -218,7 +227,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   flex: 3,
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: FaIcon(FontAwesomeIcons.addressCard, color: Colors.black87, size: 40.0),
+                                    child: Tooltip(message: "i.e John", child:FaIcon(FontAwesomeIcons.addressCard, color: Colors.black87, size: 40.0)),
                                   ),
                                 ),
                                 Expanded(
@@ -229,7 +238,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     autocorrect: false,
                                     controller: _firstNameController,
                                     decoration: InputDecoration(
-                                      hintText: 'Type Your Firstname',
+                                      hintText: 'Type Your First Name',
                                       hintStyle: TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
@@ -279,7 +288,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     textCapitalization: TextCapitalization.words,
                                     controller: _lastNameController,
                                     decoration: InputDecoration(
-                                      hintText: 'Type Your Lastname',
+                                      hintText: 'Type Your Last Name',
                                       hintStyle: TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
@@ -329,7 +338,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     autofocus: false,
                                     controller: _usernameController,
                                     decoration: InputDecoration(
-                                      hintText: 'Type Your UserName',
+                                      hintText: 'Type Your User Name',
                                       hintStyle: TextStyle(color: Colors.black87),
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
@@ -946,12 +955,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
           isProgress = false;
         });
         Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserProfilePage(userProfile: globals.objProfile,),
-                  ),
-                );
-              }
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyProfilePage(userProfile: globals.objProfile,),
+            ),
+          );
+        }
       }
   }
 
