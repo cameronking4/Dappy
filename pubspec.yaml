@@ -42,6 +42,7 @@ dependencies:
   image_cropper: ^1.0.2
   image_picker: ^0.6.7+4
   intl: ^0.16.1
+  let_log: ^1.1.4
   location: ^3.0.2
   mask_text_input_formatter: ^1.0.7
   modal_progress_hud: ^0.1.3

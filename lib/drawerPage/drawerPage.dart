@@ -1,21 +1,17 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
-import 'package:swapTech/apiProvider/apiServices.dart';
 import 'package:swapTech/components/z_select_single_image.dart';
 import 'package:swapTech/constance/global.dart' as globals;
 import 'package:swapTech/editProfilePage/editProfile.dart';
 import 'package:swapTech/homePage/homePage.dart';
-import 'package:swapTech/main.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/notificationPage/notificationPage.dart';
 import 'package:swapTech/providers/auth_provider.dart';
-import 'package:swapTech/searchPage/searchPage.dart';
 import 'package:swapTech/swapPage/recentSwap.dart';
 
 class DrawerPage extends StatefulWidget {
@@ -32,7 +28,9 @@ class _DrawerPageState extends State<DrawerPage> {
   Widget build(BuildContext context) {
     return ClipRRect(
         borderRadius: BorderRadius.only(
-            topRight: Radius.circular(0), bottomRight: Radius.circular(80)),
+          topRight: Radius.circular(0),
+          bottomRight: Radius.circular(80),
+        ),
         child: Drawer(
           child: Container(
             color: Colors.black,
@@ -92,7 +90,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, Routes.HOME);
+                    Get.offAll(HomePage());
                   },
                   child: Container(
                     color: Colors.black,

@@ -8,42 +8,26 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:872574258487:android:a0bad35bce113468731eb2",
+        "mobilesdk_app_id": "1:872574258487:android:2af4ac2936ef5732731eb2",
         "android_client_info": {
-          "package_name": "com.gitterhive.swaptact"
+          "package_name": "com.gitterhive.swapTech"
         }
       },
       "oauth_client": [
         {
-          "client_id": "872574258487-ca00a97vq5nh086rihu6nii3asjf7tt2.apps.googleusercontent.com",
+          "client_id": "872574258487-04hc973f1p80r25qqi11q1ign8c7n9ep.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.gitterhive.swaptact",
-            "certificate_hash": "7964fbd843a6ba06e0a19f8fc87c22aef68412fb"
-          }
-        },
-        {
-          "client_id": "872574258487-dmdk5jl8k5cpkpjobn1v0mfjceq308ge.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.gitterhive.swaptact",
-            "certificate_hash": "2cce4aec7181ebfadb7eb603793ab28983e77cc4"
-          }
-        },
-        {
-          "client_id": "872574258487-4eqf16btoq6iv46csjjsdrieipfjoflb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.gitterhive.swaptact",
-            "certificate_hash": "25582c7735a84a1edfdb45f55a5bc7d8140913b1"
-          }
-        },
-        {
-          "client_id": "872574258487-up5jh5okj6ihemof5o31phmkl43g39t3.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.gitterhive.swaptact",
+            "package_name": "com.gitterhive.swapTech",
             "certificate_hash": "bfa3f0ebc4753b35c00dbdd52ba489a01f76165c"
+          }
+        },
+        {
+          "client_id": "872574258487-m0av02laoci09abd5khvcto8mts2rda7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gitterhive.swapTech",
+            "certificate_hash": "3d0266ceda78b113c6cb4fde36f3b1b88358eb7b"
           }
         },
         {

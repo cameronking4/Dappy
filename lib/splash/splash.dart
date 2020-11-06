@@ -6,6 +6,8 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:let_log/let_log.dart';
+import 'package:provider/provider.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/main.dart';
@@ -13,6 +15,8 @@ import 'package:swapTech/model/playLoadNotification.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/constance/global.dart' as globals;
 import 'package:swapTech/permission/permissions.dart';
+import 'package:swapTech/providers/auth_provider.dart';
+import 'package:swapTech/providers/dynamic_link_provider.dart';
 import 'package:swapTech/requestPage/requestPage.dart';
 import 'package:swapTech/searchPage/searchPage.dart';
 
@@ -22,6 +26,22 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  // DynamicLinkProvider dynamicLinkProvider = DynamicLinkProvider();
+
+  // @override
+  // void initState() {
+  //   WidgetsBinding.instance.addPostFrameCallback(dynamicLinkChecker);
+  //   super.initState();
+  // }
+
+  // dynamicLinkChecker(_) async {
+  //   final linkStatus = await dynamicLinkProvider.completer.future;
+  //   Logger.debug("LINK STATUS:", linkStatus);
+  //   if (linkStatus == LinkStatus.NoLink) {
+  //     context.read<AuthProvider>().dynamicLinkCheckCompleter.complete(false);
+  //   }
+  // }
+
   // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   // final Completer<bool> dynamicLinkCompleter = Completer<bool>();
 
@@ -30,7 +50,7 @@ class _SplashPageState extends State<SplashPage> {
   //       onSuccess: (PendingDynamicLinkData dynamicLink) async {
   //     final Uri deepLink = dynamicLink?.link;
   //     print(deepLink.pathSegments);
-  //     print("HERE IS THE DEEP LINK $deepLink");
+  // print("HERE IS THE DEEP LINK $deepLink");
   //     final userId = deepLink.pathSegments.first;
   //     print("USER ID $userId");
   //     var doc;

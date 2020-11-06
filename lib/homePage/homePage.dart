@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:let_log/let_log.dart';
+import 'package:provider/provider.dart';
+import 'package:swapTech/providers/dynamic_link_provider.dart';
 import 'dart:ui';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -36,6 +40,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class HomePage extends StatefulWidget {
+  final bool shouldCallSwipe;
+
+  const HomePage({
+    Key key,
+    this.shouldCallSwipe = false,
+  }) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -69,6 +79,15 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     enumSwapPageStatus = SwapPageStatus.Home;
     updateFCMTken();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Logger.log("SHOULD CALL SWIPE", widget.shouldCallSwipe);
+      if (widget.shouldCallSwipe) {
+        final userId = context.read<DynamicLinkProvider>().linkShareUserId;
+        Logger.log("linkShareUserId", userId);
+        scanQrCode(dynamicLinkUserId: userId);
+      }
+    });
   }
 
   updateFCMTken() async {
@@ -183,7 +202,8 @@ class _HomePageState extends State<HomePage> {
                         );
                       }
                     }
-                  })
+                  },
+                )
               : ListView(
                   padding: EdgeInsets.all(0),
                   children: [
@@ -297,12 +317,14 @@ class _HomePageState extends State<HomePage> {
                           EdgeInsets.only(left: 32.0, right: 32.0, top: 16.0),
                       child: RaisedButton(
                         padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
-                        child: Text("Dismiss",
-                            style: TextStyle(
-                                fontSize: 18.0,
-                                fontFamily: 'Gotham-Light',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54)),
+                        child: Text(
+                          "Dismiss",
+                          style: TextStyle(
+                              fontSize: 18.0,
+                              fontFamily: 'Gotham-Light',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
                         onPressed: () async {
                           setState(() {
                             _isLoding = true;
@@ -470,13 +492,13 @@ class _HomePageState extends State<HomePage> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         child: QrImage(
-                          data: globals.objProfile.userId,
+                          data: globals.objProfile?.userId,
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black87,
                           version: QrVersions.auto,
                           gapless: true,
                           embeddedImage:
-                              NetworkImage(globals.objProfile.photoUrl),
+                              NetworkImage(globals.objProfile?.photoUrl ?? ""),
                           embeddedImageStyle:
                               QrEmbeddedImageStyle(size: Size.square(65)),
                           size: 325.0,
@@ -601,17 +623,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   shareUserLink(userId, token) async {
-    final userId = globals.objProfile.userId;
+    final userId = (await FirebaseAuth.instance.currentUser()).uid;
 
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://dappy.page.link',
-      link: Uri.parse('https://dappy.page.link/$userId'),
+      link: Uri.parse('https://dappy.me/$userId'),
       androidParameters: AndroidParameters(
         packageName: 'com.gitterhive.swapTech',
-        fallbackUrl: Uri.parse("https://dappy.page.link/$userId"),
+        fallbackUrl: Uri.parse("https://dappy.me/$userId"),
       ),
     );
     final link = await parameters.buildShortLink();
+    print(link.shortUrl.toString());
+    print(link.warnings);
 
     Share.text(
       'Check out my link',
@@ -669,14 +693,20 @@ class _HomePageState extends State<HomePage> {
     await ContactsService.addContact(newContact);
   }
 
-  scanQrCode() async {
+  scanQrCode({String dynamicLinkUserId}) async {
     setState(() {
       _isLoding = true;
     });
     // Get Location Address
 
     try {
-      ScanResult barcode = await BarcodeScanner.scan();
+      ScanResult barcode;
+      if (dynamicLinkUserId == null) {
+        barcode = await BarcodeScanner.scan();
+      } else {
+        barcode = ScanResult(rawContent: dynamicLinkUserId);
+        // barcode?.rawContent = dynamicLinkUserId;
+      }
 
       if (barcode.rawContent != null && barcode.rawContent != "") {
         setState(() {
@@ -697,8 +727,8 @@ class _HomePageState extends State<HomePage> {
         }
 
         swapModel.userId = globals.objProfile.userId;
-        swapModel.swapuserId = barcode.rawContent;
-
+        swapModel.swapuserId = dynamicLinkUserId ?? barcode.rawContent;
+        print("SWAP USER PROFILE");
         await ApiProvider().swapUserProfile(swapModel);
         addToContacts(swapModel.swapuserId);
         setState(() {
@@ -714,3 +744,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 }
+// bf:a3:f0:eb:c4:75:3b:35:c0:0d:bd:d5:2b:a4:89:a0:1f:76:16:5c
+// SHA-1
+// 25:58:2c:77:35:a8:4a:1e:df:db:45:f5:5a:5b:c7:d8:14:09:13:b1
+// SHA-1
+// 2c:ce:4a:ec:71:81:eb:fa:db:7e:b6:03:79:3a:b2:89:83:e7:7c:c4
+// SHA-1
+// 79:64:fb:d8:43:a6:ba:06:e0:a1:9f:8f:c8:7c:22:ae:f6:84:12:fb
+// SHA-1
+// 3d:02:66:ce:da:78:b1:13:c6:cb:4f:de:36:f3:b1:b8:83:58:eb:7b
+// SHA-1
+// 75:ea 61:8b:42:e8:bc:1f:c7:a6:ef:d0:f5:6b:dd:f8:ad:a6:6c:03:50:75:4c:c5:c1:39:cb:ee:2c:88:d2:f1:

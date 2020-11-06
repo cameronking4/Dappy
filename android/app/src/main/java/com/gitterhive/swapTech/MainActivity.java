@@ -1,4 +1,4 @@
-package com.example.swopp2;
+package com.gitterhive.swapTech;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;

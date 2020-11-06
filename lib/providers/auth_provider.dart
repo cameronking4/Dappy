@@ -5,34 +5,50 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:let_log/let_log.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
-import 'package:swapTech/constance/themes.dart';
 import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/loginPage/loginPage.dart';
 import 'package:swapTech/loginPage/verifyPage.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/profile/profile.dart';
 import 'package:swapTech/providers/base_provider.dart';
+import 'package:swapTech/providers/dynamic_link_provider.dart';
 import 'package:swapTech/utils/platform_dialogue.dart';
 import 'package:swapTech/constance/global.dart' as globals;
 import 'package:swapTech/welcome/welcomePage.dart';
 
 class AuthProvider extends BaseProvider {
   FirebaseStorage firebaseStorage;
+  ValueNotifier<LinkStatus> onLinkStatusChanged =
+      ValueNotifier<LinkStatus>(LinkStatus.NoLink);
 
   AuthProvider() {
+    onLinkStatusChanged.addListener(() async {
+      print("onLinkStatusChanged LISTENER CALLED ${onLinkStatusChanged.value}");
+      if (onLinkStatusChanged.value == LinkStatus.NoLink) return;
+      if (onLinkStatusChanged.value == LinkStatus.LoggedIn) {
+        Logger.debug("NAVIGATE AND CALL SWIPE");
+        navigateBasedOnCondition();
+      } else if (onLinkStatusChanged.value == LinkStatus.NotLoggedIn) {
+        Logger.debug("SHOW THAT YOU NEED TO BE LOGGED IN");
+        await showPlatformDialogue(
+          title: "Please Login First",
+          content: Text("Once logged in, you'll be redirected."),
+        );
+        await navigateBasedOnCondition();
+        onLinkStatusChanged.value = LinkStatus.LoggedIn;
+      }
+    });
     _auth = FirebaseAuth.instance;
     firebaseStorage = FirebaseStorage.instance;
     firebaseStorage
         .setMaxUploadRetryTimeMillis(Duration(seconds: 5).inMilliseconds);
     //Splash Screen Logic
     Timer(Duration(seconds: 2), () async {
-      navigateBasedOnCondition();
+      if (onLinkStatusChanged.value == LinkStatus.NoLink)
+        navigateBasedOnCondition();
     });
   }
 
@@ -187,7 +203,10 @@ class AuthProvider extends BaseProvider {
       return;
     } else {
       userDataStream(firebaseUser);
-      Get.offAll(HomePage());
+      Get.offAll(HomePage(
+        shouldCallSwipe:
+            onLinkStatusChanged.value == LinkStatus.LoggedIn ? true : false,
+      ));
     }
   }
 
@@ -244,38 +263,38 @@ class AuthProvider extends BaseProvider {
   //   }
   // }
 
-  Future<void> addUserDataToFirebase({@required String name}) async {
-    setViewState(true);
-    try {
-      String imageUrl;
-      if (image != null) {
-        imageUrl = await uploadAndGetImageUrl();
-      }
-      if (imageUrl == null) return;
-      user = ProfileModel(
-          // name: name,
-          // userId: firebaseUser.uid,
-          // profilePicture: imageUrl,
-          );
-      await _user.updateProfile((UserUpdateInfo()
-        ..displayName = name
-        ..photoUrl = imageUrl));
-      await Firestore.instance
-          .collection("Users")
-          .document(_user.uid)
-          .setData(user.toJson());
-      setViewState(false);
-      navigateToTabsPage(firebaseUser);
-    } on SocketException {
-      setViewState(false);
-      showPlatformDialogue(title: "Network Connection Error");
-    } catch (e) {
-      setViewState(false);
-      print("ERROR ADDING DATA TO FIREBAE");
-      print(e);
-      print(e.runtimeType);
-    }
-  }
+  // Future<void> addUserDataToFirebase({@required String name}) async {
+  //   setViewState(true);
+  //   try {
+  //     String imageUrl;
+  //     if (image != null) {
+  //       imageUrl = await uploadAndGetImageUrl();
+  //     }
+  //     if (imageUrl == null) return;
+  //     user = ProfileModel(
+  //         // name: name,
+  //         // userId: firebaseUser.uid,
+  //         // profilePicture: imageUrl,
+  //         );
+  //     await _user.updateProfile((UserUpdateInfo()
+  //       ..displayName = name
+  //       ..photoUrl = imageUrl));
+  //     await Firestore.instance
+  //         .collection("Users")
+  //         .document(_user.uid)
+  //         .setData(user.toJson());
+  //     setViewState(false);
+  //     navigateToTabsPage(firebaseUser);
+  //   } on SocketException {
+  //     setViewState(false);
+  //     showPlatformDialogue(title: "Network Connection Error");
+  //   } catch (e) {
+  //     setViewState(false);
+  //     print("ERROR ADDING DATA TO FIREBAE");
+  //     print(e);
+  //     print(e.runtimeType);
+  //   }
+  // }
 
   void navigateToTabsPage(FirebaseUser firebaseUser) async {
     if (firebaseUser != null) {
@@ -322,65 +341,65 @@ class AuthProvider extends BaseProvider {
     if (navigate) Get.offAll(LoginPage());
   }
 
-  Future<File> getProfilePicture(ImageSource source) async {
-    final pickedImage = await ImagePicker().getImage(source: source);
-    if (pickedImage == null) return null;
-    File imageFile = File(pickedImage.path);
-    imageFile = await _cropImage(imageFile);
-    image = imageFile;
-    print(image);
-    notifyListeners();
-    return imageFile;
-  }
+  // Future<File> getProfilePicture(ImageSource source) async {
+  //   final pickedImage = await ImagePicker().getImage(source: source);
+  //   if (pickedImage == null) return null;
+  //   File imageFile = File(pickedImage.path);
+  //   imageFile = await _cropImage(imageFile);
+  //   image = imageFile;
+  //   print(image);
+  //   notifyListeners();
+  //   return imageFile;
+  // }
 
-  Future<String> uploadAndGetImageUrl([File file]) async {
-    try {
-      final filename =
-          file?.path?.split("/")?.last ?? image.path.split("/").last;
-      Directory tempDir = await getTemporaryDirectory();
-      final compressedImage = await FlutterImageCompress.compressAndGetFile(
-          file?.path ?? image.path, tempDir.path + ".jpg");
-      final storageReference =
-          firebaseStorage.ref().child("profile_pictures").child(filename);
-      final StorageUploadTask uploadTask =
-          storageReference.putFile(compressedImage);
-      final StorageTaskSnapshot snapshot = await uploadTask.onComplete;
-      final imageUrl = (await snapshot.ref.getDownloadURL()) as String;
-      setViewState(false);
-      return imageUrl;
-    } on SocketException catch (_) {
-      setViewState(false);
-      showPlatformDialogue(title: "Network Connection Error");
-      return null;
-    } catch (e) {
-      print(e);
-      setViewState(false);
-      return null;
-    }
-  }
+  // Future<String> uploadAndGetImageUrl([File file]) async {
+  //   try {
+  //     final filename =
+  //         file?.path?.split("/")?.last ?? image.path.split("/").last;
+  //     Directory tempDir = await getTemporaryDirectory();
+  //     final compressedImage = await FlutterImageCompress.compressAndGetFile(
+  //         file?.path ?? image.path, tempDir.path + ".jpg");
+  //     final storageReference =
+  //         firebaseStorage.ref().child("profile_pictures").child(filename);
+  //     final StorageUploadTask uploadTask =
+  //         storageReference.putFile(compressedImage);
+  //     final StorageTaskSnapshot snapshot = await uploadTask.onComplete;
+  //     final imageUrl = (await snapshot.ref.getDownloadURL()) as String;
+  //     setViewState(false);
+  //     return imageUrl;
+  //   } on SocketException catch (_) {
+  //     setViewState(false);
+  //     showPlatformDialogue(title: "Network Connection Error");
+  //     return null;
+  //   } catch (e) {
+  //     print(e);
+  //     setViewState(false);
+  //     return null;
+  //   }
+  // }
 
-  Future<void> updateProfilePicture(ImageSource imageSource) async {
-    final image = await getProfilePicture(imageSource);
-    if (image == null) return;
-    final imageUrl = await uploadAndGetImageUrl(image);
-    if (imageUrl == null) return;
-    final doc = Firestore.instance.collection("Users").document(_user.uid);
-    doc.updateData({"profilePicture": imageUrl});
-  }
+  // Future<void> updateProfilePicture(ImageSource imageSource) async {
+  //   final image = await getProfilePicture(imageSource);
+  //   if (image == null) return;
+  //   final imageUrl = await uploadAndGetImageUrl(image);
+  //   if (imageUrl == null) return;
+  //   final doc = Firestore.instance.collection("Users").document(_user.uid);
+  //   doc.updateData({"profilePicture": imageUrl});
+  // }
 
-  Future<File> _cropImage(File file) async {
-    return await ImageCropper.cropImage(
-      sourcePath: file?.path ?? image.path,
-      aspectRatioPresets: [CropAspectRatioPreset.square],
-      cropStyle: CropStyle.circle,
-      androidUiSettings: AndroidUiSettings(
-        toolbarTitle: 'Crop Profile Picture',
-        toolbarColor: AppTheme.getThemeData().primaryColor,
-        toolbarWidgetColor: Colors.white,
-        initAspectRatio: CropAspectRatioPreset.square,
-        lockAspectRatio: true,
-      ),
-      iosUiSettings: IOSUiSettings(title: 'Crop Profile Picture'),
-    );
-  }
+  // Future<File> _cropImage(File file) async {
+  //   return await ImageCropper.cropImage(
+  //     sourcePath: file?.path ?? image.path,
+  //     aspectRatioPresets: [CropAspectRatioPreset.square],
+  //     cropStyle: CropStyle.circle,
+  //     androidUiSettings: AndroidUiSettings(
+  //       toolbarTitle: 'Crop Profile Picture',
+  //       toolbarColor: AppTheme.getThemeData().primaryColor,
+  //       toolbarWidgetColor: Colors.white,
+  //       initAspectRatio: CropAspectRatioPreset.square,
+  //       lockAspectRatio: true,
+  //     ),
+  //     iosUiSettings: IOSUiSettings(title: 'Crop Profile Picture'),
+  //   );
+  // }
 }
