@@ -30,6 +30,16 @@
 				<string>com.googleusercontent.apps.872574258487-j7jr87v5miekhc93i3qtq0o80flr0fo9</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>swoop_dynamic_links</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.gitterhive.swaptact</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
@@ -61,8 +71,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -73,5 +81,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+	<string>https://dappy.page.link/</string>
+	<string>https://dappy.me/</string>
+	</array>
 </dict>
 </plist>
