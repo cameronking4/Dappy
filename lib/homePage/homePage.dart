@@ -626,17 +626,18 @@ class _HomePageState extends State<HomePage> {
     final userId = (await FirebaseAuth.instance.currentUser()).uid;
 
     final DynamicLinkParameters parameters = DynamicLinkParameters(
-        uriPrefix: 'https://dappy.page.link',
-        link: Uri.parse('https://dappy.me/$userId'),
-        androidParameters: AndroidParameters(
-          packageName: 'com.gitterhive.swapTech',
-          fallbackUrl: Uri.parse("https://dappy.me/$userId"),
-        ),
-        iosParameters: IosParameters(
-          bundleId: "com.gitterhive.swaptact",
-          appStoreId: "1526658458",
-          fallbackUrl: Uri.parse("https://dappy.me/$userId"),
-        ));
+      uriPrefix: 'https://dappy.page.link',
+      link: Uri.parse('https://dappy.me/$userId'),
+      androidParameters: AndroidParameters(
+        packageName: 'com.gitterhive.swapTech',
+        fallbackUrl: Uri.parse("https://dappy.me/$userId"),
+      ),
+      iosParameters: IosParameters(
+        bundleId: "com.gitterhive.swaptact",
+        appStoreId: "1526658458",
+        fallbackUrl: Uri.parse("https://dappy.me/$userId"),
+      ),
+    );
     final link = await parameters.buildShortLink();
     print(link.shortUrl.toString());
     print(link.warnings);
