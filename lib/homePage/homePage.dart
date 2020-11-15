@@ -52,6 +52,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String dynamicLink;
 
   locationPlugin.Location location = new locationPlugin.Location();
   locationPlugin.LocationData _locationData;
@@ -73,12 +74,17 @@ class _HomePageState extends State<HomePage> {
   final FirebaseMessaging _fcm = FirebaseMessaging();
 
   SwapPageStatus enumSwapPageStatus;
+  String parametersLink;
 
   @override
   void initState() {
     super.initState();
     enumSwapPageStatus = SwapPageStatus.Home;
     updateFCMTken();
+    getDynamicLink().then((value) {
+      dynamicLink = value;
+      setState(() {});
+    }).catchError((onError) => print("ERROR GETTING DYNAMIC LINK"));
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Logger.log("SHOULD CALL SWIPE", widget.shouldCallSwipe);
@@ -250,16 +256,11 @@ class _HomePageState extends State<HomePage> {
                               width: 4.0,
                             ),
                           ),
-                          child: ClipPath(
-                            clipper: TopBarClipper(
-                              topLeft: true,
-                              topRight: true,
-                              bottomLeft: true,
-                              bottomRight: true,
-                              radius: 130,
-                            ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
                             child: CachedNetworkImage(
                               imageUrl: objSwappProfile.photoUrl,
+                              fit: BoxFit.cover,
                               placeholder: (context, url) =>
                                   CircularProgressIndicator(),
                               errorWidget: (context, url, error) =>
@@ -381,14 +382,14 @@ class _HomePageState extends State<HomePage> {
                           TextStyle(fontSize: 20.0, color: Colors.white),
                       onTap: () => launchSiriShortcut()),
                   SpeedDialChild(
-                      child: Icon(Icons.account_balance_wallet_rounded),
-                      backgroundColor: Colors.purple,
-                      elevation: 8,
-                      label: 'Export QR to Photos',
-                      labelBackgroundColor: Colors.purple,
-                      labelStyle:
-                          TextStyle(fontSize: 20.0, color: Colors.white),
-                      onTap: () => exportQRcode()),
+                    child: Icon(Icons.account_balance_wallet_rounded),
+                    backgroundColor: Colors.purple,
+                    elevation: 8,
+                    label: 'Export QR to Photos',
+                    labelBackgroundColor: Colors.purple,
+                    labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
+                    onTap: () => exportQRcode(),
+                  ),
                   SpeedDialChild(
                     child: Icon(Icons.link),
                     backgroundColor: Colors.orange,
@@ -491,18 +492,43 @@ class _HomePageState extends State<HomePage> {
                       child: Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        child: QrImage(
-                          data: globals.objProfile?.userId,
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black87,
-                          version: QrVersions.auto,
-                          gapless: true,
-                          embeddedImage:
-                              NetworkImage(globals.objProfile?.photoUrl ?? ""),
-                          embeddedImageStyle:
-                              QrEmbeddedImageStyle(size: Size.square(65)),
-                          size: 325.0,
-                        ),
+                        child: dynamicLink == null
+                            ? Container()
+                            : ClipRRect(
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    QrImage(
+                                      data: dynamicLink,
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black87,
+                                      version: QrVersions.auto,
+                                      gapless: true,
+                                      // embeddedImage: CachedNetworkImageProvider(
+                                      //   globals.objProfile?.photoUrl ?? "",
+                                      // ),
+                                      // embeddedImageStyle: QrEmbeddedImageStyle(
+                                      //   size: Size.square(65),
+                                      // ),
+                                      size: 325.0,
+                                    ),
+                                    Center(
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              globals.objProfile?.photoUrl ??
+                                                  "",
+                                          width: 65,
+                                          height: 65,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                       ),
                     ),
                   ),
@@ -623,6 +649,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   shareUserLink(userId, token) async {
+    Share.text(
+      'Check out my link',
+      'This private link has all my contact info and socials: $dynamicLink',
+      // +
+      //     globals.objProfile.token +
+      //     "/" +
+      //     globals.objProfile.userId,
+      'text/plain',
+    );
+    // Share.share(
+    // 'Check out my link https://dappyweb.web.app/' + token + "/" + userId + " !",
+    // subject: 'This private link has all my contact info and socials :)',
+    // sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size );
+  }
+
+  Future<String> getDynamicLink() async {
     final userId = (await FirebaseAuth.instance.currentUser()).uid;
 
     final DynamicLinkParameters parameters = DynamicLinkParameters(
@@ -639,22 +681,10 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     final link = await parameters.buildShortLink();
+    parametersLink = parameters.link.toString();
     print(link.shortUrl.toString());
     print(link.warnings);
-
-    Share.text(
-      'Check out my link',
-      'This private link has all my contact info and socials: ${link.shortUrl.toString()}',
-      // +
-      //     globals.objProfile.token +
-      //     "/" +
-      //     globals.objProfile.userId,
-      'text/plain',
-    );
-    // Share.share(
-    // 'Check out my link https://dappyweb.web.app/' + token + "/" + userId + " !",
-    // subject: 'This private link has all my contact info and socials :)',
-    // sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size );
+    return link.shortUrl.toString();
   }
 
   exportQRcode() async {
@@ -669,14 +699,7 @@ class _HomePageState extends State<HomePage> {
       final file = await new File('${tempDir.path}/image.png').create();
       await file.writeAsBytes(pngBytes);
 
-      await Share.file(
-          'https://dappyweb.web.app/' +
-              globals.objProfile.token +
-              "/" +
-              globals.objProfile.userId,
-          'MYQRCODE.png',
-          pngBytes,
-          'image/png');
+      await Share.file(dynamicLink, 'MYQRCODE.png', pngBytes, 'image/png');
     } catch (e) {
       print(e.toString());
     }
@@ -730,9 +753,11 @@ class _HomePageState extends State<HomePage> {
         } else {
           await checkPermission();
         }
+        final code = parametersLink.split("/").last;
+        print("HERE IS THE CODE $code");
 
         swapModel.userId = globals.objProfile.userId;
-        swapModel.swapuserId = dynamicLinkUserId ?? barcode.rawContent;
+        swapModel.swapuserId = dynamicLinkUserId ?? code;
         print("SWAP USER PROFILE");
         await ApiProvider().swapUserProfile(swapModel);
         addToContacts(swapModel.swapuserId);
