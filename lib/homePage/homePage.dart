@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:let_log/let_log.dart';
 import 'package:provider/provider.dart';
+import 'package:swapTech/providers/auth_provider.dart';
 import 'package:swapTech/providers/dynamic_link_provider.dart';
 import 'dart:ui';
 import 'package:url_launcher/url_launcher.dart';
@@ -33,7 +34,6 @@ import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/permission/permissions.dart';
 import 'package:swapTech/profile/userProfile.dart';
 import 'package:swapTech/searchPage/searchPage.dart';
-import 'package:swapTech/topBarClipper/topBarClipare.dart';
 import 'package:location/location.dart' as locationPlugin;
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
@@ -499,7 +499,10 @@ class _HomePageState extends State<HomePage> {
                                   alignment: Alignment.center,
                                   children: [
                                     QrImage(
-                                      data: dynamicLink,
+                                      data: context
+                                          .read<AuthProvider>()
+                                          .firebaseUser
+                                          .uid,
                                       backgroundColor: Colors.white,
                                       foregroundColor: Colors.black87,
                                       version: QrVersions.auto,
@@ -683,7 +686,7 @@ class _HomePageState extends State<HomePage> {
     final link = await parameters.buildShortLink();
     parametersLink = parameters.link.toString();
     print(link.shortUrl.toString());
-    print(link.warnings);
+    Logger.debug("HERE IS THE DYNAMIC LINK", link.shortUrl.toString());
     return link.shortUrl.toString();
   }
 
@@ -736,6 +739,8 @@ class _HomePageState extends State<HomePage> {
         // barcode?.rawContent = dynamicLinkUserId;
       }
 
+      print(barcode.rawContent);
+
       if (barcode.rawContent != null && barcode.rawContent != "") {
         setState(() {
           barCode = barcode.rawContent;
@@ -753,7 +758,7 @@ class _HomePageState extends State<HomePage> {
         } else {
           await checkPermission();
         }
-        final code = parametersLink.split("/").last;
+        final code = barcode.rawContent;
         print("HERE IS THE CODE $code");
 
         swapModel.userId = globals.objProfile.userId;
@@ -761,6 +766,23 @@ class _HomePageState extends State<HomePage> {
         print("SWAP USER PROFILE");
         await ApiProvider().swapUserProfile(swapModel);
         addToContacts(swapModel.swapuserId);
+        await Future.delayed(Duration(seconds: 1));
+        Logger.debug("SWAP STATUS", enumSwapPageStatus);
+        if (enumSwapPageStatus == SwapPageStatus.Home) {
+          final doc =
+              await Firestore.instance.collection("Users").document(code).get();
+
+          print(doc.data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserProfilePage(
+                userProfile: ProfileModel.parseSnapshot(doc),
+              ),
+            ),
+          );
+        }
         setState(() {
           _isLoding = false;
         });
