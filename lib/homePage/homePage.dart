@@ -92,9 +92,8 @@ class _HomePageState extends State<HomePage> {
         final userId = context.read<DynamicLinkProvider>().linkShareUserId;
         Logger.log("linkShareUserId", userId);
         await scanQrCode(dynamicLinkUserId: userId);
+        context.read<DynamicLinkProvider>().linkStatus = LinkStatus.NoLink;
       }
-      context.read<DynamicLinkProvider>().linkShareUserId = null;
-      setState(() {});
     });
   }
 
@@ -761,7 +760,7 @@ class _HomePageState extends State<HomePage> {
         } else {
           await checkPermission();
         }
-        final code = dynamicLinkUserId ?? barcode.rawContent;
+        final code = dynamicLinkUserId ?? parametersLink.split("/").last;
         print("HERE IS THE CODE $code");
 
         swapModel.userId = globals.objProfile.userId;

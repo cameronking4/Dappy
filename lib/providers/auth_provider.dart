@@ -207,6 +207,7 @@ class AuthProvider extends BaseProvider {
         shouldCallSwipe:
             onLinkStatusChanged.value == LinkStatus.LoggedIn ? true : false,
       ));
+      onLinkStatusChanged.value = LinkStatus.NoLink;
     }
   }
 
