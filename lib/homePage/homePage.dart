@@ -86,13 +86,15 @@ class _HomePageState extends State<HomePage> {
       setState(() {});
     }).catchError((onError) => print("ERROR GETTING DYNAMIC LINK"));
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       Logger.log("SHOULD CALL SWIPE", widget.shouldCallSwipe);
       if (widget.shouldCallSwipe) {
         final userId = context.read<DynamicLinkProvider>().linkShareUserId;
         Logger.log("linkShareUserId", userId);
-        scanQrCode(dynamicLinkUserId: userId);
+        await scanQrCode(dynamicLinkUserId: userId);
       }
+      context.read<DynamicLinkProvider>().linkShareUserId = null;
+      setState(() {});
     });
   }
 
@@ -499,10 +501,11 @@ class _HomePageState extends State<HomePage> {
                                   alignment: Alignment.center,
                                   children: [
                                     QrImage(
-                                      data: context
-                                          .read<AuthProvider>()
-                                          .firebaseUser
-                                          .uid,
+                                      data: dynamicLink ??
+                                          context
+                                              .read<AuthProvider>()
+                                              .firebaseUser
+                                              .uid,
                                       backgroundColor: Colors.white,
                                       foregroundColor: Colors.black87,
                                       version: QrVersions.auto,
@@ -724,7 +727,7 @@ class _HomePageState extends State<HomePage> {
     await ContactsService.addContact(newContact);
   }
 
-  scanQrCode({String dynamicLinkUserId}) async {
+  Future scanQrCode({String dynamicLinkUserId}) async {
     setState(() {
       _isLoding = true;
     });
@@ -758,7 +761,7 @@ class _HomePageState extends State<HomePage> {
         } else {
           await checkPermission();
         }
-        final code = barcode.rawContent;
+        final code = dynamicLinkUserId ?? barcode.rawContent;
         print("HERE IS THE CODE $code");
 
         swapModel.userId = globals.objProfile.userId;
