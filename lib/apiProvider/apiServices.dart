@@ -9,7 +9,10 @@ class ZImageCompress {
   static Future<String> uploadImgFireStorageFile({File imageFile}) async {
     var uuid = new Uuid();
 
-    final StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child('images').child("${uuid.v1()}.jpg");
+    final StorageReference firebaseStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('images')
+        .child("${uuid.v1()}.jpg");
 
     var uploadImg = await getCompressImageFile(imageFile);
 

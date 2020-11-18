@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:swapTech/apiProvider/apiServices.dart';
 import 'package:swapTech/constance/constance.dart';
 import 'package:swapTech/model/notificationModel.dart';
@@ -15,12 +14,20 @@ class ApiProvider {
   Future creatUserProfile(ProfileModel profile) async {
     profile.createdAt = DateTime.now().toUtc().millisecondsSinceEpoch;
 
-    await Firestore.instance.collection('Users').document(profile.userId).get().then((onValue) async {
+    await Firestore.instance
+        .collection('Users')
+        .document(profile.userId)
+        .get()
+        .then((onValue) async {
       if (onValue.exists) {
         globals.objProfile = ProfileModel.parseSnapshot(onValue);
         return;
       } else {
-        await Firestore.instance.collection('Users').document(profile.userId).setData(profile.toJson()).then((value) async {
+        await Firestore.instance
+            .collection('Users')
+            .document(profile.userId)
+            .setData(profile.toJson())
+            .then((value) async {
           globals.objProfile = profile;
           return;
         });
@@ -31,9 +38,13 @@ class ApiProvider {
   Future updateUserProfilePhoto({ProfileModel profile, File file}) async {
     try {
       File imageFile = await ZImageCompress.getCompressImageFile(file);
-      String photoUrl = await ZImageCompress.uploadImgFireStorageFile(imageFile: imageFile);
+      String photoUrl =
+          await ZImageCompress.uploadImgFireStorageFile(imageFile: imageFile);
 
-      await Firestore.instance.collection('Users').document(profile.userId).updateData({
+      await Firestore.instance
+          .collection('Users')
+          .document(profile.userId)
+          .updateData({
         "photoUrl": photoUrl,
       });
 
@@ -46,7 +57,10 @@ class ApiProvider {
   Future updateUserFields(ProfileModel profile) async {
     // profile.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
     try {
-      await Firestore.instance.collection('Users').document(profile.userId).updateData({
+      await Firestore.instance
+          .collection('Users')
+          .document(profile.userId)
+          .updateData({
         "contactUserName": profile.contactUserName,
         "contactUserPhone": profile.contactUserPhone,
         "email": profile.email,
@@ -85,7 +99,9 @@ class ApiProvider {
     };
 
     try {
-      Response response = await Dio().post(ConstanceData.SearchPhoneUrl, data: data).catchError((onError) {
+      Response response = await Dio()
+          .post(ConstanceData.SearchPhoneUrl, data: data)
+          .catchError((onError) {
         print(onError);
         return false;
       });
@@ -104,7 +120,10 @@ class ApiProvider {
   Future updateEditProfileFields(ProfileModel profile) async {
     // profile.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
     try {
-      await Firestore.instance.collection('Users').document(profile.userId).updateData({
+      await Firestore.instance
+          .collection('Users')
+          .document(profile.userId)
+          .updateData({
         "facebook": profile.facebook,
         "firstName": profile.firstName,
         "instagram": profile.instagram,
@@ -126,7 +145,10 @@ class ApiProvider {
 
   Future updateUserFCMToken() async {
     try {
-      await Firestore.instance.collection('Users').document(globals.objProfile.userId).updateData({
+      await Firestore.instance
+          .collection('Users')
+          .document(globals.objProfile.userId)
+          .updateData({
         "token": globals.objProfile.token,
         "updatedAt": DateTime.now().toUtc().millisecondsSinceEpoch,
       });
@@ -139,7 +161,10 @@ class ApiProvider {
     if (profile != null) {
       profile.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
       try {
-        await Firestore.instance.collection('Users').document(profile.userId).updateData(profile.toJson());
+        await Firestore.instance
+            .collection('Users')
+            .document(profile.userId)
+            .updateData(profile.toJson());
       } catch (e) {
         print(e);
       }
@@ -148,7 +173,11 @@ class ApiProvider {
 
   Future<ProfileModel> getProfileDetail(String userId) async {
     var objProfileModel = ProfileModel();
-    await Firestore.instance.collection('Users').where("userId", isEqualTo: userId).getDocuments().then((snapshot) {
+    await Firestore.instance
+        .collection('Users')
+        .where("userId", isEqualTo: userId)
+        .getDocuments()
+        .then((snapshot) {
       if (snapshot.documents.length > 0) {
         snapshot.documents.forEach((snapshotdata) {
           objProfileModel = ProfileModel.parseSnapshot(snapshot.documents[0]);
@@ -171,7 +200,10 @@ class ApiProvider {
       if (onValue.documents.length > 0) {
         // Update
         try {
-          await Firestore.instance.collection('Swap').document(onValue.documents[0].documentID).updateData({
+          await Firestore.instance
+              .collection('Swap')
+              .document(onValue.documents[0].documentID)
+              .updateData({
             "locationAddreess": swapModel.locationAddreess,
             "updatedAt": DateTime.now().toUtc().millisecondsSinceEpoch,
             "isDismiss": false,
@@ -192,7 +224,10 @@ class ApiProvider {
             .then((value) async {
           if (value.documents.length > 0) {
             try {
-              await Firestore.instance.collection('Swap').document(value.documents[0].documentID).updateData({
+              await Firestore.instance
+                  .collection('Swap')
+                  .document(value.documents[0].documentID)
+                  .updateData({
                 "locationAddreess": swapModel.locationAddreess,
                 "updatedAt": DateTime.now().toUtc().millisecondsSinceEpoch,
                 "isDismiss": false,
@@ -203,7 +238,11 @@ class ApiProvider {
             }
             return;
           } else {
-            await Firestore.instance.collection('Swap').document().setData(swapModel.toJson()).then((value) async {
+            await Firestore.instance
+                .collection('Swap')
+                .document()
+                .setData(swapModel.toJson())
+                .then((value) async {
               return;
             });
           }
@@ -229,7 +268,8 @@ class ApiProvider {
   }
 
   // ignore: missing_return
-  Future<List<UserPhone>> searchUser(String fieldName, String searchtext) async {
+  Future<List<UserPhone>> searchUser(
+      String fieldName, String searchtext) async {
     bool isPhone = false;
 
     if (double.tryParse(searchtext) != null) isPhone = true;
@@ -260,18 +300,23 @@ class ApiProvider {
           print(element['userName']);
         });
 
-      return result.documents.map((document) => UserPhone.fromFirestore(document)).toList();
+      return result.documents
+          .map((document) => UserPhone.fromFirestore(document))
+          .toList();
     } catch (e) {
       print(e);
     }
   }
 
   Future<bool> usernameCheck(String potentialId) async {
-    final result = await Firestore.instance.collection('Users').where('userName', isEqualTo: potentialId).getDocuments();
+    final result = await Firestore.instance
+        .collection('Users')
+        .where('userName', isEqualTo: potentialId)
+        .getDocuments();
     return result.documents.isEmpty;
   }
 
-    Future<List<String>> getSwapLocation(userID) async {
+  Future<List<String>> getSwapLocation(userID) async {
     List<String> strings = [];
     try {
       //check userID
@@ -317,7 +362,7 @@ class ApiProvider {
   }
 
   Future<SwapModel> getSwapModel(userId) async {
-    var swapModel =  new SwapModel();
+    var swapModel = new SwapModel();
     try {
       //check userID
       await Firestore.instance
@@ -357,7 +402,7 @@ class ApiProvider {
       print(e);
     }
     return swapModel;
-    }
+  }
 
   Future<List<String>> getSwapsIds() async {
     List<String> strings = [];
@@ -406,7 +451,7 @@ class ApiProvider {
       //check userID
       await Firestore.instance
           .collection('Swap')
-          .where("swapuserId", isEqualTo: globals.objProfile.userId)
+          .where("userId", isEqualTo: globals.objProfile.userId)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {
@@ -424,7 +469,7 @@ class ApiProvider {
       //check swapuserId
       await Firestore.instance
           .collection('Swap')
-          .where("userId", isEqualTo: globals.objProfile.userId)
+          .where("swapuserId", isEqualTo: globals.objProfile.userId)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {
@@ -450,7 +495,10 @@ class ApiProvider {
           .getDocuments()
           .then((value) async {
         if (value.documents.length > 0) {
-          await Firestore.instance.collection("Swap").document(value.documents[0].documentID).updateData({
+          await Firestore.instance
+              .collection("Swap")
+              .document(value.documents[0].documentID)
+              .updateData({
             "updatedAt": DateTime.now().toUtc().millisecondsSinceEpoch,
             "isDismiss": true,
           });
@@ -462,7 +510,10 @@ class ApiProvider {
               .getDocuments()
               .then((data) async {
             if (data.documents.length > 0) {
-              await Firestore.instance.collection("Swap").document(data.documents[0].documentID).updateData({
+              await Firestore.instance
+                  .collection("Swap")
+                  .document(data.documents[0].documentID)
+                  .updateData({
                 "updatedAt": DateTime.now().toUtc().millisecondsSinceEpoch,
                 "isDismiss": true,
               });
@@ -507,7 +558,10 @@ class ApiProvider {
   Future updateNotification(NotificationModel objNotification) async {
     objNotification.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
     try {
-      await Firestore.instance.collection('Notifications').document(objNotification.docId).updateData({
+      await Firestore.instance
+          .collection('Notifications')
+          .document(objNotification.docId)
+          .updateData({
         "isAccept": objNotification.isAccept,
         "updatedAt": objNotification.updatedAt,
         "declined": objNotification.declined,

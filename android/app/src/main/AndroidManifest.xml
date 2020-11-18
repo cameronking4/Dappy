@@ -13,8 +13,12 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="swapTech"
+        android:label="Swap Tech"
         android:icon="@mipmap/ic_launcher">
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

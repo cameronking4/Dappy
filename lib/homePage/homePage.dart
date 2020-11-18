@@ -1,8 +1,14 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:let_log/let_log.dart';
+import 'package:provider/provider.dart';
+import 'package:swapTech/providers/auth_provider.dart';
+import 'package:swapTech/providers/dynamic_link_provider.dart';
 import 'dart:ui';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -28,19 +34,25 @@ import 'package:swapTech/model/swapModel.dart';
 import 'package:swapTech/permission/permissions.dart';
 import 'package:swapTech/profile/userProfile.dart';
 import 'package:swapTech/searchPage/searchPage.dart';
-import 'package:swapTech/topBarClipper/topBarClipare.dart';
 import 'package:location/location.dart' as locationPlugin;
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class HomePage extends StatefulWidget {
+  final bool shouldCallSwipe;
+
+  const HomePage({
+    Key key,
+    this.shouldCallSwipe = false,
+  }) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String dynamicLink;
 
   locationPlugin.Location location = new locationPlugin.Location();
   locationPlugin.LocationData _locationData;
@@ -62,12 +74,27 @@ class _HomePageState extends State<HomePage> {
   final FirebaseMessaging _fcm = FirebaseMessaging();
 
   SwapPageStatus enumSwapPageStatus;
+  String parametersLink;
 
   @override
   void initState() {
     super.initState();
     enumSwapPageStatus = SwapPageStatus.Home;
     updateFCMTken();
+    getDynamicLink().then((value) {
+      dynamicLink = value;
+      setState(() {});
+    }).catchError((onError) => print("ERROR GETTING DYNAMIC LINK"));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      Logger.log("SHOULD CALL SWIPE", widget.shouldCallSwipe);
+      if (widget.shouldCallSwipe) {
+        final userId = context.read<DynamicLinkProvider>().linkShareUserId;
+        Logger.log("linkShareUserId", userId);
+        await scanQrCode(dynamicLinkUserId: userId);
+        context.read<DynamicLinkProvider>().linkStatus = LinkStatus.NoLink;
+      }
+    });
   }
 
   updateFCMTken() async {
@@ -85,275 +112,309 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      drawer: DrawerPage(),
-      body: ModalProgressHUD(
-        inAsyncCall: _isLoding,
-        progressIndicator: CircularProgressIndicator(
-          strokeWidth: 2.0,
-        ),
-        child: enumSwapPageStatus == SwapPageStatus.Home
-            ? StreamBuilder(
-                stream: Firestore.instance.collection('Swap').snapshots(),
-                builder: (context, snap) {
-                  if (!snap.hasData) {
-                    return SizedBox();
-                  } else {
-                    if (snap.data.documents.length > 0) {
-                      SwapModel objSwapModel = new SwapModel();
-                      for (var docData in snap.data.documents) {
-                        objSwapModel = SwapModel.parseSnapshot(docData);
-                        if (!objSwapModel.isDismiss && objSwapModel.userId == globals.objProfile.userId && objSwapModel.isScannerUser) {
-                          gotoSwapProfileScreen(objSwapModel, false);
-                          break;
-                        } else if (!objSwapModel.isDismiss && objSwapModel.swapuserId == globals.objProfile.userId && objSwapModel.isScannerUser) {
-                          gotoSwapProfileScreen(objSwapModel, true);
-                          break;
-                        } else {
-                          barCodeScreen();
-                        }
-                        
-
-                        if (objSwapModel.isDismiss == false) {
-                          if (objSwapModel.swapuserId == globals.objProfile.userId) {
+        key: _scaffoldKey,
+        drawer: DrawerPage(),
+        body: ModalProgressHUD(
+          inAsyncCall: _isLoding,
+          progressIndicator: CircularProgressIndicator(
+            strokeWidth: 2.0,
+          ),
+          child: enumSwapPageStatus == SwapPageStatus.Home
+              ? StreamBuilder(
+                  stream: Firestore.instance.collection('Swap').snapshots(),
+                  builder: (context, snap) {
+                    if (!snap.hasData) {
+                      return SizedBox();
+                    } else {
+                      if (snap.data.documents.length > 0) {
+                        SwapModel objSwapModel = new SwapModel();
+                        for (var docData in snap.data.documents) {
+                          objSwapModel = SwapModel.parseSnapshot(docData);
+                          if (!objSwapModel.isDismiss &&
+                              objSwapModel.userId ==
+                                  globals.objProfile.userId &&
+                              objSwapModel.isScannerUser) {
+                            gotoSwapProfileScreen(objSwapModel, false);
+                            break;
+                          } else if (!objSwapModel.isDismiss &&
+                              objSwapModel.swapuserId ==
+                                  globals.objProfile.userId &&
+                              objSwapModel.isScannerUser) {
                             gotoSwapProfileScreen(objSwapModel, true);
+                            break;
                           } else {
-                            Stream<QuerySnapshot> snapshot =
-                                Firestore.instance.collection('Swap').where("userId", isEqualTo: globals.objProfile.userId).snapshots();
-                            snapshot.listen((snapShot) {
-                              if (snapShot.documents.length > 0) {
-                                SwapModel objSwapModel = SwapModel.parseSnapshot(snapShot.documents[0]);
-                                if (objSwapModel.isDismiss) {
-                                  setState(() {
-                                    enumSwapPageStatus = SwapPageStatus.Home;
-                                  });
-                                } else {
-                                  if (objSwapModel.swapuserId == globals.objProfile.userId) {
-                                    gotoSwapProfileScreen(objSwapModel, true);
+                            barCodeScreen();
+                          }
+
+                          if (objSwapModel.isDismiss == false) {
+                            if (objSwapModel.swapuserId ==
+                                globals.objProfile.userId) {
+                              gotoSwapProfileScreen(objSwapModel, true);
+                            } else {
+                              Stream<QuerySnapshot> snapshot = Firestore
+                                  .instance
+                                  .collection('Swap')
+                                  .where("userId",
+                                      isEqualTo: globals.objProfile.userId)
+                                  .snapshots();
+                              snapshot.listen((snapShot) {
+                                if (snapShot.documents.length > 0) {
+                                  SwapModel objSwapModel =
+                                      SwapModel.parseSnapshot(
+                                          snapShot.documents[0]);
+                                  if (objSwapModel.isDismiss) {
+                                    setState(() {
+                                      enumSwapPageStatus = SwapPageStatus.Home;
+                                    });
                                   } else {
-                                    gotoSwapProfileScreen(objSwapModel, false);
+                                    if (objSwapModel.swapuserId ==
+                                        globals.objProfile.userId) {
+                                      gotoSwapProfileScreen(objSwapModel, true);
+                                    } else {
+                                      gotoSwapProfileScreen(
+                                          objSwapModel, false);
+                                    }
                                   }
                                 }
-                              }
-                            });
-                          }
-                        } else {
-                          return barCodeScreen();
-                        }
-                      }
-                      return barCodeScreen();
-                    } else {
-                      return StreamBuilder(
-                        stream: Firestore.instance
-                            .collection('Swap')
-                            .where("userId", isEqualTo: globals.objProfile.userId)
-                            .where("swapuserId", isEqualTo: barCode)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return SizedBox();
+                              });
+                            }
                           } else {
-                            if (snapshot.data.documents.length > 0) {
-                              SwapModel objSwapModel = SwapModel.parseSnapshot(snapshot.data.documents[0]);
-                              gotoSwapProfileScreen(objSwapModel, false);
+                            return barCodeScreen();
+                          }
+                        }
+                        return barCodeScreen();
+                      } else {
+                        return StreamBuilder(
+                          stream: Firestore.instance
+                              .collection('Swap')
+                              .where("userId",
+                                  isEqualTo: globals.objProfile.userId)
+                              .where("swapuserId", isEqualTo: barCode)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
                               return SizedBox();
                             } else {
-                              return barCodeScreen();
+                              if (snapshot.data.documents.length > 0) {
+                                SwapModel objSwapModel =
+                                    SwapModel.parseSnapshot(
+                                        snapshot.data.documents[0]);
+                                gotoSwapProfileScreen(objSwapModel, false);
+                                return SizedBox();
+                              } else {
+                                return barCodeScreen();
+                              }
                             }
-                          }
-                        },
-                      );
+                          },
+                        );
+                      }
                     }
-                  }
-                })
-            : ListView(
-                padding: EdgeInsets.all(0),
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).padding.top,
-                  ),
-                  SizedBox(
-                    height: 80,
-                    child: Image.asset(
-                      ConstanceData.appLogo,
+                  },
+                )
+              : ListView(
+                  padding: EdgeInsets.all(0),
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).padding.top,
                     ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    'SWAPPED!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 50.0,
-                      fontFamily: 'Gotham-Medium',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        child: Image.asset(
-                          'assets/images/swapped_arrow.png',
-                          scale: 1.1,
-                        ),
+                    SizedBox(
+                      height: 80,
+                      child: Image.asset(
+                        ConstanceData.appLogo,
                       ),
-                      Container(
-                        height: 140,
-                        width: 140.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(150)),
-                          border: Border.all(
-                            color: Colors.black87,
-                            width: 4.0,
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'SWAPPED!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 50.0,
+                        fontFamily: 'Gotham-Medium',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          child: Image.asset(
+                            'assets/images/swapped_arrow.png',
+                            scale: 1.1,
                           ),
                         ),
-                        child: ClipPath(
-                          clipper: TopBarClipper(
-                            topLeft: true,
-                            topRight: true,
-                            bottomLeft: true,
-                            bottomRight: true,
-                            radius: 130,
+                        Container(
+                          height: 140,
+                          width: 140.0,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(150)),
+                            border: Border.all(
+                              color: Colors.black87,
+                              width: 4.0,
+                            ),
                           ),
-                          child: CachedNetworkImage(
-                            imageUrl: objSwappProfile.photoUrl,
-                            placeholder: (context, url) => CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => CircleAvatar(
-                              radius: 90.0,
-                              backgroundImage: AssetImage(
-                                'assets/images/logo_swopp.png',
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: CachedNetworkImage(
+                              imageUrl: objSwappProfile.photoUrl,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(),
+                              errorWidget: (context, url, error) =>
+                                  CircleAvatar(
+                                radius: 90.0,
+                                backgroundImage: AssetImage(
+                                  'assets/images/logo_swopp.png',
+                                ),
                               ),
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                    SizedBox(height: 25),
+                    Text(
+                      objSwappProfile.firstName +
+                          " " +
+                          objSwappProfile.lastName,
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 36.0,
+                        fontFamily: 'Helvetica-Regular',
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 25),
-                  Text(
-                    objSwappProfile.firstName + " " + objSwappProfile.lastName,
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 36.0,
-                      fontFamily: 'Helvetica-Regular',
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 32.0, right: 32.0, top: 16.0),
-                    child: RaisedButton(
-                      padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
-                      child: Text("View Profile", style: TextStyle(fontSize: 18.0, fontFamily: 'Gotham-Light', fontWeight: FontWeight.bold)),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserProfilePage(
-                              userProfile: objSwappProfile,
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: 32.0, right: 32.0, top: 16.0),
+                      child: RaisedButton(
+                        padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
+                        child: Text("View Profile",
+                            style: TextStyle(
+                                fontSize: 18.0,
+                                fontFamily: 'Gotham-Light',
+                                fontWeight: FontWeight.bold)),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UserProfilePage(
+                                userProfile: objSwappProfile,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
-                      textColor: Colors.white,
-                      color: Colors.black,
+                          );
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                        textColor: Colors.white,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: 32.0, right: 32.0, top: 16.0),
+                      child: RaisedButton(
+                        padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
+                        child: Text(
+                          "Dismiss",
+                          style: TextStyle(
+                              fontSize: 18.0,
+                              fontFamily: 'Gotham-Light',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            _isLoding = true;
+                          });
+                          await ApiProvider().dismissSwapReq(swapModel);
+                          setState(() {
+                            _isLoding = false;
+                            enumSwapPageStatus = SwapPageStatus.Home;
+                          });
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                        hoverElevation: 0.0,
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).padding.bottom + 20,
+                    ),
+                  ],
+                ),
+        ),
+        floatingActionButton: isSearch
+            ? null
+            : SpeedDial(
+                // both default to 16
+                marginRight: 18,
+                marginBottom: 20,
+                // animatedIcon: AnimatedIcons.add_event,
+                animatedIconTheme: IconThemeData(size: 22.0),
+                // this is ignored if animatedIcon is non null
+                child: Icon(Icons.share),
+                // If true user is forced to close dial manually
+                // by tapping main button and overlay is not rendered.
+                closeManually: false,
+                curve: Curves.easeInOutExpo,
+                overlayColor: Colors.white,
+                overlayOpacity: 0.8,
+                onOpen: () => print('OPENING DIAL'),
+                onClose: () => print('DIAL CLOSED'),
+                tooltip: 'Speed Dial',
+                heroTag: 'speed-dial-hero-tag',
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+                elevation: 10.0,
+                shape: CircleBorder(),
+                children: [
+                  SpeedDialChild(
+                      child: Icon(Icons.mic_outlined),
+                      backgroundColor: Colors.lightBlue,
+                      elevation: 8,
+                      label: 'Add Siri Shortcut',
+                      labelBackgroundColor: Colors.lightBlue,
+                      labelStyle:
+                          TextStyle(fontSize: 20.0, color: Colors.white),
+                      onTap: () => launchSiriShortcut()),
+                  SpeedDialChild(
+                    child: Icon(Icons.account_balance_wallet_rounded),
+                    backgroundColor: Colors.purple,
+                    elevation: 8,
+                    label: 'Export QR to Photos',
+                    labelBackgroundColor: Colors.purple,
+                    labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
+                    onTap: () => exportQRcode(),
+                  ),
+                  SpeedDialChild(
+                    child: Icon(Icons.link),
+                    backgroundColor: Colors.orange,
+                    elevation: 8,
+                    label: 'Share Private Link',
+                    labelBackgroundColor: Colors.orange,
+                    labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
+                    onTap: () => shareUserLink(
+                      globals.objProfile.userId,
+                      globals.objProfile.token,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 32.0, right: 32.0, top: 16.0),
-                    child: RaisedButton(
-                      padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
-                      child: Text("Dismiss",
-                          style: TextStyle(fontSize: 18.0, fontFamily: 'Gotham-Light', fontWeight: FontWeight.bold, color: Colors.black54)),
-                      onPressed: () async {
-                        setState(() {
-                          _isLoding = true;
-                        });
-                        await ApiProvider().dismissSwapReq(swapModel);
-                        setState(() {
-                          _isLoding = false;
-                          enumSwapPageStatus = SwapPageStatus.Home;
-                        });
-                      },
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
-                      hoverElevation: 0.0,
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).padding.bottom + 20,
+                  SpeedDialChild(
+                    child: Icon(Icons.qr_code_scanner_rounded),
+                    backgroundColor: Colors.pink,
+                    elevation: 8,
+                    label: 'Scan QR Code',
+                    labelBackgroundColor: Colors.pink,
+                    labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
+                    onTap: () => scanQrCode(),
                   ),
                 ],
               ),
-      ),
-      floatingActionButton:
-      isSearch ? null :  
-      SpeedDial(
-          // both default to 16
-          marginRight: 18,
-          marginBottom: 20,
-          // animatedIcon: AnimatedIcons.add_event,
-          animatedIconTheme: IconThemeData(size: 22.0),
-          // this is ignored if animatedIcon is non null
-          child: Icon(Icons.share),
-          // If true user is forced to close dial manually 
-          // by tapping main button and overlay is not rendered.
-          closeManually: false,
-          curve: Curves.easeInOutExpo,
-          overlayColor: Colors.white,
-           overlayOpacity: 0.8,
-          onOpen: () => print('OPENING DIAL'),
-          onClose: () => print('DIAL CLOSED'),
-          tooltip: 'Speed Dial',
-          heroTag: 'speed-dial-hero-tag',
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.white,
-          elevation: 10.0,
-          shape: CircleBorder(),
-          children: [
-             SpeedDialChild(
-              child: Icon(Icons.mic_outlined),
-              backgroundColor: Colors.lightBlue,
-              elevation: 8,
-              label: 'Add Siri Shortcut',
-              labelBackgroundColor: Colors.lightBlue,
-              labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
-              onTap: () => launchSiriShortcut()
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.account_balance_wallet_rounded),
-              backgroundColor: Colors.purple,
-              elevation: 8,
-              label: 'Export QR to Photos',
-              labelBackgroundColor: Colors.purple,
-              labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
-              onTap: () => exportQRcode()
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.link),
-              backgroundColor: Colors.orange,
-              elevation: 8,
-              label: 'Share Private Link',
-              labelBackgroundColor: Colors.orange,
-              labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
-              onTap: () => shareUserLink(globals.objProfile.userId, globals.objProfile.token),
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.qr_code_scanner_rounded),
-              backgroundColor: Colors.pink,
-              elevation: 8,
-              label: 'Scan QR Code',
-              labelBackgroundColor: Colors.pink,
-              labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
-              onTap: () => scanQrCode(),
-            ),
-          ],
-        ),
-     floatingActionButtonLocation: FloatingActionButtonLocation.endDocked
-     );
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked);
   }
 
   Widget barCodeScreen() {
@@ -386,7 +447,11 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.black,
                   ),
                 ),
-                Expanded(child: SizedBox( width: 30,)),
+                Expanded(
+                  child: SizedBox(
+                    width: 30,
+                  ),
+                ),
                 SizedBox(
                   height: 70,
                   child: Image.asset(
@@ -417,51 +482,87 @@ class _HomePageState extends State<HomePage> {
             : SizedBox(),
         isSearch
             ? SearchPage()
-            :  Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-              RepaintBoundary(
-              key: globalKey,
-              child:
-              Card( 
-                elevation: 4,
-                shadowColor: Colors.black,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child:
-                  QrImage(
-                    data: globals.objProfile.userId,
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black87,
-                    version: QrVersions.auto,
-                    gapless: true,
-                    embeddedImage:  NetworkImage(globals.objProfile.photoUrl),
-                    embeddedImageStyle: QrEmbeddedImageStyle(size: Size.square(65)),
-                    size: 325.0,
-                ))
-                )
-              ),
-              SizedBox(height:20),
-                Container(
-                  width:250, 
-                  child:
-                  Center(child:
-                    Text(globals.objProfile.firstName + " " + globals.objProfile.lastName, 
-                      style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontFamily: 'Gotham-Medium',
-                      fontWeight: FontWeight.bold,
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                        child:
+                  RepaintBoundary(
+                    key: globalKey,
+                    child: Card(
+                      elevation: 7,
+                      shadowColor: Colors.black,
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        child: dynamicLink == null
+                            ? Container()
+                            : ClipRRect(
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    QrImage(
+                                      data: dynamicLink ??
+                                          context
+                                              .read<AuthProvider>()
+                                              .firebaseUser
+                                              .uid,
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                      version: QrVersions.auto,
+                                      gapless: true,
+                                      // embeddedImage: CachedNetworkImageProvider(
+                                      //   globals.objProfile?.photoUrl ?? "",
+                                      // ),
+                                      // embeddedImageStyle: QrEmbeddedImageStyle(
+                                      //   size: Size.square(65),
+                                      // ),
+                                      size: 325.0,
+                                    ),
+                                    Center(
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              globals.objProfile?.photoUrl ??
+                                                  "",
+                                          width: 66,
+                                          height: 66,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                      ),
                     ),
-                    maxLines: 4,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
+                  )),
+                  SizedBox(height: 20),
+                  Container(
+                    width: 250,
+                    child: Center(
+                      child: Text(
+                        globals.objProfile.firstName +
+                            " " +
+                            globals.objProfile.lastName,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontFamily: 'Gotham-Medium',
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 4,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
-                  ),
-                ),
-                 SizedBox(
-                    height: 8,
-                  ),
+                  SizedBox(height: 8),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.black,
@@ -470,7 +571,7 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.all(3.0),
                       child: Text(
-                        " " + globals.objProfile.userName + " " ,
+                        " " + globals.objProfile.userName + " ",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16.0,
@@ -510,9 +611,11 @@ class _HomePageState extends State<HomePage> {
 
   gotoSwapProfileScreen(SwapModel objSwapModel, bool isOpposite) async {
     if (isOpposite) {
-      objSwappProfile = await ApiProvider().getProfileDetail(objSwapModel.userId);
+      objSwappProfile =
+          await ApiProvider().getProfileDetail(objSwapModel.userId);
     } else {
-      objSwappProfile = await ApiProvider().getProfileDetail(objSwapModel.swapuserId);
+      objSwappProfile =
+          await ApiProvider().getProfileDetail(objSwapModel.swapuserId);
     }
     setState(() {
       enumSwapPageStatus = SwapPageStatus.Swap;
@@ -520,20 +623,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Uint8List> toQrImageData(String text) async {
-  try {
-    final image = await QrPainter(
-      data: text,
-      version: QrVersions.auto,
-      gapless: false,
-      color: Colors.black,
-      emptyColor: Colors.white,
-    ).toImage(300);
-    final a = await image.toByteData(format: ImageByteFormat.png);
-    return a.buffer.asUint8List();
-  } catch (e) {
-    throw e;
+    try {
+      final image = await QrPainter(
+        data: text,
+        version: QrVersions.auto,
+        gapless: false,
+        color: Colors.black,
+        emptyColor: Colors.white,
+      ).toImage(300);
+      final a = await image.toByteData(format: ImageByteFormat.png);
+      return a.buffer.asUint8List();
+    } catch (e) {
+      throw e;
+    }
   }
-}
 
   Future<bool> checkPermission() async {
     bool result = await Permissions().getPermission();
@@ -545,8 +648,9 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  launchSiriShortcut() async{
-    var url = 'https://www.icloud.com/shortcuts/3ba77293fc6a4540b0dfae8e2ee8168f';
+  launchSiriShortcut() async {
+    var url =
+        'https://www.icloud.com/shortcuts/3ba77293fc6a4540b0dfae8e2ee8168f';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -554,20 +658,49 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  shareUserLink(userId, token ) {
-    // final RenderBox box = context.findRenderObject();
-     Share.text( 'Check out my link',
-          'This private link has all my contact info and socials: https://dappy.me/'+
-          globals.objProfile.token + "/"+ globals.objProfile.userId, 'text/plain');
-      // Share.share(
-      // 'Check out my link https://dappyweb.web.app/' + token + "/" + userId + " !",
-      // subject: 'This private link has all my contact info and socials :)',
-      // sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size );
+  shareUserLink(userId, token) async {
+    Share.text(
+      'Check out my link',
+      'This private link has all my contact info and socials: $dynamicLink',
+      // +
+      //     globals.objProfile.token +
+      //     "/" +
+      //     globals.objProfile.userId,
+      'text/plain',
+    );
+    // Share.share(
+    // 'Check out my link https://dappyweb.web.app/' + token + "/" + userId + " !",
+    // subject: 'This private link has all my contact info and socials :)',
+    // sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size );
   }
 
-  exportQRcode()  async {
+  Future<String> getDynamicLink() async {
+    final userId = (await FirebaseAuth.instance.currentUser()).uid;
+
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+      uriPrefix: 'https://dappy.page.link',
+      link: Uri.parse('https://dappy.me/$userId'),
+      androidParameters: AndroidParameters(
+        packageName: 'com.gitterhive.swapTech',
+        fallbackUrl: Uri.parse("https://dappy.me/$userId"),
+      ),
+      iosParameters: IosParameters(
+        bundleId: "com.gitterhive.swaptact",
+        appStoreId: "1526658458",
+        fallbackUrl: Uri.parse("https://dappy.me/$userId"),
+      ),
+    );
+    final link = await parameters.buildShortLink();
+    parametersLink = parameters.link.toString();
+    print(link.shortUrl.toString());
+    Logger.debug("HERE IS THE DYNAMIC LINK", link.shortUrl.toString());
+    return link.shortUrl.toString();
+  }
+
+  exportQRcode() async {
     try {
-      RenderRepaintBoundary boundary = globalKey.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary =
+          globalKey.currentContext.findRenderObject();
       var image = await boundary.toImage();
       ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
@@ -576,11 +709,11 @@ class _HomePageState extends State<HomePage> {
       final file = await new File('${tempDir.path}/image.png').create();
       await file.writeAsBytes(pngBytes);
 
-      await Share.file('https://dappyweb.web.app/' + globals.objProfile.token + "/" + globals.objProfile.userId, 'MYQRCODE.png', pngBytes, 'image/png');
-      } catch (e) {
-        print(e.toString());
-      }
+      await Share.file(dynamicLink, 'MYQRCODE.png', pngBytes, 'image/png');
+    } catch (e) {
+      print(e.toString());
     }
+  }
 
   addToContacts(userID) async {
     final obj = await ApiProvider().getProfileDetail(userID);
@@ -590,7 +723,7 @@ class _HomePageState extends State<HomePage> {
       givenName: obj.firstName,
       familyName: obj.lastName,
     );
-    newContact.emails = [ Item(label: "home", value: obj.email)];
+    newContact.emails = [Item(label: "home", value: obj.email)];
     newContact.company = "Dappy.io";
     Uint8List byteImage = await networkImageToByte(obj.photoUrl);
     newContact.avatar = byteImage;
@@ -598,48 +731,86 @@ class _HomePageState extends State<HomePage> {
     await ContactsService.addContact(newContact);
   }
 
-  
-  scanQrCode() async {
+  Future scanQrCode({String dynamicLinkUserId}) async {
     setState(() {
       _isLoding = true;
     });
-      // Get Location Address
+    // Get Location Address
 
-      try {
-        ScanResult barcode = await BarcodeScanner.scan();
+    try {
+      ScanResult barcode;
+      if (dynamicLinkUserId == null) {
+        barcode = await BarcodeScanner.scan();
+      } else {
+        barcode = ScanResult(rawContent: dynamicLinkUserId);
+        // barcode?.rawContent = dynamicLinkUserId;
+      }
 
-        if (barcode.rawContent != null && barcode.rawContent != "") {
-          setState(() {
-            barCode = barcode.rawContent;
-          });
+      print(barcode.rawContent);
 
-          bool permission = await checkPermission();
+      if (barcode.rawContent != null && barcode.rawContent != "") {
+        setState(() {
+          barCode = barcode.rawContent;
+        });
 
-         if (permission) {
+        bool permission = await checkPermission();
+
+        if (permission) {
           _locationData = await location.getLocation();
-          final coordinates = new Coordinates(_locationData.latitude, _locationData.longitude);
-          var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+          final coordinates =
+              new Coordinates(_locationData.latitude, _locationData.longitude);
+          var addresses =
+              await Geocoder.local.findAddressesFromCoordinates(coordinates);
           swapModel.locationAddreess = "@ " + addresses.first.addressLine;
-         }
-          else {
-           await checkPermission();
-          }
-
-          swapModel.userId = globals.objProfile.userId;
-          swapModel.swapuserId = barcode.rawContent;
-          
-          await ApiProvider().swapUserProfile(swapModel);
-          addToContacts(swapModel.swapuserId);
-          setState(() {
-            _isLoding = false;
-          });
+        } else {
+          await checkPermission();
         }
-      } catch (e) {
-        print(e);
-      } finally {
+        final code = dynamicLinkUserId ?? parametersLink.split("/").last;
+        print("HERE IS THE CODE $code");
+
+        swapModel.userId = globals.objProfile.userId;
+        swapModel.swapuserId = dynamicLinkUserId ?? code;
+        print("SWAP USER PROFILE");
+        await ApiProvider().swapUserProfile(swapModel);
+        addToContacts(swapModel.swapuserId);
+        await Future.delayed(Duration(seconds: 1));
+        Logger.debug("SWAP STATUS", enumSwapPageStatus);
+        if (enumSwapPageStatus == SwapPageStatus.Home) {
+          final doc =
+              await Firestore.instance.collection("Users").document(code).get();
+
+          print(doc.data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserProfilePage(
+                userProfile: ProfileModel.parseSnapshot(doc),
+              ),
+            ),
+          );
+        }
         setState(() {
           _isLoding = false;
         });
       }
-    } 
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isLoding = false;
+      });
+    }
+  }
 }
+// bf:a3:f0:eb:c4:75:3b:35:c0:0d:bd:d5:2b:a4:89:a0:1f:76:16:5c
+// SHA-1
+// 25:58:2c:77:35:a8:4a:1e:df:db:45:f5:5a:5b:c7:d8:14:09:13:b1
+// SHA-1
+// 2c:ce:4a:ec:71:81:eb:fa:db:7e:b6:03:79:3a:b2:89:83:e7:7c:c4
+// SHA-1
+// 79:64:fb:d8:43:a6:ba:06:e0:a1:9f:8f:c8:7c:22:ae:f6:84:12:fb
+// SHA-1
+// 3d:02:66:ce:da:78:b1:13:c6:cb:4f:de:36:f3:b1:b8:83:58:eb:7b
+// SHA-1
+// 75:ea 61:8b:42:e8:bc:1f:c7:a6:ef:d0:f5:6b:dd:f8:ad:a6:6c:03:50:75:4c:c5:c1:39:cb:ee:2c:88:d2:f1:

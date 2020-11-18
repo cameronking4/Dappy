@@ -7,6 +7,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>com.googleusercontent.apps.872574258487-j7jr87v5miekhc93i3qtq0o80flr0fo9</string>
+		<string>applinks:dappy.page.link</string>
 	</array>
 </dict>
 </plist>

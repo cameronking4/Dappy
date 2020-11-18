@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -73,7 +72,8 @@ class _ZSelectSingleImageState extends State<ZSelectSingleImage> {
               Container(
                   width: widget.width,
                   child: ClipRRect(
-                    borderRadius: widget.borderRadius ?? BorderRadius.circular(5),
+                    borderRadius:
+                        widget.borderRadius ?? BorderRadius.circular(5),
                     child: CachedNetworkImage(
                       width: widget.width,
                       height: widget.height,
@@ -84,7 +84,8 @@ class _ZSelectSingleImageState extends State<ZSelectSingleImage> {
                         height: widget.height,
                         width: widget.width,
                         decoration: BoxDecoration(
-                          borderRadius: widget.borderRadius ?? BorderRadius.circular(5),
+                          borderRadius:
+                              widget.borderRadius ?? BorderRadius.circular(5),
                           color: Colors.grey[200],
                         ),
                       ),
@@ -95,7 +96,8 @@ class _ZSelectSingleImageState extends State<ZSelectSingleImage> {
                             height: widget.height,
                             width: widget.width,
                             decoration: BoxDecoration(
-                              borderRadius: widget.borderRadius ?? BorderRadius.circular(5),
+                              borderRadius: widget.borderRadius ??
+                                  BorderRadius.circular(5),
                               color: Colors.grey[200],
                             ),
                             child: Text(
@@ -128,7 +130,9 @@ class _ZSelectSingleImageState extends State<ZSelectSingleImage> {
                               SizedBox(height: 5),
                               Text(
                                 'Selected Image',
-                                style: GoogleFonts.lato(fontStyle: FontStyle.italic, fontWeight: FontWeight.w700),
+                                style: GoogleFonts.lato(
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w700),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -176,12 +180,11 @@ class _ZSelectSingleImageState extends State<ZSelectSingleImage> {
     }
 
     File croppedFile = await ImageCropper.cropImage(
-      sourcePath: _imageFile.path,
-      cropStyle: CropStyle.circle,
-      maxWidth: 1000,
-      maxHeight: 1000
-    );
-    
+        sourcePath: _imageFile.path,
+        cropStyle: CropStyle.circle,
+        maxWidth: 1000,
+        maxHeight: 1000);
+
     widget.onImageChange(croppedFile ?? widget.imageFile);
     setState(() {});
   }

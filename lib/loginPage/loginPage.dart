@@ -6,11 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/loginPage/verifyPage.dart';
 import 'package:swapTech/main.dart';
 import 'package:swapTech/model/profileModel.dart';
 import 'package:swapTech/constance/global.dart' as globals;
+import 'package:swapTech/providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPageState createState() => LoginPageState();
@@ -20,12 +22,11 @@ class LoginPageState extends State<LoginPage> {
   Country _selectedDialogCountry = CountryPickerUtils.getCountryByIsoCode('US');
 
   String typedPhone = '';
-
-  var maskFormatter = new MaskTextInputFormatter(mask: '### ### ####', filter: {"#": RegExp(r'[0-9]')});
+  var maskFormatter = new MaskTextInputFormatter(
+    mask: '### ### ####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
   final _phoneController = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  bool isLoginProsses = false;
 
   @override
   void initState() {
@@ -41,13 +42,11 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading =
+        context.select<AuthProvider, bool>((value) => value.isLoading);
     return Scaffold(
       body: ModalProgressHUD(
-        inAsyncCall: isLoginProsses,
-        progressIndicator: CircularProgressIndicator(
-          strokeWidth: 2.0,
-          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-        ),
+        inAsyncCall: isLoading,
         child: SafeArea(
           child: ListView(
             children: <Widget>[
@@ -61,17 +60,24 @@ class LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
-              Text('Login\n', textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 27.0, fontFamily: 'Gotham')),
-              Text('Enter your Mobile Number to \n\n Sign In or Sign Up',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.0,
-                    fontFamily: 'Gotham-Light',
-                  )),
+              Text(
+                'Login\n',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.black, fontSize: 27.0, fontFamily: 'Gotham'),
+              ),
+              Text(
+                'Enter your Mobile Number to \n\n Sign In or Sign Up',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.0,
+                  fontFamily: 'Gotham-Light',
+                ),
+              ),
               Container(
-                height: 170.0,
                 margin: EdgeInsets.only(top: 45.0, left: 32.0, right: 32.0),
+                padding: EdgeInsets.symmetric(vertical: 32, horizontal: 12),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -80,10 +86,7 @@ class LoginPageState extends State<LoginPage> {
                       color: Colors.black12,
                       blurRadius: 20.0,
                       spreadRadius: 5.0,
-                      offset: Offset(
-                        15.0,
-                        10.0,
-                      ),
+                      offset: Offset(15.0, 10.0),
                     ),
                   ],
                 ),
@@ -95,10 +98,9 @@ class LoginPageState extends State<LoginPage> {
                       height: 50.0,
                       width: MediaQuery.of(context).size.width * 0.8,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(16.0),
-                          ),
-                          border: Border.all(color: Colors.black45)),
+                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                        border: Border.all(color: Colors.black45),
+                      ),
                       child: Row(
                         children: <Widget>[
                           InkWell(
@@ -112,9 +114,13 @@ class LoginPageState extends State<LoginPage> {
                               decoration: InputDecoration(
                                 hintText: '123 456 7890',
                                 border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 0.0, vertical: 0.0),
                               ),
-                              keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                              keyboardType: TextInputType.numberWithOptions(
+                                signed: true,
+                                decimal: true,
+                              ),
                               cursorColor: Colors.black45,
                             ),
                           ),
@@ -128,22 +134,37 @@ class LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
+                    SizedBox(height: 24),
                     InkWell(
                       onTap: () {
-                        toVerifyPage();
+                        var phoneNumber = "+" +
+                            _selectedDialogCountry.phoneCode +
+                            this.typedPhone.replaceAll(" ", "");
+
+                        context.read<AuthProvider>().phoneNumber =
+                            maskFormatter.getMaskedText();
+                        context.read<AuthProvider>().dialingCode =
+                            _selectedDialogCountry.phoneCode;
+                        context
+                            .read<AuthProvider>()
+                            .sendVerificationCode(phoneNumber);
                       },
                       child: Container(
                         height: 50,
                         width: 200,
-                        decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(30)),
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(30)),
                         child: Center(
-                          child: Text("Login",
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontFamily: 'Gotham-Light',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              )),
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontFamily: 'Gotham-Light',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -168,7 +189,8 @@ class LoginPageState extends State<LoginPage> {
             'Select your phone code',
             style: Theme.of(context).textTheme.bodyText1.copyWith(),
           ),
-          onValuePicked: (Country country) => setState(() => _selectedDialogCountry = country),
+          onValuePicked: (Country country) =>
+              setState(() => _selectedDialogCountry = country),
           itemBuilder: _buildDialogItem,
         ),
       );
@@ -227,7 +249,8 @@ class LoginPageState extends State<LoginPage> {
               CountryPickerUtils.getDefaultFlagImage(country),
               SizedBox(width: 8),
               Container(
-                constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.50),
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.50),
                 child: Text(
                   "+" + getCountryString(country.phoneCode),
                   style: Theme.of(context).textTheme.bodyText2.copyWith(),
@@ -238,88 +261,96 @@ class LoginPageState extends State<LoginPage> {
         ),
       );
 
-  toVerifyPage() async {
-    var fullPhoneNumber = "+" + _selectedDialogCountry.phoneCode + this.typedPhone.replaceAll(" ", "");
-    try {
-      setState(() {
-        isLoginProsses = true;
-      });
-      await _auth.verifyPhoneNumber(
-        phoneNumber: fullPhoneNumber,
-        timeout: Duration(seconds: 60),
-        verificationCompleted: ((AuthCredential authCredential) {
-          FirebaseAuth.instance.signInWithCredential(authCredential).then((authResult) {
-            if (authResult != null && authResult.user != null) {
-              navigetToProfileScreen(authResult.user);
-            }
-          }).catchError((e) {
-            print(e);
-          });
-        }),
-        verificationFailed: ((AuthException error) {
-          print('verification failed');
-          print(error.message);
-        }),
-        codeSent: ((String verificationId, [int forceResendingToken]) {
-          setState(() {
-            isLoginProsses = false;
-          });
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (context) => VerifyPage(
-                phoneNumber: maskFormatter.getMaskedText(),
-                dialingCode: _selectedDialogCountry.phoneCode,
-                verificationId: verificationId,
-              ),
-            ),
-          );
-        }),
-        codeAutoRetrievalTimeout: null,
-      );
-    } catch (e) {
-      print(e);
-    } finally {
-      setState(() {
-        isLoginProsses = false;
-      });
-    }
-  }
+  // toVerifyPage() async {
+  //   var fullPhoneNumber = "+" +
+  //       _selectedDialogCountry.phoneCode +
+  //       this.typedPhone.replaceAll(" ", "");
+  //   try {
+  //     setState(() {
+  //       isLoginProsses = true;
+  //     });
+  //     await _auth.verifyPhoneNumber(
+  //       phoneNumber: fullPhoneNumber,
+  //       timeout: Duration(seconds: 60),
+  //       verificationCompleted: ((AuthCredential authCredential) {
+  //         FirebaseAuth.instance
+  //             .signInWithCredential(authCredential)
+  //             .then((authResult) {
+  //           if (authResult != null && authResult.user != null) {
+  //             navigetToProfileScreen(authResult.user);
+  //           }
+  //         }).catchError((e) {
+  //           print(e);
+  //         });
+  //       }),
+  //       verificationFailed: ((AuthException error) {
+  //         print('verification failed');
+  //         print(error.message);
+  //       }),
+  //       codeSent: ((String verificationId, [int forceResendingToken]) {
+  //         setState(() {
+  //           isLoginProsses = false;
+  //         });
+  //         Navigator.push(
+  //           context,
+  //           CupertinoPageRoute(
+  //             builder: (context) => VerifyPage(
+  //               phoneNumber: maskFormatter.getMaskedText(),
+  //               dialingCode: _selectedDialogCountry.phoneCode,
+  //               verificationId: verificationId,
+  //             ),
+  //           ),
+  //         );
+  //       }),
+  //       codeAutoRetrievalTimeout: null,
+  //     );
+  //   } catch (e) {
+  //     print(e);
+  //   } finally {
+  //     setState(() {
+  //       isLoginProsses = false;
+  //     });
+  //   }
+  // }
 
-  navigetToProfileScreen(FirebaseUser user) async {
-    setState(() {
-      isLoginProsses = true;
-    });
-    if (user != null) {
-      try {
-        await Firestore.instance.collection('Users').document(user.uid).get().then((snapshot) async {
-          if (snapshot != null) {
-            var userData = ProfileModel.parseSnapshot(snapshot);
-            if (userData == null) {
-            } else {
-              globals.objProfile = userData;
-              await ApiProvider().updateUser(userData).then((then) {
-                setState(() {
-                  isLoginProsses = false;
-                });
-                if (userData.firstName == '') {
-                  Navigator.pushReplacementNamed(context, Routes.PROFILE);
-                } else {
-                  Navigator.pushReplacementNamed(context, Routes.HOME);
-                }
-              });
-            }
-          }
-        });
-      } catch (e) {
-        print(e);
-      } finally {
-        setState(() {
-          isLoginProsses = false;
-        });
-      }
-    }
-  }
+  // navigetToProfileScreen(FirebaseUser user) async {
+  //   setState(() {
+  //     isLoginProsses = true;
+  //   });
+  //   if (user != null) {
+  //     try {
+  //       await Firestore.instance
+  //           .collection('Users')
+  //           .document(user.uid)
+  //           .get()
+  //           .then((snapshot) async {
+  //         if (snapshot != null) {
+  //           var userData = ProfileModel.parseSnapshot(snapshot);
+  //           if (userData == null) {
+  //           } else {
+  //             globals.objProfile = userData;
+  //             await ApiProvider().updateUser(userData).then((then) {
+  //               setState(() {
+  //                 isLoginProsses = false;
+  //               });
+  //               if (userData.firstName == '') {
+  //                 Navigator.pushReplacementNamed(context, Routes.PROFILE);
+  //               } else {
+  //                 Navigator.pushReplacementNamed(context, Routes.HOME);
+  //               }
+  //             });
+  //           }
+  //         }
+  //       });
+  //     } catch (e) {
+  //       print(e);
+  //     } finally {
+  //       setState(() {
+  //         isLoginProsses = false;
+  //       });
+  //     }
+  //   }
+  // }
 
   _typedPhone() {
     this.typedPhone = _phoneController.text;
