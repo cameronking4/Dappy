@@ -220,7 +220,7 @@ class _RecentSwapPageState extends State<RecentSwapPage> {
                                                                               3.0),
                                                                       child:
                                                                           Text(
-                                                                        (objProfileModel?.data?.userName ??
+                                                                        (" " + objProfileModel?.data?.userName ??
                                                                                 "") +
                                                                             " ",
                                                                         style:

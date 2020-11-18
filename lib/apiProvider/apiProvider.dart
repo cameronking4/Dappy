@@ -451,7 +451,7 @@ class ApiProvider {
       //check userID
       await Firestore.instance
           .collection('Swap')
-          .where("swapuserId", isEqualTo: globals.objProfile.userId)
+          .where("userId", isEqualTo: globals.objProfile.userId)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {
@@ -469,7 +469,7 @@ class ApiProvider {
       //check swapuserId
       await Firestore.instance
           .collection('Swap')
-          .where("userId", isEqualTo: globals.objProfile.userId)
+          .where("swapuserId", isEqualTo: globals.objProfile.userId)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {

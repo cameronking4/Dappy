@@ -485,14 +485,18 @@ class _HomePageState extends State<HomePage> {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                        child:
                   RepaintBoundary(
                     key: globalKey,
                     child: Card(
-                      elevation: 4,
+                      elevation: 7,
                       shadowColor: Colors.black,
                       child: Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                         child: dynamicLink == null
                             ? Container()
                             : ClipRRect(
@@ -506,7 +510,7 @@ class _HomePageState extends State<HomePage> {
                                               .firebaseUser
                                               .uid,
                                       backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black87,
+                                      foregroundColor: Colors.black,
                                       version: QrVersions.auto,
                                       gapless: true,
                                       // embeddedImage: CachedNetworkImageProvider(
@@ -521,12 +525,13 @@ class _HomePageState extends State<HomePage> {
                                       child: ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(100),
+
                                         child: CachedNetworkImage(
                                           imageUrl:
                                               globals.objProfile?.photoUrl ??
                                                   "",
-                                          width: 65,
-                                          height: 65,
+                                          width: 66,
+                                          height: 66,
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -536,7 +541,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                       ),
                     ),
-                  ),
+                  )),
                   SizedBox(height: 20),
                   Container(
                     width: 250,
