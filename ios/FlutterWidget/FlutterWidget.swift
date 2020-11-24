@@ -32,7 +32,7 @@ struct Provider: IntentTimelineProvider {
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [SimpleEntry] = []
         
-        let sharedDefaults = UserDefaults.init(suiteName: "group.com.fasky")
+        let sharedDefaults = UserDefaults.init(suiteName: "group.com.dappy")
         var flutterData: FlutterData? = nil
         
         if(sharedDefaults != nil) {
@@ -67,7 +67,7 @@ struct FlutterWidgetEntryView : View {
     }
     
     private var NoDataView: some View {
-      Text("No Data found! Go to the Flutter App")
+      Text("No Data found! Go to the Dappy App")
     }
     
     var body: some View {

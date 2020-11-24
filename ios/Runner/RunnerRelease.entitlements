@@ -9,5 +9,11 @@
 		<string>com.googleusercontent.apps.872574258487-j7jr87v5miekhc93i3qtq0o80flr0fo9</string>
 		<string>applinks:dappy.page.link</string>
 	</array>
+	<key>com.apple.developer.siri</key>
+	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.dappy</string>
+	</array>
 </dict>
 </plist>
