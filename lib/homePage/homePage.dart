@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    initPlatformState();
+    // initPlatformState();
   }
 
   Future<void> initPlatformState() async {
@@ -720,6 +720,10 @@ class _HomePageState extends State<HomePage> {
     parametersLink = parameters.link.toString();
     print(link.shortUrl.toString());
     Logger.debug("HERE IS THE DYNAMIC LINK", link.shortUrl.toString());
+    WidgetKit.reloadAllTimelines();
+    final data = FlutterWidgetData(link.shortUrl.toString());
+    WidgetKit.setItem('widgetData', jsonEncode(data), 'group.com.dappy');
+    print( "Link is set to Widget!!!!");
     return link.shortUrl.toString();
   }
 
