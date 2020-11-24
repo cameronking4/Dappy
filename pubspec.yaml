@@ -55,6 +55,7 @@ dependencies:
   share: ^0.6.2+3
   swipe_gesture_recognizer: ^0.0.2
   url_launcher: ^5.5.0
+  flutter_widgetkit: ^1.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

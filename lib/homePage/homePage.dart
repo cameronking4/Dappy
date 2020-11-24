@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:contacts_service/contacts_service.dart';
@@ -38,6 +39,8 @@ import 'package:location/location.dart' as locationPlugin;
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:swapTech/FlutterWidgetData.dart';
+import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 
 class HomePage extends StatefulWidget {
   final bool shouldCallSwipe;
@@ -95,6 +98,29 @@ class _HomePageState extends State<HomePage> {
         context.read<DynamicLinkProvider>().linkStatus = LinkStatus.NoLink;
       }
     });
+
+    initPlatformState();
+  }
+
+  Future<void> initPlatformState() async {
+    final data = FlutterWidgetData("dappy.me/"+ globals.objProfile.userId);
+    final resultString = await WidgetKit.getItem('testString', 'group.com.dappy');
+    final resultBool = await WidgetKit.getItem('testBool', 'group.com.dappy');
+    final resultNumber = await WidgetKit.getItem('testNumber', 'group.com.dappy');
+    final resultJsonString = await WidgetKit.getItem('testJson', 'group.com.dappy');
+
+    var resultData;
+    if(resultJsonString != null) {
+      resultData = FlutterWidgetData.fromJson(jsonDecode(resultJsonString));
+    }
+
+    WidgetKit.setItem('testString', 'Hello World', 'group.com.dappy');
+    WidgetKit.setItem('testBool', false, 'group.com.dappy');
+    WidgetKit.setItem('testNumber', 10, 'group.com.dappy');
+    WidgetKit.setItem('testJson', jsonEncode(data), 'group.com.dappy');
+    WidgetKit.setItem('widgetData', jsonEncode(data), 'group.com.dappy');
+    print( "Link is set to Widget!!!!");
+    WidgetKit.reloadAllTimelines();
   }
 
   updateFCMTken() async {
