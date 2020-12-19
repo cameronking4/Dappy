@@ -41,6 +41,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:swapTech/FlutterWidgetData.dart';
 import 'package:flutter_widgetkit/flutter_widgetkit.dart';
+import 'package:vibration/vibration.dart';
 
 class HomePage extends StatefulWidget {
   final bool shouldCallSwipe;
@@ -636,6 +637,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   gotoSwapProfileScreen(SwapModel objSwapModel, bool isOpposite) async {
+    Vibration.vibrate(duration: 1000);
     if (isOpposite) {
       objSwappProfile =
           await ApiProvider().getProfileDetail(objSwapModel.userId);
@@ -805,6 +807,7 @@ class _HomePageState extends State<HomePage> {
         addToContacts(swapModel.swapuserId);
         await Future.delayed(Duration(seconds: 1));
         Logger.debug("SWAP STATUS", enumSwapPageStatus);
+        Vibration.vibrate(duration: 1000);
         if (enumSwapPageStatus == SwapPageStatus.Home) {
           final doc =
               await Firestore.instance.collection("Users").document(code).get();

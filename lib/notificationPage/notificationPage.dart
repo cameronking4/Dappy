@@ -9,6 +9,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:network_image_to_byte/network_image_to_byte.dart';
 import 'package:swapTech/apiProvider/apiProvider.dart';
 import 'package:swapTech/constance/constance.dart';
+import 'package:swapTech/constance/global.dart';
 import 'package:swapTech/drawerPage/drawerPage.dart';
 import 'package:swapTech/homePage/homePage.dart';
 import 'package:swapTech/model/notificationModel.dart';
@@ -19,7 +20,7 @@ import 'package:swapTech/requestPage/Accept.dart';
 import 'package:swapTech/searchPage/searchPage.dart';
 import 'package:swapTech/swapPage/recentSwap.dart';
 import 'package:swapTech/topBarClipper/topBarClipare.dart';
-
+import 'package:vibration/vibration.dart';
 
 class NotificationDetail extends StatefulWidget {
   @override
@@ -210,10 +211,14 @@ class _NotificationDetailState extends State<NotificationDetail> {
                                                               lstNotification.remove(lstNotification[index]);
                                                               // var obj = await ApiProvider().getProfileDetail(lstNotification[index].userId);
                                                               Fluttertoast.showToast(msg: "Accepted Request Successfully!! :)");
+                                                              Vibration.vibrate(duration: 1000);
                                                               Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                    builder: (context) => RecentSwapPage(),
+                                                                    builder: (context) => UserProfilePage(
+                                                                      userProfile: objProfileModel.data,
+                                                                      swapModel: swapModel,
+                                                                    ),
                                                                   ),
                                                                 ); 
                                                             },

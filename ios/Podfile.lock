@@ -506,6 +506,8 @@ PODS:
   - TOCropViewController (2.5.5)
   - url_launcher (0.0.1):
     - Flutter
+  - vibration (1.7.2):
+    - Flutter
 
 DEPENDENCIES:
   - barcode_scan (from `.symlinks/plugins/barcode_scan/ios`)
@@ -537,6 +539,7 @@ DEPENDENCIES:
   - share (from `.symlinks/plugins/share/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - vibration (from `.symlinks/plugins/vibration/ios`)
 
 SPEC REPOS:
   trunk:
@@ -639,6 +642,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
+  vibration:
+    :path: ".symlinks/plugins/vibration/ios"
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -709,6 +714,7 @@ SPEC CHECKSUMS:
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   TOCropViewController: da59f531f8ac8a94ef6d6c0fc34009350f9e8bfe
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+  vibration: 528f5ef88e90d4a8fd1ef04afbf0ed3ac7c9801d
 
 PODFILE CHECKSUM: 894ee9851b08c838b919a67fba7414c30ffce3ca
 

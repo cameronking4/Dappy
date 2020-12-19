@@ -137,6 +137,7 @@ class ApiProvider {
         "tiktok": profile.tiktok,
         "userName": profile.userName,
         "venmo": profile.venmo,
+        "fullName": profile.firstName + " " + profile.lastName,
       });
     } catch (e) {
       print(e);
@@ -269,36 +270,52 @@ class ApiProvider {
 
   // ignore: missing_return
   Future<List<UserPhone>> searchUser(
-      String fieldName, String searchtext) async {
+    String fieldName, String searchtext) async {
     bool isPhone = false;
+    bool isFullName = false;
 
     if (double.tryParse(searchtext) != null) isPhone = true;
+    if (searchtext.contains(" ")){
+      isFullName = true;
+    } 
 
     QuerySnapshot result;
+    QuerySnapshot result2;
 
     searchtext = searchtext.toLowerCase();
 
     try {
-      if (!isPhone)
+      if (!isPhone && !isFullName)
         result = await Firestore.instance
             .collection('Users')
             .where('userName', isGreaterThanOrEqualTo: searchtext.toLowerCase())
             .where('userName', isLessThan: searchtext + 'z')
-            .limit(10)
+            .limit(20)
             .getDocuments();
 
-      if (isPhone)
-        result = await Firestore.instance
+      if (isFullName == true)
+          result = await Firestore.instance
             .collection('Users')
-            .where('phone', isGreaterThanOrEqualTo: searchtext)
-            .where('phone', isLessThan: searchtext + 'z')
-            .limit(10)
+            .where('fullName', isGreaterThanOrEqualTo: searchtext.toLowerCase())
+            .where('fullName', isLessThan: searchtext + 'z')
+            .limit(20)
             .getDocuments();
+
+      // if (isPhone)
+      //   result = await Firestore.instance
+      //       .collection('Users')
+      //       .where('phone', isGreaterThanOrEqualTo: searchtext)
+      //       .where('phone', isLessThan: searchtext + 'z')
+      //       .limit(10)
+      //       .getDocuments();
 
       if (result != null)
         result.documents.forEach((element) {
+          print(element['fullName']);
           print(element['userName']);
         });
+
+
 
       return result.documents
           .map((document) => UserPhone.fromFirestore(document))
@@ -451,7 +468,7 @@ class ApiProvider {
       //check userID
       await Firestore.instance
           .collection('Swap')
-          .where("userId", isEqualTo: globals.objProfile.userId)
+          .where("swapuserId", isEqualTo: globals.objProfile.userId)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {
@@ -469,7 +486,7 @@ class ApiProvider {
       //check swapuserId
       await Firestore.instance
           .collection('Swap')
-          .where("swapuserId", isEqualTo: globals.objProfile.userId)
+          .where("userId", isEqualTo: globals.objProfile.userId)
           .orderBy('createdAt', descending: true)
           .getDocuments()
           .then((onValue) {

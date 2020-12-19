@@ -66,7 +66,7 @@ class _SearchPageState extends State<SearchPage> {
                   child: TextField(
                     controller: _searchText,
                     decoration: InputDecoration(
-                      hintText: 'Search by username or phone number',
+                      hintText: 'Search by username or full name',
                       hintStyle: TextStyle(color: Colors.black87),
                       contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                       prefixIcon: Stack(
@@ -174,15 +174,81 @@ class _SearchPageState extends State<SearchPage> {
                                         SizedBox(
                                           width: 25,
                                         ),
-                                        Text(
-                                          '${data[index].userName}',
-                                          style: TextStyle(
-                                            color: Colors.blueGrey,
-                                            fontSize: 13.0,
-                                          ),
-                                          maxLines: 3,
-                                          overflow: TextOverflow.visible,
-                                        ),
+
+                                        Expanded(
+                                           child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment
+                                                      .start,
+                                               children: [
+                                                  Container(
+                                                      width:
+                                                          750,
+                                                      child: Text(
+                                                          ('${data[index].firstName} ${data[index].lastName}'),
+                                                          style:
+                                                              TextStyle(
+                                                            color:
+                                                                Colors.blueGrey,
+                                                            fontSize:
+                                                                15.0,
+                                                          ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          maxLines:
+                                                              4)),
+                                                      SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Colors
+                                                                  .black54,
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                      10),
+                                                            ),
+                                                            child:
+                                                                Padding(
+                                                              padding:
+                                                                  const EdgeInsets.all(
+                                                                      3.0),
+                                                              child:
+                                                                  Text(
+                                                                ("" + '${data[index].userName}')
+                                                                        ,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color:
+                                                                      Colors.white,
+                                                                  fontSize:
+                                                                      13.0,
+                                                                ),
+                                                                overflow:
+                                                                    TextOverflow.visible,
+                                                                maxLines:
+                                                                    3,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                        // Container(
+                                        // child:
+                                        // Text(
+                                        //   '${data[index].firstName} ${data[index].lastName}',
+                                        //   style: TextStyle(
+                                        //     color: Colors.blueGrey,
+                                        //     fontSize: 15.0,
+                                        //   ),
+                                        //   maxLines: 3,
+                                        //   overflow: TextOverflow.visible,
+                                        // )),
+                                        // SizedBox(
+                                        //   height: 8,
+                                        // ),
                                         Expanded(child: SizedBox()),
                                         InkWell(
                                           onTap: () async {
