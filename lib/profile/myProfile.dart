@@ -249,7 +249,7 @@ class MyProfilePageState extends State<MyProfilePage> {
                                           height: 6,
                                         ),
                                         Text(
-                                          "Joined Swappy " + readTimestamp(widget.userProfile.createdAt),
+                                          "Joined Dappy " + readTimestamp(widget.userProfile.createdAt),
                                            style: TextStyle(
                                             fontSize: 13,
                                             color: Colors.black,
@@ -428,8 +428,7 @@ class MyProfilePageState extends State<MyProfilePage> {
                                   ),
                           ],
                       ),
-                     Expanded(child: Container(),),
-                    
+                    //  Expanded(child: Container(),),
                     ],
                   ),
                 ),
@@ -443,9 +442,9 @@ class MyProfilePageState extends State<MyProfilePage> {
 
    shareUserLink(userId, token ) {
     // final RenderBox box = context.findRenderObject();
-     Share.text( 'Check out my link',
-          'This private link has all my contact info and socials: https://dappy.me/'+
-          globals.objProfile.token + "/"+ globals.objProfile.userId, 'text/plain');
+     Share.text( 
+       'This private link has all my contact info and socials: ',
+        globals.dynamicLink, 'text/plain');
       // Share.share(
       // 'Check out my link https://dappyweb.web.app/' + token + "/" + userId + " !",
       // subject: 'This private link has all my contact info and socials :)',

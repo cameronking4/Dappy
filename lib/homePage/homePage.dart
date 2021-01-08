@@ -89,6 +89,7 @@ class _HomePageState extends State<HomePage> {
       dynamicLink = value;
       setState(() {});
     }).catchError((onError) => print("ERROR GETTING DYNAMIC LINK"));
+     
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       Logger.log("SHOULD CALL SWIPE", widget.shouldCallSwipe);
@@ -134,6 +135,11 @@ class _HomePageState extends State<HomePage> {
     } else {
       print("NO");
     }
+  }
+
+  addDynamicLink(userID, link) async {
+    await ApiProvider().addDynamicLink2Firebase(userID, link);
+    print("Dynamic link added to user profile! Check firebase " + userID + ": " + link.toString());
   }
 
   @override
@@ -726,6 +732,8 @@ class _HomePageState extends State<HomePage> {
     final data = FlutterWidgetData(link.shortUrl.toString());
     WidgetKit.setItem('widgetData', jsonEncode(data), 'group.com.dappy');
     print( "Link is set to Widget!!!!");
+    addDynamicLink(globals.objProfile.userId, link.shortUrl.toString());
+    globals.dynamicLink = link.shortUrl.toString();
     return link.shortUrl.toString();
   }
 

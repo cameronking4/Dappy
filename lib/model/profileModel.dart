@@ -20,6 +20,8 @@ class ProfileModel {
   String cashapp;
   String twitter;
   String userName;
+  String dynamicLink;
+  String fullName;
   int createdAt;
   int updatedAt;
   String countryCode;
@@ -32,6 +34,8 @@ class ProfileModel {
   ProfileModel({
     this.firstName,
     this.lastName,
+    this.fullName,
+    this.dynamicLink,
     this.contactUserName,
     this.contactUserPhone,
     this.email,
@@ -74,6 +78,8 @@ class ProfileModel {
         firstName: snapshot.data['firstName'] ?? '',
         userName: snapshot.data['userName'] ?? '',
         lastName: snapshot.data['lastName'] ?? '',
+        fullName: snapshot.data['fullName'] ?? '',
+        dynamicLink: snapshot.data['dynamicLink'] ?? '',
         email: snapshot.data['email'] ?? '',
         facebook: snapshot.data['facebook'] ?? '',
         instagram: snapshot.data['instagram'] ?? '',
@@ -110,6 +116,8 @@ class ProfileModel {
       firstName: json['firstName'],
       userName: json['userName'],
       lastName: json['lastName'],
+      fullName: json['fullName'],
+      dynamicLink: json['dynamicLink'],
       email: json['email'],
       facebook: json['facebook'],
       instagram: json['instagram'],
@@ -139,6 +147,8 @@ class ProfileModel {
         'firstName': firstName,
         'lastName': lastName,
         'userName': userName,
+        'fullName': fullName,
+        'dynamicLink': dynamicLink,
         'email': email,
         'facebook': facebook,
         'instagram': instagram,

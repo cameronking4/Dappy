@@ -67,7 +67,7 @@ struct FlutterWidgetEntryView : View {
     }
     
     private var NoDataView: some View {
-      Text("No Data found! Go to the Dappy App")
+      Text("Go to the Dappy app to setup your profile!")
     }
     
     var body: some View {

@@ -66,8 +66,9 @@ class _SearchPageState extends State<SearchPage> {
                   child: TextField(
                     controller: _searchText,
                     decoration: InputDecoration(
-                      hintText: 'Search by username or full name',
+                      hintText: 'Search username or full name',
                       hintStyle: TextStyle(color: Colors.black87),
+                      hintMaxLines: 3,
                       contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                       prefixIcon: Stack(
                         alignment: Alignment.center,

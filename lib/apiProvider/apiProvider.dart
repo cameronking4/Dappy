@@ -144,6 +144,20 @@ class ApiProvider {
     }
   }
 
+    Future addDynamicLink2Firebase(String userID, String link) async {
+    // profile.updatedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
+    try {
+      await Firestore.instance
+          .collection('Users')
+          .document(userID)
+          .updateData({
+          "dynamic_link": link,
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future updateUserFCMToken() async {
     try {
       await Firestore.instance
@@ -280,7 +294,6 @@ class ApiProvider {
     } 
 
     QuerySnapshot result;
-    QuerySnapshot result2;
 
     searchtext = searchtext.toLowerCase();
 
