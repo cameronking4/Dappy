@@ -1,6 +1,6 @@
-# swapTech
+# Dappy
 
-A new Flutter project.
+Social Media and Contact Sharing app. Like Venmo, search and request users. Using deep linking, scan a QR code or share a link to perform a swap for both parties. Repo also include widget for iOS 14 homescreen. This a full flutter app replacing PoP stickers and LinkTree for contact sharing.
 
 ## Getting Started
 
