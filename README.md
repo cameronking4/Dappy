@@ -4,7 +4,7 @@ Social Media and Contact Sharing app. Like Venmo, search and request users. Usin
 
 ## Getting Started
 
-flutter doctor
+flutter doctor &&
 flutter run 
 
 This project is a starting point for a Flutter application.
